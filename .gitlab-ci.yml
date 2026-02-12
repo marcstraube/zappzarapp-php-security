@@ -1,0 +1,155 @@
+image: php:8.4-cli
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SAST_EXCLUDED_PATHS: "vendor/,build/,tests/"
+  XDEBUG_MODE: coverage
+
+stages:
+  - test
+  - security
+
+cache:
+  paths:
+    - vendor/
+
+.php-setup: &php-setup
+  before_script:
+    - apt-get update -yqq
+    - apt-get install -yqq git unzip libzip-dev
+    - docker-php-ext-install zip
+    - pecl install xdebug && docker-php-ext-enable xdebug
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install --prefer-dist --no-progress --no-interaction
+
+# Verify all commits are GPG-signed (via GitLab API)
+verify-signatures:
+  stage: test
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl jq git
+  script:
+    - |
+      echo "Checking commits via GitLab API..."
+
+      BASE_SHA=$(git merge-base origin/master HEAD 2>/dev/null || echo "")
+      if [ -z "$BASE_SHA" ]; then
+        echo "No common ancestor with master, checking only HEAD commit"
+        COMMITS=$(git rev-parse HEAD)
+      else
+        COMMITS=$(git log --format=%H ${BASE_SHA}..HEAD)
+      fi
+
+      UNSIGNED_COUNT=0
+      for commit in $COMMITS; do
+        RESPONSE=$(curl -s --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/commits/${commit}/signature")
+
+        STATUS=$(echo "$RESPONSE" | jq -r '.verification_status // "unsigned"')
+        if [ "$STATUS" != "verified" ]; then
+          UNSIGNED_COUNT=$((UNSIGNED_COUNT + 1))
+          echo "Commit $commit is NOT verified (status: $STATUS)"
+        else
+          echo "Commit $commit is verified"
+        fi
+      done
+
+      if [ "$UNSIGNED_COUNT" -gt 0 ]; then
+        echo ""
+        echo "ERROR: Found unverified commits: $UNSIGNED_COUNT"
+        echo ""
+        echo "All commits must be GPG-signed for security packages."
+        echo "See CONTRIBUTING.md for setup instructions."
+        exit 1
+      fi
+
+      echo ""
+      echo "All commits are verified!"
+  only:
+    - merge_requests
+    - master
+
+security:
+  <<: *php-setup
+  stage: test
+  script:
+    - composer audit --no-dev
+
+phpstan:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/phpstan analyse --memory-limit=512M
+
+psalm:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/psalm --show-info=false
+
+psalm-taint:
+  <<: *php-setup
+  stage: security
+  script:
+    - vendor/bin/psalm --taint-analysis
+
+phpmd:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/phpmd src,tests text phpmd.xml
+
+rector:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/rector process --dry-run
+
+code-style:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/php-cs-fixer fix --dry-run --diff
+
+phpunit:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/phpunit --coverage-text --colors=never --coverage-xml=build/coverage/coverage-xml --log-junit=build/coverage/junit.xml
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  artifacts:
+    paths:
+      - build/coverage/
+    expire_in: 1 hour
+
+deptrac:
+  <<: *php-setup
+  stage: test
+  script:
+    - vendor/bin/deptrac analyse
+
+infection:
+  <<: *php-setup
+  stage: test
+  needs: [phpunit]
+  script:
+    - vendor/bin/infection --threads=4 --coverage=build/coverage --skip-initial-tests --min-msi=100 --min-covered-msi=100
+  artifacts:
+    paths:
+      - build/infection.log
+    expire_in: 1 week
+    when: always
+
+# Generate SBOM
+sbom:
+  <<: *php-setup
+  stage: security
+  script:
+    - composer sbom
+  artifacts:
+    paths:
+      - sbom.json
+    expire_in: 1 week

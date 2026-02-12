@@ -1,0 +1,263 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Zappzarapp\Security\Tests\Csp\Compliance;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+use Zappzarapp\Security\Csp\Directive\CspDirectives;
+use Zappzarapp\Security\Csp\Directive\NavigationDirectives;
+use Zappzarapp\Security\Csp\Directive\ReportingConfig;
+use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
+
+/**
+ * W3C CSP Level 3 Directive Names Compliance Tests
+ *
+ * Validates that all CSP directive names match the W3C specification.
+ *
+ * @see https://www.w3.org/TR/CSP3/
+ */
+final class W3cDirectiveNamesTest extends TestCase
+{
+    private const string NONCE = 'test-nonce';
+
+    // =========================================================================
+    // Fetch Directives (W3C CSP3 Section 6.1)
+    // =========================================================================
+
+    public function testDefaultSrcDirective(): void
+    {
+        $directives = new CspDirectives(defaultSrc: "'self'");
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('default-src', $header);
+    }
+
+    public function testScriptSrcDirective(): void
+    {
+        $directives = new CspDirectives(scriptSrc: "'self'");
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('script-src', $header);
+    }
+
+    public function testStyleSrcDirective(): void
+    {
+        $directives = new CspDirectives(styleSrc: "'self'");
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('style-src', $header);
+    }
+
+    public function testImgSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(img: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('img-src', $header);
+    }
+
+    public function testFontSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(font: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('font-src', $header);
+    }
+
+    public function testConnectSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(connect: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('connect-src', $header);
+    }
+
+    public function testMediaSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(media: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('media-src', $header);
+    }
+
+    public function testObjectSrcDirective(): void
+    {
+        $directives = new CspDirectives();
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        // object-src is always 'none' by default for security
+        $this->assertStringContainsString("object-src 'none'", $header);
+    }
+
+    public function testFrameSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(frame: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('frame-src', $header);
+    }
+
+    public function testChildSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(child: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('child-src', $header);
+    }
+
+    public function testWorkerSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(worker: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('worker-src', $header);
+    }
+
+    public function testManifestSrcDirective(): void
+    {
+        $resources  = new ResourceDirectives(manifest: "'self'");
+        $directives = new CspDirectives(resources: $resources);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('manifest-src', $header);
+    }
+
+    // =========================================================================
+    // Document Directives (W3C CSP3 Section 6.2)
+    // =========================================================================
+
+    public function testBaseUriDirective(): void
+    {
+        $navigation = new NavigationDirectives(baseUri: "'self'");
+        $directives = new CspDirectives(navigation: $navigation);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('base-uri', $header);
+    }
+
+    // =========================================================================
+    // Navigation Directives (W3C CSP3 Section 6.3)
+    // =========================================================================
+
+    public function testFormActionDirective(): void
+    {
+        $navigation = new NavigationDirectives(formAction: "'self'");
+        $directives = new CspDirectives(navigation: $navigation);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('form-action', $header);
+    }
+
+    public function testFrameAncestorsDirective(): void
+    {
+        $navigation = new NavigationDirectives(frameAncestors: "'self'");
+        $directives = new CspDirectives(navigation: $navigation);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('frame-ancestors', $header);
+    }
+
+    // =========================================================================
+    // Reporting Directives (W3C CSP3 Section 6.4)
+    // =========================================================================
+
+    public function testReportUriDirective(): void
+    {
+        $reporting  = new ReportingConfig(uri: '/csp-violations');
+        $directives = new CspDirectives(reporting: $reporting);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('report-uri', $header);
+    }
+
+    public function testReportToDirective(): void
+    {
+        $reporting  = new ReportingConfig(endpoint: 'csp-endpoint');
+        $directives = new CspDirectives(reporting: $reporting);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('report-to', $header);
+    }
+
+    // =========================================================================
+    // Security Directives
+    // =========================================================================
+
+    public function testUpgradeInsecureRequestsDirective(): void
+    {
+        $reporting  = new ReportingConfig(upgradeInsecure: true);
+        $directives = new CspDirectives(reporting: $reporting);
+
+        $header = $directives->toHeaderValue(self::NONCE);
+
+        $this->assertStringContainsString('upgrade-insecure-requests', $header);
+    }
+
+    // =========================================================================
+    // Directive Name Format Tests
+    // =========================================================================
+
+    #[DataProvider('directiveNameProvider')]
+    public function testDirectiveNamesAreLowerCaseWithHyphens(string $directiveName): void
+    {
+        // CSP directive names must be lowercase ASCII with hyphens
+        $this->assertMatchesRegularExpression(
+            '/^[a-z][a-z-]*[a-z]$/',
+            $directiveName,
+            "Directive name '$directiveName' must be lowercase with hyphens"
+        );
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function directiveNameProvider(): array
+    {
+        return [
+            'default-src'               => ['default-src'],
+            'script-src'                => ['script-src'],
+            'style-src'                 => ['style-src'],
+            'img-src'                   => ['img-src'],
+            'font-src'                  => ['font-src'],
+            'connect-src'               => ['connect-src'],
+            'media-src'                 => ['media-src'],
+            'object-src'                => ['object-src'],
+            'frame-src'                 => ['frame-src'],
+            'child-src'                 => ['child-src'],
+            'worker-src'                => ['worker-src'],
+            'manifest-src'              => ['manifest-src'],
+            'base-uri'                  => ['base-uri'],
+            'form-action'               => ['form-action'],
+            'frame-ancestors'           => ['frame-ancestors'],
+            'report-uri'                => ['report-uri'],
+            'report-to'                 => ['report-to'],
+            'upgrade-insecure-requests' => ['upgrade-insecure-requests'],
+        ];
+    }
+}

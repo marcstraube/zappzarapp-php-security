@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make *)",
+      "Bash(make)",
+      "Bash(composer *)",
+      "Bash(php84 *)",
+      "Bash(php *)",
+      "Bash(vendor/bin/*)",
+      "Bash(XDEBUG_MODE=* *)",
+      "Bash(PCOV_ENABLED=* *)",
+      "Bash(PATH=* *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git mv *)",
+      "Bash(git branch*)",
+      "Bash(git remote*)",
+      "Bash(git ls-files*)",
+      "Bash(git rm *)",
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(git config *)",
+      "Bash(git verify-commit *)",
+      "Bash(gh *)",
+      "Bash(glab *)",
+      "Bash(ls *)",
+      "Bash(tree *)",
+      "Bash(pnpm dlx prettier *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:packagist.org)",
+      "WebFetch(domain:gitlab.com)",
+      "mcp__ide__getDiagnostics"
+    ],
+    "deny": []
+  }
+}

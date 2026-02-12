@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<ruleset name="Security Package Rules"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        PHPMD rules for security package - focuses on security best practices
+    </description>
+
+    <!-- Clean Code Rules -->
+    <rule ref="rulesets/cleancode.xml">
+        <!-- Allow static methods (NonceGenerator pattern) -->
+        <exclude name="StaticAccess"/>
+        <!-- Boolean flags are appropriate for configuration classes -->
+        <exclude name="BooleanArgumentFlag"/>
+        <!-- Else expressions are sometimes clearer -->
+        <exclude name="ElseExpression"/>
+        <!-- Error control operator needed for file operations with proper error handling -->
+        <exclude name="ErrorControlOperator"/>
+    </rule>
+
+    <!-- Code Size Rules -->
+    <rule ref="rulesets/codesize.xml">
+        <!-- Test classes can have many test methods -->
+        <exclude name="TooManyPublicMethods"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="NPathComplexity"/>
+        <exclude name="ExcessiveParameterList"/>
+        <!-- Exclude for test classes which naturally have many methods -->
+        <exclude name="ExcessivePublicCount"/>
+        <exclude name="ExcessiveClassComplexity"/>
+        <!-- Exclude to redefine with higher limits -->
+        <exclude name="ExcessiveMethodLength"/>
+        <exclude name="ExcessiveClassLength"/>
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <!-- Test classes naturally have many test methods for comprehensive coverage -->
+            <property name="maxmethods" value="80"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyMethods">
+        <properties>
+            <!-- Test classes naturally have many test methods for comprehensive coverage -->
+            <property name="maxmethods" value="80"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessivePublicCount">
+        <properties>
+            <!-- Test classes naturally have many public test methods -->
+            <property name="minimum" value="80"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+        <properties>
+            <!-- Test classes with many data providers can have high complexity -->
+            <property name="maximum" value="90"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+        <properties>
+            <!-- Data providers with many test cases can be long -->
+            <property name="minimum" value="170"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+        <properties>
+            <!-- Test classes with comprehensive coverage can be long -->
+            <property name="minimum" value="1100"/>
+        </properties>
+    </rule>
+    <!-- Increased limits for security library patterns -->
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+        <properties>
+            <property name="reportLevel" value="15"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/NPathComplexity">
+        <properties>
+            <!-- Higher threshold for builder methods that check multiple optional fields -->
+            <property name="minimum" value="2500"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+        <properties>
+            <property name="minimum" value="12"/>
+        </properties>
+    </rule>
+
+    <!-- Controversial Rules -->
+    <rule ref="rulesets/controversial.xml">
+        <!-- Allow static methods for singleton pattern -->
+        <exclude name="Superglobals"/>
+    </rule>
+
+    <!-- Design Rules -->
+    <rule ref="rulesets/design.xml">
+        <!-- Allow getenv() for environment detection -->
+        <exclude name="Superglobals"/>
+        <!-- Count in loop is sometimes necessary for indexed iteration -->
+        <exclude name="CountInLoopExpression"/>
+    </rule>
+
+    <!-- Naming Rules -->
+    <rule ref="rulesets/naming.xml">
+        <!-- Allow short variable names in compact methods -->
+        <exclude name="ShortVariable"/>
+    </rule>
+
+    <!-- Unused Code Rules -->
+    <rule ref="rulesets/unusedcode.xml">
+        <!-- Mock callbacks in tests may have unused parameters matching interface signatures -->
+        <exclude name="UnusedFormalParameter"/>
+    </rule>
+</ruleset>

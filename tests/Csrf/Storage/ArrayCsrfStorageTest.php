@@ -1,0 +1,186 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Zappzarapp\Security\Tests\Csrf\Storage;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
+use Zappzarapp\Security\Csrf\Storage\ArrayCsrfStorage;
+use Zappzarapp\Security\Csrf\Storage\CsrfStorageInterface;
+
+#[CoversClass(ArrayCsrfStorage::class)]
+final class ArrayCsrfStorageTest extends TestCase
+{
+    private ArrayCsrfStorage $storage;
+
+    protected function setUp(): void
+    {
+        $this->storage = new ArrayCsrfStorage();
+    }
+
+    public function testImplementsCsrfStorageInterface(): void
+    {
+        /** @noinspection PhpConditionAlreadyCheckedInspection Test verifies interface implementation */
+        $this->assertInstanceOf(CsrfStorageInterface::class, $this->storage);
+    }
+
+    public function testStoreAndRetrieve(): void
+    {
+        $this->storage->store('key1', 'token1');
+
+        $this->assertSame('token1', $this->storage->retrieve('key1'));
+    }
+
+    public function testRetrieveReturnsNullForMissingKey(): void
+    {
+        $this->assertNull($this->storage->retrieve('nonexistent'));
+    }
+
+    public function testHasReturnsTrue(): void
+    {
+        $this->storage->store('key1', 'token1');
+
+        $this->assertTrue($this->storage->has('key1'));
+    }
+
+    public function testHasReturnsFalse(): void
+    {
+        $this->assertFalse($this->storage->has('nonexistent'));
+    }
+
+    public function testRemove(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->remove('key1');
+
+        $this->assertNull($this->storage->retrieve('key1'));
+        $this->assertFalse($this->storage->has('key1'));
+    }
+
+    public function testRemoveNonexistentKey(): void
+    {
+        $this->storage->remove('nonexistent');
+
+        $this->assertFalse($this->storage->has('nonexistent'));
+    }
+
+    public function testClear(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key2', 'token2');
+
+        $this->storage->clear();
+
+        $this->assertNull($this->storage->retrieve('key1'));
+        $this->assertNull($this->storage->retrieve('key2'));
+    }
+
+    public function testMultipleKeys(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key2', 'token2');
+        $this->storage->store('key3', 'token3');
+
+        $this->assertSame('token1', $this->storage->retrieve('key1'));
+        $this->assertSame('token2', $this->storage->retrieve('key2'));
+        $this->assertSame('token3', $this->storage->retrieve('key3'));
+    }
+
+    public function testOverwriteExistingKey(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key1', 'token2');
+
+        $this->assertSame('token2', $this->storage->retrieve('key1'));
+    }
+
+    public function testStoreWithTtlIgnoresTtl(): void
+    {
+        $this->storage->store('key1', 'token1', 1);
+
+        $this->assertSame('token1', $this->storage->retrieve('key1'));
+    }
+
+    // --- Count Method ---
+
+    public function testCountReturnsZeroWhenEmpty(): void
+    {
+        $this->assertSame(0, $this->storage->count());
+    }
+
+    public function testCountReturnsCorrectNumber(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key2', 'token2');
+        $this->storage->store('key3', 'token3');
+
+        $this->assertSame(3, $this->storage->count());
+    }
+
+    public function testCountDecreasesAfterRemove(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key2', 'token2');
+
+        $this->storage->remove('key1');
+
+        $this->assertSame(1, $this->storage->count());
+    }
+
+    public function testCountReturnsZeroAfterClear(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key2', 'token2');
+
+        $this->storage->clear();
+
+        $this->assertSame(0, $this->storage->count());
+    }
+
+    public function testCountDoesNotChangeOnOverwrite(): void
+    {
+        $this->storage->store('key1', 'token1');
+        $this->storage->store('key1', 'token2');
+
+        $this->assertSame(1, $this->storage->count());
+    }
+
+    // --- Token Expiration ---
+
+    public function testTokenExpiresAfterTtl(): void
+    {
+        $this->storage->store('key1', 'token1', 1);
+
+        $this->assertSame('token1', $this->storage->retrieve('key1'));
+
+        sleep(2);
+
+        $this->assertNull($this->storage->retrieve('key1'));
+    }
+
+    public function testExpiredTokenIsRemovedFromCount(): void
+    {
+        $this->storage->store('key1', 'token1', 1);
+        /** @noinspection PhpRedundantOptionalArgumentInspection Test explicitly verifies null TTL behavior */
+        $this->storage->store('key2', 'token2', null);
+
+        $this->assertSame(2, $this->storage->count());
+
+        sleep(2);
+
+        // Retrieve triggers cleanup of expired token
+        $this->storage->retrieve('key1');
+
+        $this->assertSame(1, $this->storage->count());
+    }
+
+    public function testHasReturnsFalseForExpiredToken(): void
+    {
+        $this->storage->store('key1', 'token1', 1);
+
+        sleep(2);
+
+        $this->assertFalse($this->storage->has('key1'));
+    }
+}

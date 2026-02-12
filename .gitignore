@@ -1,0 +1,10 @@
+.idea/
+/vendor/
+/build/
+/docs/
+.phpunit.cache
+.php-cs-fixer.cache
+.psalm/
+.rector/
+sbom.json
+.deptrac.cache

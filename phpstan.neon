@@ -1,0 +1,68 @@
+includes:
+    - vendor/ekino/phpstan-banned-code/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+
+    # Security: Banned dangerous functions
+    # Overrides defaults from ekino/phpstan-banned-code
+    # See: https://github.com/ekino/phpstan-banned-code
+    # Note: echo/exit are allowed (legitimate for HTML output and routing)
+    banned_code:
+        non_ignorable: false
+        nodes:
+            # eval() - code injection risk
+            -
+                type: Expr_Eval
+                functions: null
+            # Dangerous functions
+            -
+                type: Expr_FuncCall
+                functions:
+                    - dd
+                    - debug_backtrace
+                    - dump
+                    - exec
+                    - passthru
+                    - phpinfo
+                    - print_r
+                    - proc_open
+                    - shell_exec
+                    - system
+                    - var_dump
+
+    # Performance
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 4
+
+    # Type Coverage (false = don't warn about unused ignore patterns)
+    reportUnmatchedIgnoredErrors: false
+
+    # Exception Handling (strict checks for security package)
+    # Requires @throws tags and explicit exception handling
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        checkedExceptionClasses:
+            - Random\RandomException
+        implicitThrows: false
+
+    # Test assertions that PHPStan considers redundant but serve as documentation
+    ignoreErrors:
+        # assertIsArray/assertIsString on typed returns (valid test documentation)
+        -
+            message: '#will always evaluate to true#'
+            identifier: method.alreadyNarrowedType
+            path: tests/*
+        # Tests use random_bytes() for generating test data - exception handling not needed
+        -
+            identifier: missingType.checkedException
+            path: tests/*
+        -
+            identifier: throws.unusedType
+            path: tests/*

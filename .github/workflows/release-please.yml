@@ -1,0 +1,51 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: php
+          package-name: zappzarapp/security
+
+      # If a release was created, generate and attach SBOM
+      - name: Checkout code
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        if: ${{ steps.release.outputs.release_created }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Install dependencies
+        if: ${{ steps.release.outputs.release_created }}
+        run: composer install --no-dev --prefer-dist --no-progress
+
+      - name: Generate SBOM
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          composer require cyclonedx/cyclonedx-php-composer --dev
+          composer sbom
+
+      - name: Upload SBOM to release
+        if: ${{ steps.release.outputs.release_created }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: sbom.json
+          tag_name: ${{ steps.release.outputs.tag_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

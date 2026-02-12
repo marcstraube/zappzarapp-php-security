@@ -1,0 +1,436 @@
+deptrac:
+  paths:
+    - ./src
+
+  layers:
+    # ==========================================
+    # CSP Module
+    # ==========================================
+    - name: CspException
+      collectors:
+        - type: directory
+          value: src/Csp/Exception/
+
+    - name: CspValidation
+      collectors:
+        - type: directory
+          value: src/Csp/Validation/
+
+    - name: CspNonce
+      collectors:
+        - type: directory
+          value: src/Csp/Nonce/
+
+    - name: CspDirective
+      collectors:
+        - type: directory
+          value: src/Csp/Directive/
+
+    - name: CspValueObject
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Csp\\CspValue$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Csp\\SecurityPolicy$
+
+    - name: CspBuilder
+      collectors:
+        - type: directory
+          value: src/Csp/Builder/
+
+    - name: CspHeaderBuilder
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Csp\\HeaderBuilder$
+
+    # ==========================================
+    # Headers Module
+    # ==========================================
+    - name: HeadersException
+      collectors:
+        - type: directory
+          value: src/Headers/Exception/
+
+    - name: HeadersValidation
+      collectors:
+        - type: directory
+          value: src/Headers/Validation/
+
+    - name: HeadersEnums
+      collectors:
+        - type: directory
+          value: src/Headers/Coop/
+        - type: directory
+          value: src/Headers/Coep/
+        - type: directory
+          value: src/Headers/Corp/
+        - type: directory
+          value: src/Headers/ReferrerPolicy/
+        - type: directory
+          value: src/Headers/XFrameOptions/
+
+    - name: HeadersHsts
+      collectors:
+        - type: directory
+          value: src/Headers/Hsts/
+
+    - name: HeadersPermissionsPolicy
+      collectors:
+        - type: directory
+          value: src/Headers/PermissionsPolicy/
+
+    - name: HeadersBuilder
+      collectors:
+        - type: directory
+          value: src/Headers/Builder/
+
+    - name: HeadersMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Headers\\SecurityHeaders$
+
+    # ==========================================
+    # CSRF Module
+    # ==========================================
+    - name: CsrfException
+      collectors:
+        - type: directory
+          value: src/Csrf/Exception/
+
+    - name: CsrfStorage
+      collectors:
+        - type: directory
+          value: src/Csrf/Storage/
+
+    - name: CsrfToken
+      collectors:
+        - type: directory
+          value: src/Csrf/Token/
+
+    - name: CsrfValidation
+      collectors:
+        - type: directory
+          value: src/Csrf/Validation/
+
+    - name: CsrfPattern
+      collectors:
+        - type: directory
+          value: src/Csrf/Pattern/
+
+    - name: CsrfMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Csrf\\CsrfConfig$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Csrf\\CsrfProtection$
+
+    # ==========================================
+    # Cookie Module
+    # ==========================================
+    - name: CookieException
+      collectors:
+        - type: directory
+          value: src/Cookie/Exception/
+
+    - name: CookieMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\CookieBuilder$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\CookieOptions$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\CookieSerializer$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\CookieValidator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\SameSitePolicy$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Cookie\\SecureCookie$
+
+    # ==========================================
+    # Password Module
+    # ==========================================
+    - name: PasswordException
+      collectors:
+        - type: directory
+          value: src/Password/Exception/
+
+    - name: PasswordSecurity
+      collectors:
+        - type: directory
+          value: src/Password/Security/
+
+    - name: PasswordPolicy
+      collectors:
+        - type: directory
+          value: src/Password/Policy/
+
+    - name: PasswordStrength
+      collectors:
+        - type: directory
+          value: src/Password/Strength/
+
+    - name: PasswordPwned
+      collectors:
+        - type: directory
+          value: src/Password/Pwned/
+
+    - name: PasswordHashing
+      collectors:
+        - type: directory
+          value: src/Password/Hashing/
+
+    - name: PasswordValidation
+      collectors:
+        - type: directory
+          value: src/Password/Validation/
+
+    # ==========================================
+    # Sanitization Module
+    # ==========================================
+    - name: SanitizationException
+      collectors:
+        - type: directory
+          value: src/Sanitization/Exception/
+
+    - name: SanitizationPath
+      collectors:
+        - type: directory
+          value: src/Sanitization/Path/
+
+    - name: SanitizationUri
+      collectors:
+        - type: directory
+          value: src/Sanitization/Uri/
+
+    - name: SanitizationHtml
+      collectors:
+        - type: directory
+          value: src/Sanitization/Html/
+
+    - name: SanitizationSql
+      collectors:
+        - type: directory
+          value: src/Sanitization/Sql/
+
+    - name: SanitizationMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sanitization\\InputFilter$
+
+    # ==========================================
+    # RateLimiting Module
+    # ==========================================
+    - name: RateLimitingException
+      collectors:
+        - type: directory
+          value: src/RateLimiting/Exception/
+
+    - name: RateLimitingStorage
+      collectors:
+        - type: directory
+          value: src/RateLimiting/Storage/
+
+    - name: RateLimitingAlgorithm
+      collectors:
+        - type: directory
+          value: src/RateLimiting/Algorithm/
+
+    - name: RateLimitingMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\RateLimiting\\RateLimitConfig$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\RateLimiting\\RateLimitResult$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\RateLimiting\\RateLimitIdentifier$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\RateLimiting\\RateLimiter$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\RateLimiting\\DefaultRateLimiter$
+
+    # ==========================================
+    # SRI Module
+    # ==========================================
+    - name: SriException
+      collectors:
+        - type: directory
+          value: src/Sri/Exception/
+
+    - name: SriMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\CrossOrigin$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\HashAlgorithm$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\IntegrityAttribute$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\ResourceFetcher$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\ResourceFetcherConfig$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\SriHashGenerator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\HttpClientInterface$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Sri\\FileGetContentsHttpClient$
+
+    # ==========================================
+    # Logging Module
+    # ==========================================
+    - name: Logging
+      collectors:
+        - type: directory
+          value: src/Logging/
+
+    # ==========================================
+    # External Dependencies (PSR interfaces)
+    # ==========================================
+    - name: External
+      collectors:
+        - type: classLike
+          value: ^Psr\\Log\\.*
+        - type: classLike
+          value: ^Psr\\Http\\.*
+
+  ruleset:
+    # CSP Module Rules
+    CspException: ~
+    CspValidation:
+      - CspException
+    CspNonce:
+      - CspException
+    CspDirective:
+      - CspException
+      - CspValidation
+      - CspValueObject
+      - CspBuilder
+    CspValueObject: ~
+    CspBuilder:
+      - CspDirective
+      - CspValueObject
+    CspHeaderBuilder:
+      - CspBuilder
+      - CspDirective
+      - CspNonce
+      - CspValueObject
+
+    # Headers Module Rules
+    HeadersException: ~
+    HeadersValidation:
+      - HeadersException
+    HeadersEnums: ~
+    HeadersHsts:
+      - HeadersException
+    HeadersPermissionsPolicy:
+      - HeadersException
+      - HeadersValidation
+    HeadersBuilder:
+      - HeadersMain
+      - HeadersEnums
+      - HeadersHsts
+      - HeadersPermissionsPolicy
+      - CspHeaderBuilder
+      - CspDirective
+    HeadersMain:
+      - HeadersHsts
+      - HeadersEnums
+      - HeadersPermissionsPolicy
+      - CspValueObject
+      - CspDirective
+
+    # CSRF Module Rules
+    CsrfException: ~
+    CsrfStorage: ~
+    CsrfToken:
+      - CsrfException
+    CsrfValidation:
+      - CsrfException
+      - CsrfStorage
+      - CsrfToken
+      - Logging
+    CsrfPattern:
+      - CsrfException
+      - CsrfStorage
+      - CsrfToken
+      - CsrfValidation
+      - CsrfMain
+    CsrfMain:
+      - CsrfException
+      - CsrfStorage
+      - CsrfToken
+      - CsrfPattern
+
+    # Cookie Module Rules
+    CookieException: ~
+    CookieMain:
+      - CookieException
+
+    # Password Module Rules
+    PasswordException: ~
+    PasswordSecurity: ~
+    PasswordPolicy:
+      - PasswordException
+    PasswordStrength:
+      - PasswordSecurity
+    PasswordPwned:
+      - PasswordException
+      - PasswordSecurity
+      - Logging
+      - External
+    PasswordHashing:
+      - PasswordSecurity
+    PasswordValidation:
+      - PasswordPolicy
+      - PasswordStrength
+      - PasswordPwned
+
+    # Sanitization Module Rules
+    SanitizationException: ~
+    SanitizationPath:
+      - SanitizationException
+      - Logging
+    SanitizationUri:
+      - SanitizationException
+      - SanitizationMain
+      - External
+    SanitizationHtml:
+      - SanitizationMain
+      - SanitizationUri
+    SanitizationSql: ~
+    SanitizationMain: ~
+
+    # RateLimiting Module Rules
+    RateLimitingException: ~
+    RateLimitingStorage:
+      - RateLimitingException
+    RateLimitingAlgorithm:
+      - RateLimitingMain
+      - RateLimitingStorage
+    RateLimitingMain:
+      - RateLimitingException
+      - RateLimitingStorage
+      - RateLimitingAlgorithm
+      - Logging
+
+    # SRI Module Rules
+    SriException: ~
+    SriMain:
+      - SriException
+      - SanitizationUri  # SSRF protection via PrivateNetworkValidator
+
+    # Logging Module Rules (depends on PSR-3 LoggerInterface)
+    Logging:
+      - External
+
+    # External layer has no internal dependencies
+    External: ~
+
+  skip_violations: {}
+
+  formatters:
+    graphviz:
+      hidden_layers: []
+      groups: {}
+      pointToGroups: false
