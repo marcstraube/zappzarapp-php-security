@@ -3,6 +3,7 @@
     ".": {
       "release-type": "php",
       "package-name": "zappzarapp/security",
+      "bootstrap-sha": "ceb5ef51339d0ce2c11e58a7dcdfba71db68d048",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
       "changelog-sections": [
