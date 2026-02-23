@@ -817,16 +817,16 @@
         },
         {
             "name": "captainhook/captainhook",
-            "version": "5.28.0",
+            "version": "5.28.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/captainhook-git/captainhook.git",
-                "reference": "9d0f34f2e9d112553ea342463371807e9864a87c"
+                "reference": "5d35b249f3843ef36ead119f4347e649278ad6d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/captainhook-git/captainhook/zipball/9d0f34f2e9d112553ea342463371807e9864a87c",
-                "reference": "9d0f34f2e9d112553ea342463371807e9864a87c",
+                "url": "https://api.github.com/repos/captainhook-git/captainhook/zipball/5d35b249f3843ef36ead119f4347e649278ad6d8",
+                "reference": "5d35b249f3843ef36ead119f4347e649278ad6d8",
                 "shasum": ""
             },
             "require": {
@@ -889,7 +889,7 @@
             ],
             "support": {
                 "issues": "https://github.com/captainhook-git/captainhook/issues",
-                "source": "https://github.com/captainhook-git/captainhook/tree/5.28.0"
+                "source": "https://github.com/captainhook-git/captainhook/tree/5.28.3"
             },
             "funding": [
                 {
@@ -897,7 +897,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-08T14:15:15+00:00"
+            "time": "2026-02-16T14:08:58+00:00"
         },
         {
             "name": "captainhook/plugin-composer",
@@ -1466,35 +1466,41 @@
         },
         {
             "name": "cyclonedx/cyclonedx-library",
-            "version": "v3.10.0",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CycloneDX/cyclonedx-php-library.git",
-                "reference": "e6bb0fca8d89f1e34755900c361061a6f5253e49"
+                "reference": "c95a371894c4e32bea42bfa024f2ab5092cbb292"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/e6bb0fca8d89f1e34755900c361061a6f5253e49",
-                "reference": "e6bb0fca8d89f1e34755900c361061a6f5253e49",
+                "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-library/zipball/c95a371894c4e32bea42bfa024f2ab5092cbb292",
+                "reference": "c95a371894c4e32bea42bfa024f2ab5092cbb292",
                 "shasum": ""
             },
             "require": {
-                "composer/spdx-licenses": "^1.5",
                 "ext-dom": "*",
                 "ext-json": "*",
                 "ext-libxml": "*",
                 "opis/json-schema": "^2.0",
-                "package-url/packageurl-php": "^1.0",
                 "php": "^8.1"
             },
+            "conflict": {
+                "composer/spdx-licenses": "<1.5"
+            },
             "require-dev": {
+                "composer/spdx-licenses": "^1.5",
                 "ext-simplexml": "*",
                 "roave/security-advisories": "dev-latest"
+            },
+            "suggest": {
+                "composer/spdx-licenses": "used in license factory",
+                "package-url/packageurl-php": "for parsing and crafting PackageURL strings"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.x-dev"
+                    "dev-master": "4.x-dev"
                 },
                 "composer-normalize": {
                     "indent-size": 4,
@@ -1551,25 +1557,26 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-01-07T13:45:46+00:00"
+            "time": "2026-02-17T11:46:50+00:00"
         },
         {
             "name": "cyclonedx/cyclonedx-php-composer",
-            "version": "v6.1.0",
+            "version": "v6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CycloneDX/cyclonedx-php-composer.git",
-                "reference": "d718efc4c201acd0da7d2c2e5690864b2a5c7116"
+                "reference": "934440a5ef7c3c3cdb58c3c3d389d412630ccbf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/d718efc4c201acd0da7d2c2e5690864b2a5c7116",
-                "reference": "d718efc4c201acd0da7d2c2e5690864b2a5c7116",
+                "url": "https://api.github.com/repos/CycloneDX/cyclonedx-php-composer/zipball/934440a5ef7c3c3cdb58c3c3d389d412630ccbf6",
+                "reference": "934440a5ef7c3c3cdb58c3c3d389d412630ccbf6",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^2.3",
-                "cyclonedx/cyclonedx-library": "^3.9",
+                "composer/spdx-licenses": "^1.5.7",
+                "cyclonedx/cyclonedx-library": "^4.0",
                 "package-url/packageurl-php": "^1.0",
                 "php": "^8.1"
             },
@@ -1582,7 +1589,7 @@
             "extra": {
                 "class": "CycloneDX\\Composer\\Plugin",
                 "branch-alias": {
-                    "dev-master": "5.x-dev"
+                    "dev-master": "6.x-dev"
                 },
                 "composer-normalize": {
                     "indent-size": 4,
@@ -1628,7 +1635,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-01-07T13:45:28+00:00"
+            "time": "2026-02-17T13:23:10+00:00"
         },
         {
             "name": "danog/advanced-json-rpc",
@@ -2280,16 +2287,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.94.0",
+            "version": "v3.94.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "883b20fb38c7866de9844ab6d0a205c423bde2d4"
+                "reference": "7787ceff91365ba7d623ec410b8f429cdebb4f63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/883b20fb38c7866de9844ab6d0a205c423bde2d4",
-                "reference": "883b20fb38c7866de9844ab6d0a205c423bde2d4",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/7787ceff91365ba7d623ec410b8f429cdebb4f63",
+                "reference": "7787ceff91365ba7d623ec410b8f429cdebb4f63",
                 "shasum": ""
             },
             "require": {
@@ -2372,7 +2379,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.94.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.94.2"
             },
             "funding": [
                 {
@@ -2380,7 +2387,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-11T16:44:33+00:00"
+            "time": "2026-02-20T16:13:53+00:00"
         },
         {
             "name": "giorgiosironi/eris",
@@ -7309,16 +7316,16 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.3.6",
+            "version": "2.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "ca9ebb81d280cd362ea39474dabd42679e32ca6b"
+                "reference": "bbd37aedd8df749916cffa2a947cfc4714d1ba2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/ca9ebb81d280cd362ea39474dabd42679e32ca6b",
-                "reference": "ca9ebb81d280cd362ea39474dabd42679e32ca6b",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/bbd37aedd8df749916cffa2a947cfc4714d1ba2c",
+                "reference": "bbd37aedd8df749916cffa2a947cfc4714d1ba2c",
                 "shasum": ""
             },
             "require": {
@@ -7357,7 +7364,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.3.6"
+                "source": "https://github.com/rectorphp/rector/tree/2.3.8"
             },
             "funding": [
                 {
@@ -7365,7 +7372,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-06T14:25:06+00:00"
+            "time": "2026-02-22T09:45:50+00:00"
         },
         {
             "name": "revolt/event-loop",
@@ -12992,5 +12999,5 @@
     "platform-overrides": {
         "php": "8.4.3"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
