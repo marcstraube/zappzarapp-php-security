@@ -6,9 +6,9 @@ include:
 
 variables:
   SAST_EXCLUDED_PATHS: "vendor/,build/,tests/"
-  XDEBUG_MODE: coverage
 
 stages:
+  - verify
   - test
   - security
 
@@ -21,26 +21,26 @@ cache:
     - apt-get update -yqq
     - apt-get install -yqq git unzip libzip-dev
     - docker-php-ext-install zip
-    - pecl install xdebug && docker-php-ext-enable xdebug
+    - pecl install pcov && docker-php-ext-enable pcov
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - composer install --prefer-dist --no-progress --no-interaction
 
 # Verify all commits are GPG-signed (via GitLab API)
 verify-signatures:
-  stage: test
-  image: alpine:latest
+  stage: verify
+  image: alpine:3
   before_script:
-    - apk add --no-cache curl jq git
+    - apk add --no-cache curl jq
   script:
     - |
-      echo "Checking commits via GitLab API..."
-
-      BASE_SHA=$(git merge-base origin/master HEAD 2>/dev/null || echo "")
-      if [ -z "$BASE_SHA" ]; then
-        echo "No common ancestor with master, checking only HEAD commit"
-        COMMITS=$(git rev-parse HEAD)
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Checking MR commits via GitLab API..."
+        COMMITS=$(curl -s --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+          "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}/commits" \
+          | jq -r '.[].id')
       else
-        COMMITS=$(git log --format=%H ${BASE_SHA}..HEAD)
+        echo "Checking HEAD commit via GitLab API..."
+        COMMITS=$(git rev-parse HEAD)
       fi
 
       UNSIGNED_COUNT=0
@@ -68,9 +68,9 @@ verify-signatures:
 
       echo ""
       echo "All commits are verified!"
-  only:
-    - merge_requests
-    - master
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
 
 security:
   <<: *php-setup
