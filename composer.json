@@ -116,7 +116,19 @@
     "cs-fix": "@php vendor/bin/php-cs-fixer fix",
     "cs-check": "@php vendor/bin/php-cs-fixer fix --dry-run --diff",
     "docs": "@php vendor/bin/phpdoc",
-    "check": ["@security", "@cs-check", "@analyse", "@psalm", "@phpmd", "@rector", "@deptrac", "@test"],
-    "check-full": ["@check", "@infection"]
+    "check": [
+      "@security",
+      "@cs-check",
+      "@analyse",
+      "@psalm",
+      "@phpmd",
+      "@rector",
+      "@deptrac",
+      "@test"
+    ],
+    "check-full": [
+      "@check",
+      "@infection"
+    ]
   }
 }
