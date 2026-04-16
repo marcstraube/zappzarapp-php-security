@@ -63,7 +63,7 @@ enum HashAlgorithm: string
         return match (strtolower($algorithm)) {
             'sha384', 'sha-384' => self::SHA384,
             'sha512', 'sha-512' => self::SHA512,
-            default => null,
+            default             => null,
         };
     }
 }

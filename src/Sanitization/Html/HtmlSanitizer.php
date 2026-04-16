@@ -227,19 +227,19 @@ final readonly class HtmlSanitizer implements InputFilter
     private function isUrlAttribute(string $element, string $attribute): bool
     {
         return match ($element) {
-            'a', 'area'              => $attribute === 'href',
-            'img'                    => $attribute === 'src' || $attribute === 'srcset',
-            'form'                   => $attribute === 'action',
-            'video'                  => $attribute === 'src' || $attribute === 'poster',
-            'audio', 'source'        => $attribute === 'src',
-            'track'                  => $attribute === 'src',
-            'iframe', 'embed'        => $attribute === 'src',
-            'object'                 => $attribute === 'data',
-            'input'                  => $attribute === 'src' || $attribute === 'formaction',
-            'button'                 => $attribute === 'formaction',
-            'link'                   => $attribute === 'href',
+            'a', 'area'                     => $attribute === 'href',
+            'img'                           => $attribute === 'src' || $attribute === 'srcset',
+            'form'                          => $attribute === 'action',
+            'video'                         => $attribute === 'src' || $attribute === 'poster',
+            'audio', 'source'               => $attribute === 'src',
+            'track'                         => $attribute === 'src',
+            'iframe', 'embed'               => $attribute === 'src',
+            'object'                        => $attribute === 'data',
+            'input'                         => $attribute === 'src' || $attribute === 'formaction',
+            'button'                        => $attribute === 'formaction',
+            'link'                          => $attribute === 'href',
             'blockquote', 'q', 'del', 'ins' => $attribute === 'cite',
-            default                  => false,
+            default                         => false,
         };
     }
 
