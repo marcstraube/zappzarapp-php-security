@@ -62,7 +62,7 @@ All contributions must pass:
 - PHP-CS-Fixer style
 - Deptrac architecture boundaries
 - High test coverage for new code (>95%, excluding untestable I/O code)
-- **High mutation score** (Infection, >95%)
+- **100% mutation score** (Infection, enforced in CI)
 
 ## Architecture Rules (Deptrac)
 

@@ -13,9 +13,17 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - uses: googleapis/release-please-action@v4
         id: release
         with:
+          token: ${{ steps.app-token.outputs.token }}
           release-type: php
           package-name: zappzarapp/security
 
@@ -43,9 +51,6 @@ jobs:
 
       - name: Upload SBOM to release
         if: ${{ steps.release.outputs.release_created }}
-        uses: softprops/action-gh-release@v2
-        with:
-          files: sbom.json
-          tag_name: ${{ steps.release.outputs.tag_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh release upload ${{ steps.release.outputs.tag_name }} sbom.json --clobber
