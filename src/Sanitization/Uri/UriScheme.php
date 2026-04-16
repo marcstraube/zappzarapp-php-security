@@ -28,7 +28,7 @@ enum UriScheme: string
     {
         return match ($this) {
             self::JAVASCRIPT, self::VBSCRIPT, self::DATA => true,
-            default => false,
+            default                                      => false,
         };
     }
 
@@ -39,7 +39,7 @@ enum UriScheme: string
     {
         return match ($this) {
             self::HTTP, self::HTTPS, self::MAILTO, self::TEL => true,
-            default => false,
+            default                                          => false,
         };
     }
 }

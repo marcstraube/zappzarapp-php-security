@@ -54,7 +54,7 @@ enum SecurityPolicy
     {
         return match ($this) {
             self::LENIENT, self::UNSAFE_EVAL => true,
-            default => false,
+            default                          => false,
         };
     }
 
@@ -65,7 +65,7 @@ enum SecurityPolicy
     {
         return match ($this) {
             self::LENIENT, self::UNSAFE_INLINE => true,
-            default => false,
+            default                            => false,
         };
     }
 }
