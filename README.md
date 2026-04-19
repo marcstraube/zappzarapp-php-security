@@ -109,25 +109,25 @@ if (!$validator->isValid($userPath)) {
 }
 ```
 
-See the [documentation](documentation/) for detailed examples of all modules.
+See the [documentation](docs/) for detailed examples of all modules.
 
 ## Documentation
 
 Each module has detailed API documentation with class references, configuration
 options, and code examples:
 
-| Module                                          | Description                         |
-| ----------------------------------------------- | ----------------------------------- |
-| [CSP](documentation/csp.md)                     | Content Security Policy with nonces |
-| [Headers](documentation/headers.md)             | HSTS, COOP, COEP, CORP, Permissions |
-| [CSRF](documentation/csrf.md)                   | Token patterns and validation       |
-| [Cookie](documentation/cookie.md)               | Secure cookie handling              |
-| [Password](documentation/password.md)           | Hashing, policies, breach detection |
-| [Sanitization](documentation/sanitization.md)   | HTML, URI, path sanitization        |
-| [Rate Limiting](documentation/rate-limiting.md) | Token bucket, sliding window        |
-| [SRI](documentation/sri.md)                     | Subresource integrity hashes        |
-| [Logging](documentation/logging.md)             | Security audit logging              |
-| [Glossary](documentation/glossary.md)           | Security terminology reference      |
+| Module                                    | Description                         |
+| ----------------------------------------- | ----------------------------------- |
+| [CSP](docs/csp.md)                        | Content Security Policy with nonces |
+| [Headers](docs/headers.md)                | HSTS, COOP, COEP, CORP, Permissions |
+| [CSRF](docs/csrf.md)                      | Token patterns and validation       |
+| [Cookie](docs/cookie.md)                  | Secure cookie handling              |
+| [Password](docs/password.md)              | Hashing, policies, breach detection |
+| [Sanitization](docs/sanitization.md)      | HTML, URI, path sanitization        |
+| [Rate Limiting](docs/rate-limiting.md)    | Token bucket, sliding window        |
+| [SRI](docs/sri.md)                        | Subresource integrity hashes        |
+| [Logging](docs/logging.md)               | Security audit logging              |
+| [Glossary](docs/glossary.md)             | Security terminology reference      |
 
 ## Versioning
 
