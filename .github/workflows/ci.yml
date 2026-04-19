@@ -10,8 +10,44 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      source: ${{ steps.filter.outputs.source }}
+      deps: ${{ steps.filter.outputs.deps }}
+      release-please: ${{ steps.release.outputs.match }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Detect changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            source:
+              - 'src/**'
+              - 'tests/**'
+            deps:
+              - 'composer.json'
+              - 'composer.lock'
+
+      - name: Check for release-please branch
+        id: release
+        run: |
+          if [[ "${{ github.head_ref }}" == release-please--* ]]; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "match=false" >> "$GITHUB_OUTPUT"
+          fi
+
   security-analysis:
     name: Security Analysis (Psalm Taint)
+    needs: changes
+    if: >-
+      needs.changes.outputs.release-please != 'true' &&
+      (needs.changes.outputs.source == 'true' ||
+       needs.changes.outputs.deps == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -42,6 +78,11 @@ jobs:
 
   tests:
     name: PHP ${{ matrix.php }} Tests
+    needs: changes
+    if: >-
+      needs.changes.outputs.release-please != 'true' &&
+      (needs.changes.outputs.source == 'true' ||
+       needs.changes.outputs.deps == 'true')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -114,3 +155,26 @@ jobs:
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
+
+  # =============================================================================
+  # CI GATE (single required check for branch protection)
+  # =============================================================================
+  ci-gate:
+    name: CI Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [changes, security-analysis, tests]
+    steps:
+      - name: Check required job results
+        run: |
+          results=(
+            "${{ needs.security-analysis.result }}"
+            "${{ needs.tests.result }}"
+          )
+          for r in "${results[@]}"; do
+            if [ "$r" = "failure" ] || [ "$r" = "cancelled" ]; then
+              echo "::error::Required job failed or was cancelled: $r"
+              exit 1
+            fi
+          done
+          echo "All required jobs passed."
