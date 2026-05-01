@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\RateLimiting\Storage;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Storage\InMemoryStorage;
 use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorage;
@@ -19,16 +20,19 @@ final class InMemoryStorageTest extends TestCase
         $this->storage = new InMemoryStorage();
     }
 
+    #[Test]
     public function testImplementsRateLimitStorage(): void
     {
         $this->assertInstanceOf(RateLimitStorage::class, $this->storage);
     }
 
+    #[Test]
     public function testGetReturnsNullForMissingKey(): void
     {
         $this->assertNull($this->storage->get('nonexistent'));
     }
 
+    #[Test]
     public function testSetAndGet(): void
     {
         $this->storage->set('key1', ['count' => 5], 60);
@@ -38,6 +42,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(['count' => 5], $result);
     }
 
+    #[Test]
     public function testDelete(): void
     {
         $this->storage->set('key1', ['count' => 5], 60);
@@ -46,6 +51,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertNull($this->storage->get('key1'));
     }
 
+    #[Test]
     public function testDeleteNonexistentKey(): void
     {
         $this->storage->delete('nonexistent');
@@ -53,6 +59,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertNull($this->storage->get('nonexistent'));
     }
 
+    #[Test]
     public function testIncrement(): void
     {
         $result = $this->storage->increment('counter', 1, 60);
@@ -60,6 +67,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(1, $result);
     }
 
+    #[Test]
     public function testIncrementExistingCounter(): void
     {
         $this->storage->increment('counter', 5, 60);
@@ -68,6 +76,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(8, $result);
     }
 
+    #[Test]
     public function testIncrementWithDifferentAmounts(): void
     {
         $this->storage->increment('counter', 10, 60);
@@ -77,6 +86,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(35, $result);
     }
 
+    #[Test]
     public function testMultipleKeys(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -88,6 +98,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(['value' => 3], $this->storage->get('key3'));
     }
 
+    #[Test]
     public function testOverwriteExistingKey(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -96,6 +107,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(['value' => 2], $this->storage->get('key1'));
     }
 
+    #[Test]
     public function testClear(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -109,6 +121,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(0, $this->storage->count());
     }
 
+    #[Test]
     public function testClearOnEmptyStorage(): void
     {
         $this->storage->clear();
@@ -116,6 +129,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(0, $this->storage->count());
     }
 
+    #[Test]
     public function testCount(): void
     {
         $this->assertSame(0, $this->storage->count());
@@ -127,6 +141,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(2, $this->storage->count());
     }
 
+    #[Test]
     public function testCountIncludesCounters(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -135,6 +150,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(2, $this->storage->count());
     }
 
+    #[Test]
     public function testCountAfterDelete(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -145,6 +161,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(1, $this->storage->count());
     }
 
+    #[Test]
     public function testDeleteRemovesBothDataAndCounter(): void
     {
         $this->storage->set('key1', ['value' => 1], 60);
@@ -158,6 +175,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(1, $newValue);
     }
 
+    #[Test]
     public function testGetWithZeroTtlReturnsNullAfterExpiry(): void
     {
         // Set with 0 TTL (already expired)
@@ -169,6 +187,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertNull($this->storage->get('key1'));
     }
 
+    #[Test]
     public function testCounterExpiresCorrectly(): void
     {
         // Set with 0 TTL (already expired)
@@ -182,6 +201,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(1, $result);
     }
 
+    #[Test]
     public function testCleanupRemovesExpiredData(): void
     {
         // Set with 0 TTL (already expired)
@@ -198,6 +218,7 @@ final class InMemoryStorageTest extends TestCase
         $this->assertSame(['value' => 2], $this->storage->get('key2'));
     }
 
+    #[Test]
     public function testCleanupRemovesMultipleExpiredEntries(): void
     {
         // Set multiple entries with 0 TTL (already expired)

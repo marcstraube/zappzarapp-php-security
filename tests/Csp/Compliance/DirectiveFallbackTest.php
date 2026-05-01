@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
@@ -27,6 +28,7 @@ final class DirectiveFallbackTest extends TestCase
     // Explicit Directive Behavior (No Fallback Needed)
     // =========================================================================
 
+    #[Test]
     public function testLibraryExplicitlySetsAllFetchDirectives(): void
     {
         $directives = CspDirectives::strict();
@@ -52,6 +54,7 @@ final class DirectiveFallbackTest extends TestCase
     // Default Resource Values
     // =========================================================================
 
+    #[Test]
     public function testDefaultImgSrcIncludesData(): void
     {
         $directives = CspDirectives::strict();
@@ -62,6 +65,7 @@ final class DirectiveFallbackTest extends TestCase
         $this->assertStringContainsString("img-src 'self' data:", $header);
     }
 
+    #[Test]
     public function testDefaultFontSrcIsSelf(): void
     {
         $directives = CspDirectives::strict();
@@ -71,6 +75,7 @@ final class DirectiveFallbackTest extends TestCase
         $this->assertMatchesRegularExpression("/font-src 'self'/", $header);
     }
 
+    #[Test]
     public function testDefaultConnectSrcIsSelf(): void
     {
         $directives = CspDirectives::strict();
@@ -84,6 +89,7 @@ final class DirectiveFallbackTest extends TestCase
     // Resource Override Behavior
     // =========================================================================
 
+    #[Test]
     public function testCustomImgSrcOverridesDefault(): void
     {
         $resources  = new ResourceDirectives(img: "'self' https://cdn.example.com");
@@ -96,6 +102,7 @@ final class DirectiveFallbackTest extends TestCase
         $this->assertStringNotContainsString("img-src 'self' data:", $header);
     }
 
+    #[Test]
     public function testCustomFontSrcOverridesDefault(): void
     {
         $resources  = new ResourceDirectives(font: "'self' https://fonts.gstatic.com");
@@ -110,6 +117,7 @@ final class DirectiveFallbackTest extends TestCase
     // Empty Directive Behavior
     // =========================================================================
 
+    #[Test]
     public function testEmptyResourceDirectiveNotIncludedInHeader(): void
     {
         $resources  = new ResourceDirectives(media: '');
@@ -127,6 +135,7 @@ final class DirectiveFallbackTest extends TestCase
     // Object-src Special Case
     // =========================================================================
 
+    #[Test]
     public function testObjectSrcAlwaysNone(): void
     {
         // object-src is always 'none' for security (blocks Flash, Java, etc.)
@@ -137,6 +146,7 @@ final class DirectiveFallbackTest extends TestCase
         $this->assertStringContainsString("object-src 'none'", $header);
     }
 
+    #[Test]
     public function testObjectSrcCannotBeOverridden(): void
     {
         // Users cannot change object-src from the public API
@@ -153,6 +163,7 @@ final class DirectiveFallbackTest extends TestCase
     // Script/Style Fallback to Nonce
     // =========================================================================
 
+    #[Test]
     public function testScriptSrcFallsBackToNonceBasedPolicy(): void
     {
         // When scriptSrc is null, library generates nonce-based policy
@@ -165,6 +176,7 @@ final class DirectiveFallbackTest extends TestCase
         $this->assertStringContainsString("'strict-dynamic'", $header);
     }
 
+    #[Test]
     public function testStyleSrcFallsBackToNonceBasedPolicy(): void
     {
         // When styleSrc is null in STRICT mode, library generates nonce-based policy

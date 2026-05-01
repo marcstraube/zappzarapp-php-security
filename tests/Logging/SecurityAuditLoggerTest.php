@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Logging;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Stringable;
@@ -18,6 +19,7 @@ use Zappzarapp\Security\Logging\SecurityEventType;
 #[CoversClass(SecurityAuditLogger::class)]
 final class SecurityAuditLoggerTest extends TestCase
 {
+    #[Test]
     public function testWarningDelegatesToPsrLogger(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -35,6 +37,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->warning('Test warning', ['test_key' => 'test_value']);
     }
 
+    #[Test]
     public function testAlertDelegatesToPsrLogger(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -51,6 +54,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->alert('Test alert', ['alert_key' => 'alert_value']);
     }
 
+    #[Test]
     public function testCriticalDelegatesToPsrLogger(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -67,6 +71,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->critical('Test critical', ['critical_key' => 'critical_value']);
     }
 
+    #[Test]
     public function testCorrelationIdIsConsistentAcrossCalls(): void
     {
         $calls         = [];
@@ -88,6 +93,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame($calls[0]['correlation_id'], $calls[1]['correlation_id']);
     }
 
+    #[Test]
     public function testCustomCorrelationId(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -104,6 +110,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->warning('Test');
     }
 
+    #[Test]
     public function testWithCorrelationIdReturnsNewInstance(): void
     {
         $psrLoggerStub = $this->createStub(LoggerInterface::class);
@@ -114,6 +121,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('new-id', $newLogger->correlationId());
     }
 
+    #[Test]
     public function testCorrelationIdAccessor(): void
     {
         $psrLoggerStub = $this->createStub(LoggerInterface::class);
@@ -122,6 +130,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('test-id', $logger->correlationId());
     }
 
+    #[Test]
     public function testSecurityEventLogsWithWarningSeverity(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -142,6 +151,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->securityEvent($event);
     }
 
+    #[Test]
     public function testSecurityEventLogsWithAlertSeverity(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -161,6 +171,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->securityEvent($event);
     }
 
+    #[Test]
     public function testSecurityEventLogsWithCriticalSeverity(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -181,6 +192,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->securityEvent($event);
     }
 
+    #[Test]
     public function testSecurityEventIncludesEventTimestamp(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -198,6 +210,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->securityEvent($event);
     }
 
+    #[Test]
     public function testSecurityEventUsesEventsCorrelationIdIfPresent(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -218,6 +231,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->securityEvent($event);
     }
 
+    #[Test]
     public function testContextEnrichmentIncludesSecurityComponent(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -233,6 +247,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->warning('Test');
     }
 
+    #[Test]
     public function testProvidedCorrelationIdOverridesDefault(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -248,6 +263,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->warning('Test', ['correlation_id' => 'provided-id']);
     }
 
+    #[Test]
     public function testContextCorrelationIdTakesPrecedenceOverLoggerDefault(): void
     {
         // This tests the coalesce order: $context['correlation_id'] ?? $this->correlationId
@@ -276,6 +292,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('context-provided-id', $capturedContext['correlation_id']);
     }
 
+    #[Test]
     public function testDefaultCorrelationIdUsedWhenNotInContext(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -292,6 +309,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $logger->warning('Test', ['other_key' => 'value']);
     }
 
+    #[Test]
     public function testGeneratedCorrelationIdHasCorrectLength(): void
     {
         // This test kills the DecrementInteger/IncrementInteger mutants
@@ -306,6 +324,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame(32, strlen($correlationId));
     }
 
+    #[Test]
     public function testMultipleLoggersHaveUniqueCorrelationIds(): void
     {
         $psrLoggerStub = $this->createStub(LoggerInterface::class);
@@ -315,6 +334,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertNotSame($logger1->correlationId(), $logger2->correlationId());
     }
 
+    #[Test]
     public function testSensitiveDataIsMaskedInContext(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -338,6 +358,7 @@ final class SecurityAuditLoggerTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testSensitiveDataMaskingIsRecursive(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -359,6 +380,7 @@ final class SecurityAuditLoggerTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testSensitiveKeyVariationsAreMasked(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -384,6 +406,7 @@ final class SecurityAuditLoggerTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testEmptySensitiveValuesAreNotMasked(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -403,6 +426,7 @@ final class SecurityAuditLoggerTest extends TestCase
         ]);
     }
 
+    #[Test]
     public function testPartialSensitiveKeyMatchIsMasked(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -428,6 +452,7 @@ final class SecurityAuditLoggerTest extends TestCase
     // Context Size Limits (DoS Prevention)
     // =========================================================================
 
+    #[Test]
     public function testContextKeysAreLimitedTo50(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -459,6 +484,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertArrayHasKey('***TRUNCATED***', $capturedContext);
     }
 
+    #[Test]
     public function testContextDepthIsLimitedTo5(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -495,6 +521,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertArrayHasKey('***TRUNCATED***', $level5);
     }
 
+    #[Test]
     public function testContextStringLengthIsLimitedTo1000(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -518,6 +545,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertLessThan(2000, strlen($capturedContext['long']));
     }
 
+    #[Test]
     public function testContextWithinLimitsIsNotTruncated(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -548,6 +576,7 @@ final class SecurityAuditLoggerTest extends TestCase
     // Log Injection Prevention
     // =========================================================================
 
+    #[Test]
     public function testNewlinesAreEscapedInContext(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -571,6 +600,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertStringNotContainsString("\r", $capturedContext['user_input']);
     }
 
+    #[Test]
     public function testNewlineEscapingIsRecursive(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -594,6 +624,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('line1\\nline2', $capturedContext['nested']['value']);
     }
 
+    #[Test]
     public function testNonStringValuesArePreserved(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -625,6 +656,7 @@ final class SecurityAuditLoggerTest extends TestCase
     // Boundary Tests (kill > vs >= mutations)
     // =========================================================================
 
+    #[Test]
     public function testContextWithExactly50KeysIsNotTruncated(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -655,6 +687,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertArrayNotHasKey('***TRUNCATED***', $capturedContext);
     }
 
+    #[Test]
     public function testContextWith51KeysIsTruncated(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -683,6 +716,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('1 keys omitted', $capturedContext['***TRUNCATED***']);
     }
 
+    #[Test]
     public function testStringWithExactly1000CharsIsNotTruncated(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -707,6 +741,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertStringNotContainsString('***TRUNCATED***', $capturedContext['text']);
     }
 
+    #[Test]
     public function testStringWith1001CharsIsTruncated(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -732,6 +767,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertStringStartsWith(str_repeat('x', 1000), $capturedContext['text']);
     }
 
+    #[Test]
     public function testMultiByteStringTruncationPreservesCharacters(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -757,6 +793,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertStringStartsWith(str_repeat('日', 1000), $capturedContext['text']);
     }
 
+    #[Test]
     public function testPiiMaskingWithMatchingPattern(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -779,6 +816,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertStringNotContainsString('user@example.com', $capturedContext['message']);
     }
 
+    #[Test]
     public function testTruncationMessageShowsCorrectCount(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);
@@ -806,6 +844,7 @@ final class SecurityAuditLoggerTest extends TestCase
         $this->assertSame('5 keys omitted', $capturedContext['***TRUNCATED***']);
     }
 
+    #[Test]
     public function testTruncatedStringStartsWithOriginalContent(): void
     {
         $psrLogger = $this->createMock(LoggerInterface::class);

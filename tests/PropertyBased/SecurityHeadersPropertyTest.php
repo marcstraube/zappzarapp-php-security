@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\PropertyBased;
 use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Builder\SecurityHeadersBuilder;
 use Zappzarapp\Security\Headers\Hsts\HstsConfig;
@@ -30,6 +31,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: Generated security headers are always single-line
      */
+    #[Test]
     public function testGeneratedHeadersAreSingleLine(): void
     {
         $headers = SecurityHeaders::strict();
@@ -46,6 +48,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: SecurityHeaders output is consistent and safe
      */
+    #[Test]
     public function testSecurityHeadersOutputIsSafe(): void
     {
         $configs = [
@@ -81,6 +84,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: Random HSTS max-age values within bounds produce valid headers
      */
+    #[Test]
     public function testRandomHstsMaxAgeProducesValidHeaders(): void
     {
         $this->forAll(
@@ -112,6 +116,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: Header builder produces consistent output
      */
+    #[Test]
     public function testHeaderBuilderConsistency(): void
     {
         $headers = SecurityHeaders::strict();
@@ -130,6 +135,7 @@ final class SecurityHeadersPropertyTest extends TestCase
      * Headers using enums (COOP, COEP, CORP, X-Frame-Options, Referrer-Policy)
      * are inherently safe because they only allow predefined values.
      */
+    #[Test]
     public function testEnumBasedHeadersAreSafe(): void
     {
         // Use strict which includes all enum-based headers
@@ -153,6 +159,7 @@ final class SecurityHeadersPropertyTest extends TestCase
      *
      * This header has only one valid value, preventing any injection.
      */
+    #[Test]
     public function testXContentTypeOptionsIsAlwaysNosniff(): void
     {
         $headers = new SecurityHeaders(xContentTypeOptions: true);
@@ -166,6 +173,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: Empty SecurityHeaders produces minimal output
      */
+    #[Test]
     public function testEmptySecurityHeadersProducesMinimalOutput(): void
     {
         $headers = new SecurityHeaders(
@@ -181,6 +189,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: HSTS with preload requires minimum max-age
      */
+    #[Test]
     public function testHstsPreloadRequiresMinimumMaxAge(): void
     {
         // Valid: preload with >= 1 year
@@ -201,6 +210,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: All factory configurations produce valid headers
      */
+    #[Test]
     public function testFactoryConfigurationsProduceValidHeaders(): void
     {
         $factories = [
@@ -232,6 +242,7 @@ final class SecurityHeadersPropertyTest extends TestCase
     /**
      * Property: Permissions-Policy produces valid header values
      */
+    #[Test]
     public function testPermissionsPolicyProducesValidHeaders(): void
     {
         $policy = PermissionsPolicy::strict();

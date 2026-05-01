@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\Cookie\Exception;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\Exception\InvalidCookieOptionsException;
 
 #[CoversClass(InvalidCookieOptionsException::class)]
 final class InvalidCookieOptionsExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidCookieOptionsException::invalidPath('/test');
@@ -22,6 +24,7 @@ final class InvalidCookieOptionsExceptionTest extends TestCase
 
     // --- invalidPath ---
 
+    #[Test]
     public function testInvalidPathContainsPath(): void
     {
         $exception = InvalidCookieOptionsException::invalidPath('/evil;path');
@@ -30,6 +33,7 @@ final class InvalidCookieOptionsExceptionTest extends TestCase
         $this->assertStringContainsString('invalid characters', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidPathTruncatesLongPaths(): void
     {
         $longPath  = str_repeat('a', 100);
@@ -42,6 +46,7 @@ final class InvalidCookieOptionsExceptionTest extends TestCase
 
     // --- invalidDomain ---
 
+    #[Test]
     public function testInvalidDomainContainsDomain(): void
     {
         $exception = InvalidCookieOptionsException::invalidDomain("evil\r\n.com");
@@ -49,6 +54,7 @@ final class InvalidCookieOptionsExceptionTest extends TestCase
         $this->assertStringContainsString('invalid characters', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidDomainTruncatesLongDomains(): void
     {
         $longDomain = str_repeat('a', 100) . '.com';
@@ -60,6 +66,7 @@ final class InvalidCookieOptionsExceptionTest extends TestCase
 
     // --- sameSiteNoneRequiresSecure ---
 
+    #[Test]
     public function testSameSiteNoneRequiresSecureMessage(): void
     {
         $exception = InvalidCookieOptionsException::sameSiteNoneRequiresSecure();

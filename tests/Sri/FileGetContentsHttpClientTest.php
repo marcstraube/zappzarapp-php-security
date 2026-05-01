@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sri\FileGetContentsHttpClient;
 use Zappzarapp\Security\Sri\HttpClientInterface;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Sri\HttpClientInterface;
 #[CoversClass(FileGetContentsHttpClient::class)]
 final class FileGetContentsHttpClientTest extends TestCase
 {
+    #[Test]
     public function testImplementsHttpClientInterface(): void
     {
         $client = new FileGetContentsHttpClient();
@@ -20,6 +22,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertInstanceOf(HttpClientInterface::class, $client);
     }
 
+    #[Test]
     public function testConstructorWithDefaultValues(): void
     {
         $client = new FileGetContentsHttpClient();
@@ -27,6 +30,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertInstanceOf(FileGetContentsHttpClient::class, $client);
     }
 
+    #[Test]
     public function testConstructorWithCustomValues(): void
     {
         $client = new FileGetContentsHttpClient(
@@ -62,6 +66,7 @@ final class FileGetContentsHttpClientTest extends TestCase
     }
 
     #[DataProvider('invalidSchemeProvider')]
+    #[Test]
     public function testGetRejectsInvalidSchemes(string $url): void
     {
         $client = new FileGetContentsHttpClient();
@@ -71,6 +76,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result, "URL with invalid scheme should return null: {$url}");
     }
 
+    #[Test]
     public function testGetAcceptsHttpScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -82,6 +88,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetAcceptsHttpsScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -91,6 +98,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetWithMixedCaseScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -101,6 +109,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetWithUppercaseScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -110,6 +119,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetWithCustomOptions(): void
     {
         $client = new FileGetContentsHttpClient();
@@ -125,6 +135,7 @@ final class FileGetContentsHttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetWithPartialOptions(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 5, defaultUserAgent: 'Default/1.0');

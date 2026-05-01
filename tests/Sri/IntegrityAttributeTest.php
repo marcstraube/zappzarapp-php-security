@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sri\Exception\InvalidHashException;
 use Zappzarapp\Security\Sri\HashAlgorithm;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Sri\IntegrityAttribute;
 #[CoversClass(IntegrityAttribute::class)]
 final class IntegrityAttributeTest extends TestCase
 {
+    #[Test]
     public function testFromContent(): void
     {
         $content   = 'alert("Hello, world!");';
@@ -22,6 +24,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertStringStartsWith('sha384-', $integrity->value());
     }
 
+    #[Test]
     public function testFromContentWithAlgorithm(): void
     {
         $content   = 'alert("Hello, world!");';
@@ -30,6 +33,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testFromHash(): void
     {
         $hash      = base64_encode(hash('sha384', 'test', true));
@@ -38,6 +42,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame('sha384-' . $hash, $integrity->value());
     }
 
+    #[Test]
     public function testFromString(): void
     {
         $hash      = base64_encode(hash('sha384', 'test', true));
@@ -47,6 +52,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame($string, $integrity->value());
     }
 
+    #[Test]
     public function testFromStringWithMultipleHashes(): void
     {
         $hash384   = base64_encode(hash('sha384', 'test', true));
@@ -58,6 +64,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertCount(2, $hashes);
     }
 
+    #[Test]
     public function testFromStringTrimsWhitespace(): void
     {
         $hash      = base64_encode(hash('sha384', 'test', true));
@@ -67,6 +74,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame('sha384-' . $hash, $integrity->value());
     }
 
+    #[Test]
     public function testFromStringRejectsPrefixBeforeAlgorithm(): void
     {
         $hash = base64_encode(hash('sha384', 'test', true));
@@ -76,6 +84,7 @@ final class IntegrityAttributeTest extends TestCase
         IntegrityAttribute::fromString('prefix-sha384-' . $hash);
     }
 
+    #[Test]
     public function testFromStringRejectsSuffixAfterHash(): void
     {
         $hash = base64_encode(hash('sha384', 'test', true));
@@ -85,6 +94,7 @@ final class IntegrityAttributeTest extends TestCase
         IntegrityAttribute::fromString('sha384-' . $hash . '-suffix');
     }
 
+    #[Test]
     public function testFromStringRejectsInvalidFormat(): void
     {
         $this->expectException(InvalidHashException::class);
@@ -92,6 +102,7 @@ final class IntegrityAttributeTest extends TestCase
         IntegrityAttribute::fromString('invalid-hash');
     }
 
+    #[Test]
     public function testFromStringRejectsUnsupportedAlgorithm(): void
     {
         $this->expectException(InvalidHashException::class);
@@ -99,6 +110,7 @@ final class IntegrityAttributeTest extends TestCase
         IntegrityAttribute::fromString('md5-YWJjZGVm');
     }
 
+    #[Test]
     public function testConstructorRejectsEmptyHashes(): void
     {
         $this->expectException(InvalidHashException::class);
@@ -106,6 +118,7 @@ final class IntegrityAttributeTest extends TestCase
         new IntegrityAttribute([]);
     }
 
+    #[Test]
     public function testWithHash(): void
     {
         $content   = 'test';
@@ -118,6 +131,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertCount(2, $newIntegrity->hashes());
     }
 
+    #[Test]
     public function testPrimaryHash(): void
     {
         $content   = 'test';
@@ -128,6 +142,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame(HashAlgorithm::SHA384, $primary['algorithm']);
     }
 
+    #[Test]
     public function testVerifyCorrectContent(): void
     {
         $content   = 'alert("Hello!");';
@@ -136,6 +151,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertTrue($integrity->verify($content));
     }
 
+    #[Test]
     public function testVerifyIncorrectContent(): void
     {
         $content   = 'alert("Hello!");';
@@ -144,6 +160,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertFalse($integrity->verify('alert("Goodbye!");'));
     }
 
+    #[Test]
     public function testValue(): void
     {
         $content   = 'test';
@@ -155,6 +172,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertMatchesRegularExpression('/^sha384-[A-Za-z0-9+\/=]+$/', $value);
     }
 
+    #[Test]
     public function testToString(): void
     {
         $content   = 'test';
@@ -163,6 +181,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame($integrity->value(), (string) $integrity);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $content   = 'test';
@@ -174,6 +193,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertCount(1, $integrity->hashes());
     }
 
+    #[Test]
     public function testHashesReturnsCorrectStructure(): void
     {
         $content   = 'test';
@@ -187,6 +207,7 @@ final class IntegrityAttributeTest extends TestCase
         $this->assertSame(HashAlgorithm::SHA384, $hashes[0]['algorithm']);
     }
 
+    #[Test]
     public function testFromHashRejectsInvalidBase64(): void
     {
         $this->expectException(InvalidHashException::class);
@@ -194,6 +215,7 @@ final class IntegrityAttributeTest extends TestCase
         IntegrityAttribute::fromHash(HashAlgorithm::SHA384, 'not-valid-base64!!!');
     }
 
+    #[Test]
     public function testFromHashRejectsWrongLength(): void
     {
         $this->expectException(InvalidHashException::class);

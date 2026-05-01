@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Csrf\Pattern;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\CsrfConfig;
 use Zappzarapp\Security\Csrf\Exception\CsrfTokenMismatchException;
@@ -32,6 +33,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Constructor Validation ---
 
+    #[Test]
     public function testConstructorRejectsShortSecret(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -40,6 +42,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         new DoubleSubmitCookiePattern('short');
     }
 
+    #[Test]
     public function testConstructorAcceptsMinimumLengthSecret(): void
     {
         $pattern = new DoubleSubmitCookiePattern(str_repeat('x', 32));
@@ -50,6 +53,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Token Generation ---
 
+    #[Test]
     public function testGenerateTokenReturnsCsrfToken(): void
     {
         $token = $this->pattern->generateToken();
@@ -58,6 +62,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertInstanceOf(CsrfToken::class, $token);
     }
 
+    #[Test]
     public function testGenerateTokenHasMinimumEntropy(): void
     {
         $token = $this->pattern->generateToken();
@@ -66,6 +71,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertGreaterThanOrEqual(32, strlen($bytes));
     }
 
+    #[Test]
     public function testGenerateTokenReturnsUniqueTokens(): void
     {
         $tokens = [];
@@ -79,6 +85,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Token Signing ---
 
+    #[Test]
     public function testSignTokenReturnsTokenWithSignature(): void
     {
         $token       = $this->pattern->generateToken();
@@ -92,6 +99,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame($tokenValue, substr($signedToken, 0, strlen($tokenValue)));
     }
 
+    #[Test]
     public function testSignTokenProducesDifferentSignaturesWithDifferentSecrets(): void
     {
         $pattern2 = new DoubleSubmitCookiePattern('different-secret-32-bytes-long!!');
@@ -105,6 +113,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Validation Success ---
 
+    #[Test]
     public function testValidateSucceedsWithCorrectlySignedToken(): void
     {
         $token       = $this->pattern->generateToken();
@@ -117,6 +126,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Validation Failures ---
 
+    #[Test]
     public function testValidateThrowsOnTokenMismatch(): void
     {
         $cookieToken = $this->pattern->generateToken();
@@ -129,6 +139,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate($cookieToken->value(), $signedOther);
     }
 
+    #[Test]
     public function testValidateThrowsOnEmptySubmittedToken(): void
     {
         $cookieToken = $this->pattern->generateToken()->value();
@@ -139,6 +150,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate($cookieToken, '');
     }
 
+    #[Test]
     public function testValidateThrowsOnEmptyCookieToken(): void
     {
         $token       = $this->pattern->generateToken();
@@ -149,6 +161,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate('', $signedToken);
     }
 
+    #[Test]
     public function testValidateThrowsOnMissingSignature(): void
     {
         $token = $this->pattern->generateToken();
@@ -160,6 +173,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate($token->value(), $token->value());
     }
 
+    #[Test]
     public function testValidateThrowsOnInvalidSignature(): void
     {
         $token           = $this->pattern->generateToken();
@@ -171,6 +185,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate($token->value(), $tamperedSigned);
     }
 
+    #[Test]
     public function testValidateThrowsOnWrongSecret(): void
     {
         $pattern2 = new DoubleSubmitCookiePattern('different-secret-32-bytes-long!!');
@@ -184,6 +199,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->pattern->validate($token->value(), $signedWrongSecret);
     }
 
+    #[Test]
     public function testValidateThrowsOnInvalidBase64Signature(): void
     {
         $token          = $this->pattern->generateToken();
@@ -197,6 +213,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- isValid Method ---
 
+    #[Test]
     public function testIsValidReturnsTrueForCorrectlySignedToken(): void
     {
         $token       = $this->pattern->generateToken();
@@ -205,6 +222,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertTrue($this->pattern->isValid($token->value(), $signedToken));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForMismatchedTokens(): void
     {
         $token1  = $this->pattern->generateToken();
@@ -214,6 +232,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid($token1->value(), $signed2));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForEmptySubmittedToken(): void
     {
         $token = $this->pattern->generateToken()->value();
@@ -221,6 +240,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid($token, ''));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForEmptyCookieToken(): void
     {
         $token       = $this->pattern->generateToken();
@@ -229,6 +249,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid('', $signedToken));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForInvalidSignature(): void
     {
         $token          = $this->pattern->generateToken();
@@ -237,6 +258,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid($token->value(), $invalidSigned));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForMissingSignature(): void
     {
         $token = $this->pattern->generateToken();
@@ -246,6 +268,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Cookie Options ---
 
+    #[Test]
     public function testCookieOptionsReturnsCorrectStructure(): void
     {
         $options = $this->pattern->cookieOptions();
@@ -258,6 +281,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertArrayHasKey('samesite', $options);
     }
 
+    #[Test]
     public function testCookieOptionsSecureDefault(): void
     {
         $options = $this->pattern->cookieOptions();
@@ -265,6 +289,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertTrue($options['secure']);
     }
 
+    #[Test]
     public function testCookieOptionsSecureCanBeDisabled(): void
     {
         $options = $this->pattern->cookieOptions(false);
@@ -272,6 +297,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($options['secure']);
     }
 
+    #[Test]
     public function testCookieOptionsHttpOnlyIsFalse(): void
     {
         // JavaScript must be able to read cookie for double-submit
@@ -280,6 +306,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertFalse($options['httponly']);
     }
 
+    #[Test]
     public function testCookieOptionsSameSiteIsStrict(): void
     {
         $options = $this->pattern->cookieOptions();
@@ -287,6 +314,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame('Strict', $options['samesite']);
     }
 
+    #[Test]
     public function testCookieOptionsPathIsRoot(): void
     {
         $options = $this->pattern->cookieOptions();
@@ -294,6 +322,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame('/', $options['path']);
     }
 
+    #[Test]
     public function testCookieOptionsUsesConfigName(): void
     {
         $config  = new CsrfConfig(cookieName: 'my_cookie');
@@ -303,6 +332,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame('my_cookie', $options['name']);
     }
 
+    #[Test]
     public function testCookieOptionsExpiresWithTtl(): void
     {
         $config  = new CsrfConfig(ttl: 3600);
@@ -313,6 +343,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertLessThanOrEqual(time() + 3600 + 1, $options['expires']);
     }
 
+    #[Test]
     public function testCookieOptionsExpiresZeroForSessionCookie(): void
     {
         $config  = new CsrfConfig(ttl: 0);
@@ -324,6 +355,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Config Accessors ---
 
+    #[Test]
     public function testCookieNameReturnsConfigValue(): void
     {
         $config  = new CsrfConfig(cookieName: 'test_cookie');
@@ -332,6 +364,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame('test_cookie', $pattern->cookieName());
     }
 
+    #[Test]
     public function testHeaderNameReturnsConfigValue(): void
     {
         $config  = new CsrfConfig(headerName: 'X-Test-Header');
@@ -340,6 +373,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
         $this->assertSame('X-Test-Header', $pattern->headerName());
     }
 
+    #[Test]
     public function testFieldNameReturnsConfigValue(): void
     {
         $config  = new CsrfConfig(fieldName: 'test_field');
@@ -350,6 +384,7 @@ final class DoubleSubmitCookiePatternTest extends TestCase
 
     // --- Timing Attack Resistance ---
 
+    #[Test]
     public function testValidationUsesConstantTimeComparison(): void
     {
         $token = $this->pattern->generateToken();

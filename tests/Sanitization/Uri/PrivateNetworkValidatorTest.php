@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Zappzarapp\Security\Sanitization\Uri\DnsResolver;
@@ -27,11 +28,13 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Empty/Invalid Input
     // =========================================================================
 
+    #[Test]
     public function testEmptyHostIsBlocked(): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved(''));
     }
 
+    #[Test]
     public function testWhitespaceOnlyHostIsBlocked(): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved('   '));
@@ -42,6 +45,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4LoopbackProvider')]
+    #[Test]
     public function testIpv4LoopbackIsBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -63,6 +67,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4PrivateRangeProvider')]
+    #[Test]
     public function testIpv4PrivateRangesAreBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -95,6 +100,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4LinkLocalProvider')]
+    #[Test]
     public function testIpv4LinkLocalIsBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -116,6 +122,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4ReservedRangeProvider')]
+    #[Test]
     public function testIpv4ReservedRangesAreBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -143,6 +150,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4PublicProvider')]
+    #[Test]
     public function testIpv4PublicIsAllowed(string $ip): void
     {
         $this->assertFalse($this->validator->isPrivateOrReserved($ip));
@@ -168,6 +176,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv6LoopbackProvider')]
+    #[Test]
     public function testIpv6LoopbackIsBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -189,6 +198,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv6UniqueLocalProvider')]
+    #[Test]
     public function testIpv6UniqueLocalIsBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -209,6 +219,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv6LinkLocalProvider')]
+    #[Test]
     public function testIpv6LinkLocalIsBlocked(string $ip): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($ip));
@@ -229,6 +240,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv6PublicProvider')]
+    #[Test]
     public function testIpv6PublicIsAllowed(string $ip): void
     {
         $this->assertFalse($this->validator->isPrivateOrReserved($ip));
@@ -249,6 +261,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv6BracketedProvider')]
+    #[Test]
     public function testIpv6BracketedNotation(string $ip, bool $shouldBlock): void
     {
         $this->assertSame($shouldBlock, $this->validator->isPrivateOrReserved($ip));
@@ -269,6 +282,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4MappedIpv6Provider')]
+    #[Test]
     public function testIpv4MappedIpv6(string $ip, bool $shouldBlock): void
     {
         $this->assertSame($shouldBlock, $this->validator->isPrivateOrReserved($ip));
@@ -290,6 +304,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('blockedHostnameProvider')]
+    #[Test]
     public function testBlockedHostnamesAreBlocked(string $hostname): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved($hostname));
@@ -318,6 +333,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Hostname Resolution (real DNS - may be flaky in CI)
     // =========================================================================
 
+    #[Test]
     public function testPublicHostnameIsAllowed(): void
     {
         // This test requires actual DNS resolution
@@ -329,6 +345,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Logger Integration
     // =========================================================================
 
+    #[Test]
     public function testLoggerIsCalledForBlockedHost(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -344,6 +361,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('127.0.0.1');
     }
 
+    #[Test]
     public function testLoggerIsNotCalledForAllowedHost(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -353,6 +371,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('8.8.8.8');
     }
 
+    #[Test]
     public function testLoggerIsCalledForBlockedHostname(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -372,22 +391,26 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testHostWithLeadingWhitespaceIsTrimmed(): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved('  127.0.0.1'));
     }
 
+    #[Test]
     public function testHostWithTrailingWhitespaceIsTrimmed(): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved('127.0.0.1  '));
     }
 
+    #[Test]
     public function testHostIsCaseInsensitive(): void
     {
         $this->assertTrue($this->validator->isPrivateOrReserved('LOCALHOST'));
         $this->assertTrue($this->validator->isPrivateOrReserved('LocalHost'));
     }
 
+    #[Test]
     public function testInvalidIpv4IsNotTreatedAsIpv4(): void
     {
         // Invalid IPs like "999.999.999.999" fail FILTER_VALIDATE_IP,
@@ -403,6 +426,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('caseInsensitiveHostnameProvider')]
+    #[Test]
     public function testHostnameIsCaseInsensitive(string $hostname): void
     {
         // Tests that strtolower() is applied - all variants should be blocked
@@ -428,6 +452,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Mutation Testing: logBlocked() removal (Line 116)
     // =========================================================================
 
+    #[Test]
     public function testLoggerIsCalledForBlockedIpv6(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -443,6 +468,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('::1');
     }
 
+    #[Test]
     public function testLoggerIsCalledForBlockedBracketedIpv6(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -463,6 +489,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('publicIpv6DirectProvider')]
+    #[Test]
     public function testPublicIpv6ReturnsExactlyFalse(string $ip): void
     {
         // Ensures that public IPv6 addresses return false (not blocked)
@@ -488,6 +515,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('publicIpv4DirectProvider')]
+    #[Test]
     public function testPublicIpv4ReturnsExactlyFalse(string $ip): void
     {
         // Ensures that public IPv4 addresses return false (not blocked)
@@ -513,6 +541,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('malformedBracketProvider')]
+    #[Test]
     public function testMalformedBracketsAreNotStripped(string $input): void
     {
         // If only one bracket is present, the IPv6 extraction should fail
@@ -542,6 +571,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('correctBracketStrippingProvider')]
+    #[Test]
     public function testBracketStrippingIsCorrect(string $bracketedIp, bool $shouldBlock): void
     {
         // Ensures that substr($host, 1, -1) correctly strips both brackets
@@ -568,6 +598,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('highValueIpv4Provider')]
+    #[Test]
     public function testIpv4HighValueAddresses(string $ip, bool $shouldBlock): void
     {
         // Tests IPv4 addresses that, when converted via ip2long(), produce
@@ -598,6 +629,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4MappedHexProvider')]
+    #[Test]
     public function testIpv4MappedIpv6HexExtraction(string $ip, bool $shouldBlock): void
     {
         // Tests that the substr($hex, 24, 8) correctly extracts the IPv4 portion
@@ -643,6 +675,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ipv4TranslatedProvider')]
+    #[Test]
     public function testIpv4TranslatedAddresses(string $ip, bool $shouldBlock): void
     {
         // Tests ::ffff:0:x.x.x.x (IPv4-translated) format
@@ -666,6 +699,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // =========================================================================
 
     #[DataProvider('nat64Provider')]
+    #[Test]
     public function testNat64Addresses(string $ip, bool $shouldBlock): void
     {
         // Tests 64:ff9b::/96 (NAT64 well-known prefix)
@@ -689,6 +723,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Mutation Testing: Logger called for IPv4 blocked (Line 127)
     // =========================================================================
 
+    #[Test]
     public function testLoggerIsCalledForBlockedIpv4(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -708,6 +743,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // Edge case: Invalid IPv6 should be blocked
     // =========================================================================
 
+    #[Test]
     public function testInvalidIpv6InsideBracketsIsNotTreatedAsIpv6(): void
     {
         // Invalid content inside brackets fails FILTER_VALIDATE_IP for IPv6
@@ -719,18 +755,21 @@ final class PrivateNetworkValidatorTest extends TestCase
     // DNS Timeout Configuration
     // =========================================================================
 
+    #[Test]
     public function testDefaultDnsTimeout(): void
     {
         $validator = new PrivateNetworkValidator();
         $this->assertSame(5.0, $validator->getDnsTimeout());
     }
 
+    #[Test]
     public function testCustomDnsTimeoutInConstructor(): void
     {
         $validator = new PrivateNetworkValidator(null, 10.0);
         $this->assertSame(10.0, $validator->getDnsTimeout());
     }
 
+    #[Test]
     public function testWithDnsTimeoutReturnsNewInstance(): void
     {
         $original = new PrivateNetworkValidator(null, 5.0);
@@ -741,6 +780,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertSame(10.0, $modified->getDnsTimeout());
     }
 
+    #[Test]
     public function testWithDnsTimeoutPreservesLogger(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -754,6 +794,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $modified->isPrivateOrReserved('127.0.0.1');
     }
 
+    #[Test]
     public function testWithDnsTimeoutRejectsZero(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -762,6 +803,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->validator->withDnsTimeout(0.0);
     }
 
+    #[Test]
     public function testWithDnsTimeoutRejectsNegative(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -770,6 +812,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->validator->withDnsTimeout(-1.0);
     }
 
+    #[Test]
     public function testWithDnsTimeoutAcceptsSmallPositiveValue(): void
     {
         $modified = $this->validator->withDnsTimeout(0.001);
@@ -780,6 +823,7 @@ final class PrivateNetworkValidatorTest extends TestCase
     // DnsResolver Injection Tests
     // =========================================================================
 
+    #[Test]
     public function testCustomDnsResolverIsUsed(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -794,6 +838,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCustomDnsResolverReturningPrivateIpBlocks(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -808,6 +853,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testCustomDnsResolverReturningPrivateIpv6Blocks(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -822,6 +868,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testCustomDnsResolverReturningEmptyArrayAllows(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -837,6 +884,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testCustomDnsResolverReturningMixedIpsBlocksOnPrivate(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -852,6 +900,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testWithDnsTimeoutPreservesCustomResolver(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -868,6 +917,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertFalse($result);
     }
 
+    #[Test]
     public function testDefaultResolverIsNativeDnsResolver(): void
     {
         // When no resolver is provided, a NativeDnsResolver should be used
@@ -878,6 +928,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertTrue($validator->isPrivateOrReserved('localhost'));
     }
 
+    #[Test]
     public function testLoggerIsCalledForDnsResolvedPrivateIp(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -899,6 +950,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('attacker.example.com');
     }
 
+    #[Test]
     public function testLoggerIsCalledForDnsResolvedPrivateIpv6(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -920,6 +972,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('attacker.example.com');
     }
 
+    #[Test]
     public function testDnsResolverNotCalledForDirectIpv4(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -932,6 +985,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('192.168.1.1');
     }
 
+    #[Test]
     public function testDnsResolverNotCalledForDirectIpv6(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -944,6 +998,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('[2001:4860:4860::8888]');
     }
 
+    #[Test]
     public function testDnsResolverNotCalledForBlockedHostnames(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -957,6 +1012,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('service.local');
     }
 
+    #[Test]
     public function testDnsResolverCalledForUnknownHostnames(): void
     {
         $resolver = $this->createMock(DnsResolver::class);
@@ -971,6 +1027,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $validator->isPrivateOrReserved('google.com');
     }
 
+    #[Test]
     public function testDnsResolverWithMultiplePrivateIpsBlocksOnFirst(): void
     {
         $logger = $this->createMock(LoggerInterface::class);
@@ -992,6 +1049,7 @@ final class PrivateNetworkValidatorTest extends TestCase
         $this->assertTrue($result);
     }
 
+    #[Test]
     public function testDnsResolverWithInvalidIpInResponseSkipsIt(): void
     {
         $resolver = $this->createMock(DnsResolver::class);

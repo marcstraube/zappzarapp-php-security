@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sri\FileGetContentsHttpClient;
 use Zappzarapp\Security\Sri\HttpClientInterface;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Sri\HttpClientInterface;
 #[CoversClass(FileGetContentsHttpClient::class)]
 final class HttpClientInterfaceTest extends TestCase
 {
+    #[Test]
     public function testFileGetContentsHttpClientImplementsInterface(): void
     {
         $client = new FileGetContentsHttpClient();
@@ -19,6 +21,7 @@ final class HttpClientInterfaceTest extends TestCase
         $this->assertInstanceOf(HttpClientInterface::class, $client);
     }
 
+    #[Test]
     public function testFileGetContentsHttpClientWithDefaultSettings(): void
     {
         $client = new FileGetContentsHttpClient();
@@ -27,6 +30,7 @@ final class HttpClientInterfaceTest extends TestCase
         $this->assertInstanceOf(FileGetContentsHttpClient::class, $client);
     }
 
+    #[Test]
     public function testFileGetContentsHttpClientWithCustomSettings(): void
     {
         $client = new FileGetContentsHttpClient(
@@ -37,6 +41,7 @@ final class HttpClientInterfaceTest extends TestCase
         $this->assertInstanceOf(FileGetContentsHttpClient::class, $client);
     }
 
+    #[Test]
     public function testGetReturnsNullForInvalidUrl(): void
     {
         $client = new FileGetContentsHttpClient();

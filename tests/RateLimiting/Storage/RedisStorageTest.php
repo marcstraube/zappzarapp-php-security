@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting\Storage;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorage;
@@ -18,6 +19,7 @@ use Zappzarapp\Security\RateLimiting\Storage\RedisStorage;
 final class RedisStorageTest extends TestCase
 {
     #[AllowMockObjectsWithoutExpectations]
+    #[Test]
     public function testImplementsInterface(): void
     {
         $redis   = $this->createMockRedis();
@@ -27,6 +29,7 @@ final class RedisStorageTest extends TestCase
     }
 
     #[AllowMockObjectsWithoutExpectations]
+    #[Test]
     public function testGetReturnsNullWhenKeyNotFound(): void
     {
         $redis = $this->createMockRedis();
@@ -38,6 +41,7 @@ final class RedisStorageTest extends TestCase
     }
 
     #[AllowMockObjectsWithoutExpectations]
+    #[Test]
     public function testGetReturnsDecodedData(): void
     {
         $data  = ['count' => 5, 'window' => 60];
@@ -49,6 +53,7 @@ final class RedisStorageTest extends TestCase
         $this->assertSame($data, $storage->get('key'));
     }
 
+    #[Test]
     public function testGetWithPrefix(): void
     {
         $redis = $this->createMockRedis();
@@ -61,6 +66,7 @@ final class RedisStorageTest extends TestCase
         $storage->get('mykey');
     }
 
+    #[Test]
     public function testSetEncodesAndStoresData(): void
     {
         $data  = ['count' => 10];
@@ -73,6 +79,7 @@ final class RedisStorageTest extends TestCase
         $storage->set('key', $data, 60);
     }
 
+    #[Test]
     public function testDeleteRemovesKey(): void
     {
         $redis = $this->createMockRedis();
@@ -84,6 +91,7 @@ final class RedisStorageTest extends TestCase
         $storage->delete('key');
     }
 
+    #[Test]
     public function testIncrementUsesAtomicLuaScript(): void
     {
         $redis = $this->createMockRedis();
@@ -102,6 +110,7 @@ final class RedisStorageTest extends TestCase
         $this->assertSame(1, $result);
     }
 
+    #[Test]
     public function testIncrementReturnsExistingValue(): void
     {
         $redis = $this->createMockRedis();
@@ -115,6 +124,7 @@ final class RedisStorageTest extends TestCase
         $this->assertSame(5, $result);
     }
 
+    #[Test]
     public function testIncrementWithCustomAmount(): void
     {
         $redis = $this->createMockRedis();

@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\PropertyBased;
 use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Uri\UriSanitizer;
 use Zappzarapp\Security\Sanitization\Uri\UriSanitizerConfig;
@@ -65,6 +66,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Mixed Cyrillic/Latin domains are ALWAYS blocked
      */
+    #[Test]
     public function testMixedCyrillicLatinDomainsAreBlocked(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -94,6 +96,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Mixed Greek/Latin domains are ALWAYS blocked
      */
+    #[Test]
     public function testMixedGreekLatinDomainsAreBlocked(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -118,6 +121,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Pure Cyrillic domains are allowed (single script)
      */
+    #[Test]
     public function testPureCyrillicDomainsAreAllowed(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -143,6 +147,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Pure Latin domains are always allowed
      */
+    #[Test]
     public function testPureLatinDomainsAreAllowed(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -174,6 +179,7 @@ final class HomographPropertyTest extends TestCase
      * Generates random combinations of Latin + Cyrillic to ensure
      * the detection is robust against any mixing pattern.
      */
+    #[Test]
     public function testRandomMixedScriptCombinationsAreBlocked(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -202,6 +208,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Confusable substitution at any position is detected
      */
+    #[Test]
     public function testConfusableSubstitutionAtAnyPosition(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -231,6 +238,7 @@ final class HomographPropertyTest extends TestCase
     /**
      * Property: Feature can be disabled for legitimate multilingual use
      */
+    #[Test]
     public function testMixedScriptBlockingCanBeDisabled(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(
@@ -254,6 +262,7 @@ final class HomographPropertyTest extends TestCase
      * Invalid Unicode sequences that cannot be converted to Punycode
      * should be blocked as a safety measure.
      */
+    #[Test]
     public function testInvalidIdnIsBlocked(): void
     {
         $sanitizer = new UriSanitizer(new UriSanitizerConfig(

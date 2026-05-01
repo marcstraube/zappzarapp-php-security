@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\Headers\PermissionsPolicy;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\PermissionsPolicy\PermissionFeature;
 
 #[CoversClass(PermissionFeature::class)]
 final class PermissionFeatureTest extends TestCase
 {
+    #[Test]
     public function testDirectiveNameReturnsEnumValue(): void
     {
         $feature = PermissionFeature::CAMERA;
@@ -21,6 +23,7 @@ final class PermissionFeatureTest extends TestCase
     }
 
     #[DataProvider('allFeatureCasesProvider')]
+    #[Test]
     public function testAllCasesHaveValidDirectiveNames(PermissionFeature $feature, string $expectedValue): void
     {
         $this->assertSame($expectedValue, $feature->value);
@@ -191,6 +194,7 @@ final class PermissionFeatureTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testTotalNumberOfCases(): void
     {
         $cases = PermissionFeature::cases();
@@ -199,6 +203,7 @@ final class PermissionFeatureTest extends TestCase
         $this->assertCount(32, $cases);
     }
 
+    #[Test]
     public function testCasesAreUnique(): void
     {
         $cases  = PermissionFeature::cases();
@@ -207,6 +212,7 @@ final class PermissionFeatureTest extends TestCase
         $this->assertSame($values, array_unique($values));
     }
 
+    #[Test]
     public function testCanCreateFromValue(): void
     {
         $feature = PermissionFeature::from('camera');
@@ -214,6 +220,7 @@ final class PermissionFeatureTest extends TestCase
         $this->assertSame(PermissionFeature::CAMERA, $feature);
     }
 
+    #[Test]
     public function testTryFromReturnsNullForInvalidValue(): void
     {
         /** @noinspection PhpCaseWithValueNotFoundInEnumInspection Test intentionally uses invalid value */
@@ -222,6 +229,7 @@ final class PermissionFeatureTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testTryFromReturnsFeatureForValidValue(): void
     {
         $result = PermissionFeature::tryFrom('geolocation');

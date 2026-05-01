@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Nonce;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Csp\Nonce\NonceProvider;
 
 final class NonceGeneratorTest extends TestCase
 {
+    #[Test]
     public function testImplementsNonceProvider(): void
     {
         $generator = new NonceGenerator();
@@ -23,6 +25,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetGeneratesBase64EncodedString(): void
     {
         $generator = new NonceGenerator();
@@ -36,6 +39,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsSameNonceForSameInstance(): void
     {
         $generator = new NonceGenerator();
@@ -49,6 +53,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsCachedNonceWithoutRegeneration(): void
     {
         $generator = new NonceGenerator();
@@ -69,6 +74,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGeneratedNonceHasCorrectLength(): void
     {
         $generator = new NonceGenerator();
@@ -82,6 +88,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetOverridesGeneratedNonce(): void
     {
         $generator = new NonceGenerator();
@@ -97,6 +104,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testResetClearsNonce(): void
     {
         $generator = new NonceGenerator();
@@ -111,6 +119,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSeparateInstancesHaveDifferentNonces(): void
     {
         $generator1 = new NonceGenerator();
@@ -125,6 +134,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testNonceIsBase64Encoded(): void
     {
         $generator = new NonceGenerator();
@@ -137,6 +147,7 @@ final class NonceGeneratorTest extends TestCase
     }
 
     // Validation Tests (Defense in Depth)
+    #[Test]
     public function testSetRejectsEmptyNonce(): void
     {
         $generator = new NonceGenerator();
@@ -147,6 +158,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set('');
     }
 
+    #[Test]
     public function testSetRejectsSemicolon(): void
     {
         $generator = new NonceGenerator();
@@ -157,6 +169,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set("valid'; script-src 'unsafe-inline");
     }
 
+    #[Test]
     public function testSetRejectsNewline(): void
     {
         $generator = new NonceGenerator();
@@ -167,6 +180,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set("valid\nX-Injected-Header: malicious");
     }
 
+    #[Test]
     public function testSetRejectsCarriageReturn(): void
     {
         $generator = new NonceGenerator();
@@ -177,6 +191,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set("valid\rX-Injected-Header: malicious");
     }
 
+    #[Test]
     public function testSetRejectsSingleQuote(): void
     {
         $generator = new NonceGenerator();
@@ -190,6 +205,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetAcceptsValidBase64Nonce(): void
     {
         $generator  = new NonceGenerator();
@@ -203,6 +219,7 @@ final class NonceGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetAcceptsAlphanumericNonce(): void
     {
         $generator  = new NonceGenerator();
@@ -213,6 +230,7 @@ final class NonceGeneratorTest extends TestCase
         $this->assertSame($validNonce, $generator->get());
     }
 
+    #[Test]
     public function testSetRejectsSpace(): void
     {
         $generator = new NonceGenerator();
@@ -223,6 +241,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set("abc unsafe-inline");
     }
 
+    #[Test]
     public function testSetRejectsSpaceAtStart(): void
     {
         $generator = new NonceGenerator();
@@ -233,6 +252,7 @@ final class NonceGeneratorTest extends TestCase
         $generator->set(" leadingspace");
     }
 
+    #[Test]
     public function testSetRejectsSpaceAtEnd(): void
     {
         $generator = new NonceGenerator();

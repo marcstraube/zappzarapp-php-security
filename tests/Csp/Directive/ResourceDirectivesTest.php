@@ -6,12 +6,14 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
 
 final class ResourceDirectivesTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $resources = new ResourceDirectives();
@@ -26,6 +28,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self'", $resources->manifest);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $resources = new ResourceDirectives(
@@ -39,6 +42,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://api.example.com", $resources->connect);
     }
 
+    #[Test]
     public function testWithImgReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -49,6 +53,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://cdn.example.com", $modified->img);
     }
 
+    #[Test]
     public function testWithFontReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -59,6 +64,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://fonts.gstatic.com", $modified->font);
     }
 
+    #[Test]
     public function testWithConnectReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -69,6 +75,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' wss://api.example.com", $modified->connect);
     }
 
+    #[Test]
     public function testFluentApiChaining(): void
     {
         $resources = (new ResourceDirectives())
@@ -82,6 +89,7 @@ final class ResourceDirectivesTest extends TestCase
     }
 
     // New Directives Tests
+    #[Test]
     public function testWithMediaReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -92,6 +100,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://media.example.com", $modified->media);
     }
 
+    #[Test]
     public function testWithWorkerReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -102,6 +111,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' blob:", $modified->worker);
     }
 
+    #[Test]
     public function testWithChildReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -112,6 +122,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://iframe.example.com", $modified->child);
     }
 
+    #[Test]
     public function testWithFrameReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -122,6 +133,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://embed.example.com", $modified->frame);
     }
 
+    #[Test]
     public function testWithManifestReturnsNewInstance(): void
     {
         $original = new ResourceDirectives();
@@ -132,6 +144,7 @@ final class ResourceDirectivesTest extends TestCase
         $this->assertSame("'self' https://pwa.example.com", $modified->manifest);
     }
 
+    #[Test]
     public function testExtendedFluentApiChaining(): void
     {
         $resources = (new ResourceDirectives())
@@ -155,6 +168,7 @@ final class ResourceDirectivesTest extends TestCase
     }
 
     // Validation Tests
+    #[Test]
     public function testValidationThrowsForSemicolonInImg(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -163,6 +177,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(img: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForNewlineInFont(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -171,6 +186,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(font: "'self'\nevil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInConnect(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -179,6 +195,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(connect: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInMedia(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -187,6 +204,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(media: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInWorker(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -195,6 +213,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(worker: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInChild(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -203,6 +222,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(child: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInFrame(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -211,6 +231,7 @@ final class ResourceDirectivesTest extends TestCase
         new ResourceDirectives(frame: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInManifest(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);

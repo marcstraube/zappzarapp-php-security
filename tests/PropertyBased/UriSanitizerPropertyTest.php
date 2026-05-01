@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\PropertyBased;
 use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Uri\UriSanitizer;
 use Zappzarapp\Security\Sanitization\Uri\UriSanitizerConfig;
@@ -24,6 +25,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized URIs NEVER contain javascript: scheme
      */
+    #[Test]
     public function testSanitizedUriNeverContainsJavascript(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -44,6 +46,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized URIs NEVER contain vbscript: scheme
      */
+    #[Test]
     public function testSanitizedUriNeverContainsVbscript(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -63,6 +66,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized URIs NEVER contain data: scheme (by default)
      */
+    #[Test]
     public function testSanitizedUriNeverContainsDataScheme(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -82,6 +86,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Common XSS URI patterns are blocked
      */
+    #[Test]
     public function testXssUriPatternsAreBlocked(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -109,6 +114,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Strict config only allows HTTPS
      */
+    #[Test]
     public function testStrictConfigOnlyAllowsHttps(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::strict());
@@ -126,6 +132,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Safe URIs are preserved
      */
+    #[Test]
     public function testSafeUrisArePreserved(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -152,6 +159,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: isSafe returns true for all preserved URIs
      */
+    #[Test]
     public function testIsSafeConsistentWithSanitize(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -175,6 +183,7 @@ final class UriSanitizerPropertyTest extends TestCase
     /**
      * Property: Empty input is safe
      */
+    #[Test]
     public function testEmptyInputIsSafe(): void
     {
         $sanitizer = new UriSanitizer();

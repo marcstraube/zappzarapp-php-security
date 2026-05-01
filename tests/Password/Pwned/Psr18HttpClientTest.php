@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Pwned;
 
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -36,6 +37,7 @@ final class Psr18HttpClientTest extends TestCase
         $this->httpClient = new Psr18HttpClient($this->client, $this->requestFactory);
     }
 
+    #[Test]
     public function testGetReturnsResponseBody(): void
     {
         $url          = 'https://api.pwnedpasswords.com/range/ABCDE';
@@ -57,6 +59,7 @@ final class Psr18HttpClientTest extends TestCase
         $this->assertSame($responseBody, $result);
     }
 
+    #[Test]
     public function testGetReturnsNullOnNon200Status(): void
     {
         $response = $this->createStub(ResponseInterface::class);
@@ -71,6 +74,7 @@ final class Psr18HttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetReturnsNullOnClientException(): void
     {
         $exception = new class extends Exception implements ClientExceptionInterface {};
@@ -84,6 +88,7 @@ final class Psr18HttpClientTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetSetsUserAgentHeader(): void
     {
         $response = $this->createStub(ResponseInterface::class);
@@ -96,7 +101,7 @@ final class Psr18HttpClientTest extends TestCase
             ->with('User-Agent', 'zappzarapp-security-php')
             ->willReturn($request);
 
-        $requestFactory = $this->createStub(RequestFactoryInterface::class);
+        $requestFactory = $this->createMock(RequestFactoryInterface::class);
         $requestFactory->method('createRequest')
             ->with('GET', 'https://example.com')
             ->willReturn($request);

@@ -7,12 +7,14 @@ namespace Zappzarapp\Security\Tests\Cookie\Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\Exception\InvalidCookieNameException;
 
 #[CoversClass(InvalidCookieNameException::class)]
 final class InvalidCookieNameExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidCookieNameException::emptyName();
@@ -21,6 +23,7 @@ final class InvalidCookieNameExceptionTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testEmptyName(): void
     {
         $exception = InvalidCookieNameException::emptyName();
@@ -28,6 +31,7 @@ final class InvalidCookieNameExceptionTest extends TestCase
         $this->assertStringContainsString('cannot be empty', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacter(): void
     {
         $exception = InvalidCookieNameException::invalidCharacter('test;name', ';');
@@ -36,6 +40,7 @@ final class InvalidCookieNameExceptionTest extends TestCase
         $this->assertStringContainsString(';', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterWithSpace(): void
     {
         $exception = InvalidCookieNameException::invalidCharacter('test name', ' ');
@@ -74,6 +79,7 @@ final class InvalidCookieNameExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidCharacterProvider')]
+    #[Test]
     public function testInvalidCharacterWithVariousChars(string $name, string $char): void
     {
         $exception = InvalidCookieNameException::invalidCharacter($name, $char);
@@ -81,6 +87,7 @@ final class InvalidCookieNameExceptionTest extends TestCase
         $this->assertStringContainsString($name, $exception->getMessage());
     }
 
+    #[Test]
     public function testAllFactoryMethodsReturnSameClass(): void
     {
         $empty   = InvalidCookieNameException::emptyName();

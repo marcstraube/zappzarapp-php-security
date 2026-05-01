@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Exception\InvalidInputException;
 
@@ -17,6 +18,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Exception Base Class
     // =========================================================================
 
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidInputException::malformed('test', 'reason');
@@ -28,6 +30,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Factory Method: malformed()
     // =========================================================================
 
+    #[Test]
     public function testMalformedCreatesExceptionWithCorrectMessage(): void
     {
         $exception = InvalidInputException::malformed('JSON', 'unexpected token');
@@ -36,6 +39,7 @@ final class InvalidInputExceptionTest extends TestCase
     }
 
     #[DataProvider('malformedInputProvider')]
+    #[Test]
     public function testMalformedWithVariousInputTypes(string $type, string $reason, string $expected): void
     {
         $exception = InvalidInputException::malformed($type, $reason);
@@ -83,6 +87,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Factory Method: unsafeContent()
     // =========================================================================
 
+    #[Test]
     public function testUnsafeContentCreatesExceptionWithCorrectMessage(): void
     {
         $exception = InvalidInputException::unsafeContent('HTML', 'script injection detected');
@@ -91,6 +96,7 @@ final class InvalidInputExceptionTest extends TestCase
     }
 
     #[DataProvider('unsafeContentProvider')]
+    #[Test]
     public function testUnsafeContentWithVariousInputTypes(string $type, string $reason, string $expected): void
     {
         $exception = InvalidInputException::unsafeContent($type, $reason);
@@ -132,6 +138,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Factory Method: invalidEncoding()
     // =========================================================================
 
+    #[Test]
     public function testInvalidEncodingCreatesExceptionWithCorrectMessage(): void
     {
         $exception = InvalidInputException::invalidEncoding('UTF-8');
@@ -140,6 +147,7 @@ final class InvalidInputExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidEncodingProvider')]
+    #[Test]
     public function testInvalidEncodingWithVariousEncodings(string $expected, string $expectedMessage): void
     {
         $exception = InvalidInputException::invalidEncoding($expected);
@@ -177,6 +185,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Security: Exception Messages Do Not Expose Sensitive Data
     // =========================================================================
 
+    #[Test]
     public function testMalformedDoesNotIncludeActualInput(): void
     {
         $sensitiveInput = 'password=secret123&token=abc';
@@ -187,6 +196,7 @@ final class InvalidInputExceptionTest extends TestCase
         $this->assertStringNotContainsString('secret123', $exception->getMessage());
     }
 
+    #[Test]
     public function testUnsafeContentDoesNotIncludeActualPayload(): void
     {
         $xssPayload = '<script>document.cookie</script>';
@@ -201,6 +211,7 @@ final class InvalidInputExceptionTest extends TestCase
     // Immutability: Each Call Creates New Instance
     // =========================================================================
 
+    #[Test]
     public function testFactoryMethodsCreateNewInstances(): void
     {
         $exception1 = InvalidInputException::malformed('type1', 'reason1');
@@ -209,6 +220,7 @@ final class InvalidInputExceptionTest extends TestCase
         $this->assertNotSame($exception1, $exception2);
     }
 
+    #[Test]
     public function testDifferentFactoryMethodsCreateDistinctExceptions(): void
     {
         $malformed  = InvalidInputException::malformed('test', 'reason');

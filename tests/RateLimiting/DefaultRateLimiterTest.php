@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Logging\SecurityLoggerInterface;
 use Zappzarapp\Security\RateLimiting\Algorithm\AlgorithmType;
@@ -76,6 +77,7 @@ final class DefaultRateLimiterTest extends TestCase
         return new DefaultRateLimiter($config, $storage ?? $this->createStorageMock(), $logger);
     }
 
+    #[Test]
     public function testImplementsRateLimiter(): void
     {
         $limiter = $this->createLimiter();
@@ -83,6 +85,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertInstanceOf(RateLimiter::class, $limiter);
     }
 
+    #[Test]
     public function testConsumeWithStringIdentifier(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -94,6 +97,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeWithRateLimitIdentifier(): void
     {
         $limiter    = $this->createLimiter(limit: 10);
@@ -105,6 +109,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeWithCost(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -115,6 +120,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeDeniesWhenLimitExceeded(): void
     {
         $limiter = $this->createLimiter(limit: 3);
@@ -128,6 +134,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testPeekWithStringIdentifier(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -139,6 +146,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testPeekWithRateLimitIdentifier(): void
     {
         $limiter    = $this->createLimiter(limit: 10);
@@ -151,6 +159,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testPeekDoesNotConsumeQuota(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -164,6 +173,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeOrFailReturnsResultWhenAllowed(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -174,6 +184,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testConsumeOrFailThrowsWhenDenied(): void
     {
         $limiter = $this->createLimiter(limit: 1);
@@ -186,6 +197,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consumeOrFail('user:1');
     }
 
+    #[Test]
     public function testConsumeOrFailWithCost(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -195,6 +207,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeOrFailWithRateLimitIdentifier(): void
     {
         $limiter    = $this->createLimiter(limit: 10);
@@ -205,6 +218,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testResetWithStringIdentifier(): void
     {
         $limiter = $this->createLimiter(limit: 3);
@@ -219,6 +233,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(3, $result->remaining);
     }
 
+    #[Test]
     public function testResetWithRateLimitIdentifier(): void
     {
         $limiter    = $this->createLimiter(limit: 3);
@@ -234,6 +249,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(3, $result->remaining);
     }
 
+    #[Test]
     public function testApiFactoryMethod(): void
     {
         $limiter = DefaultRateLimiter::api($this->createStorageMock());
@@ -243,6 +259,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(1000, $result->limit);
     }
 
+    #[Test]
     public function testLoginFactoryMethod(): void
     {
         $limiter = DefaultRateLimiter::login($this->createStorageMock());
@@ -252,6 +269,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(5, $result->limit);
     }
 
+    #[Test]
     public function testFormFactoryMethod(): void
     {
         $limiter = DefaultRateLimiter::form($this->createStorageMock());
@@ -261,6 +279,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(10, $result->limit);
     }
 
+    #[Test]
     public function testApiFactoryWithoutStorage(): void
     {
         $limiter = DefaultRateLimiter::api();
@@ -270,6 +289,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testLoginFactoryWithoutStorage(): void
     {
         $limiter = DefaultRateLimiter::login();
@@ -279,6 +299,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testFormFactoryWithoutStorage(): void
     {
         $limiter = DefaultRateLimiter::form();
@@ -288,6 +309,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testDefaultConfigValues(): void
     {
         $limiter = new DefaultRateLimiter();
@@ -297,6 +319,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(100, $result->limit);
     }
 
+    #[Test]
     public function testUsesInMemoryStorageByDefault(): void
     {
         // Test with a mock storage to verify limit enforcement
@@ -310,6 +333,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testUsesSlidingWindowByDefault(): void
     {
         $limiter = $this->createLimiter(limit: 5);
@@ -322,6 +346,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testUsesTokenBucketWhenConfigured(): void
     {
         $limiter = $this->createLimiter(
@@ -337,6 +362,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testLoggerIsCalledOnRateLimitExceeded(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -358,6 +384,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consume('user:1');
     }
 
+    #[Test]
     public function testLoggerIsNotCalledWhenAllowed(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -368,6 +395,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consume('user:1');
     }
 
+    #[Test]
     public function testMultipleIdentifiersAreIsolated(): void
     {
         $limiter = $this->createLimiter(limit: 3);
@@ -402,6 +430,7 @@ final class DefaultRateLimiterTest extends TestCase
     }
 
     #[DataProvider('identifierProvider')]
+    #[Test]
     public function testConsumeWithVariousIdentifierTypes(RateLimitIdentifier|string $identifier): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -411,6 +440,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testConsumeOrFailExceptionContainsRetryAfter(): void
     {
         $limiter = $this->createLimiter(limit: 1);
@@ -425,6 +455,7 @@ final class DefaultRateLimiterTest extends TestCase
         }
     }
 
+    #[Test]
     public function testConsumeOrFailExceptionContainsLimit(): void
     {
         $limiter = $this->createLimiter(limit: 5);
@@ -441,6 +472,7 @@ final class DefaultRateLimiterTest extends TestCase
         }
     }
 
+    #[Test]
     public function testWithActualInMemoryStorage(): void
     {
         // Test basic behavior with actual InMemoryStorage
@@ -453,6 +485,7 @@ final class DefaultRateLimiterTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeRejectsCostZero(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -463,6 +496,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consume('user:1', cost: 0);
     }
 
+    #[Test]
     public function testConsumeRejectsNegativeCost(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -473,6 +507,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consume('user:1', cost: -1);
     }
 
+    #[Test]
     public function testConsumeOrFailRejectsCostZero(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -483,6 +518,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consumeOrFail('user:1', cost: 0);
     }
 
+    #[Test]
     public function testConsumeOrFailRejectsNegativeCost(): void
     {
         $limiter = $this->createLimiter(limit: 10);
@@ -493,6 +529,7 @@ final class DefaultRateLimiterTest extends TestCase
         $limiter->consumeOrFail('user:1', cost: -5);
     }
 
+    #[Test]
     public function testNegativeCostCannotRestoreQuota(): void
     {
         $limiter = $this->createLimiter(limit: 3);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\SecurityPolicy;
@@ -14,6 +15,7 @@ use Zappzarapp\Security\Csp\SecurityPolicy;
 final class CspDirectivesFactoryTest extends TestCase
 {
     // strict()
+    #[Test]
     public function testStrictReturnsStrictPolicy(): void
     {
         $directives = CspDirectives::strict();
@@ -21,6 +23,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertSame(SecurityPolicy::STRICT, $directives->securityPolicy);
     }
 
+    #[Test]
     public function testStrictHasNoWebSocket(): void
     {
         $directives = CspDirectives::strict();
@@ -28,6 +31,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertNull($directives->websocketHost);
     }
 
+    #[Test]
     public function testStrictHeaderDisallowsUnsafeDirectives(): void
     {
         $directives = CspDirectives::strict();
@@ -37,6 +41,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertStringNotContainsString("'unsafe-inline'", $header);
     }
 
+    #[Test]
     public function testStrictIsChainable(): void
     {
         $directives = CspDirectives::strict()
@@ -48,6 +53,7 @@ final class CspDirectivesFactoryTest extends TestCase
     }
 
     // development()
+    #[Test]
     public function testDevelopmentReturnsLenientPolicy(): void
     {
         $directives = CspDirectives::development();
@@ -55,6 +61,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertSame(SecurityPolicy::LENIENT, $directives->securityPolicy);
     }
 
+    #[Test]
     public function testDevelopmentWithoutHotReload(): void
     {
         $directives = CspDirectives::development();
@@ -62,6 +69,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertNull($directives->websocketHost);
     }
 
+    #[Test]
     public function testDevelopmentWithHotReload(): void
     {
         $directives = CspDirectives::development('localhost:5173');
@@ -69,6 +77,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertSame('localhost:5173', $directives->websocketHost);
     }
 
+    #[Test]
     public function testDevelopmentHeaderAllowsUnsafeDirectives(): void
     {
         $directives = CspDirectives::development();
@@ -78,6 +87,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertStringContainsString("'unsafe-inline'", $header);
     }
 
+    #[Test]
     public function testDevelopmentHeaderIncludesWebSocket(): void
     {
         $directives = CspDirectives::development('localhost:5173');
@@ -87,6 +97,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertStringContainsString('https://localhost:5173', $header);
     }
 
+    #[Test]
     public function testDevelopmentWithCustomIp(): void
     {
         $directives = CspDirectives::development('192.168.1.100:8080');
@@ -94,6 +105,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertSame('192.168.1.100:8080', $directives->websocketHost);
     }
 
+    #[Test]
     public function testDevelopmentIsChainable(): void
     {
         $directives = CspDirectives::development('localhost:5173')
@@ -106,6 +118,7 @@ final class CspDirectivesFactoryTest extends TestCase
     }
 
     // legacy()
+    #[Test]
     public function testLegacyReturnsUnsafeEvalPolicy(): void
     {
         $directives = CspDirectives::legacy();
@@ -113,6 +126,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertSame(SecurityPolicy::UNSAFE_EVAL, $directives->securityPolicy);
     }
 
+    #[Test]
     public function testLegacyHasNoWebSocket(): void
     {
         $directives = CspDirectives::legacy();
@@ -120,6 +134,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertNull($directives->websocketHost);
     }
 
+    #[Test]
     public function testLegacyHeaderAllowsUnsafeEval(): void
     {
         $directives = CspDirectives::legacy();
@@ -128,6 +143,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertStringContainsString("'unsafe-eval'", $header);
     }
 
+    #[Test]
     public function testLegacyHeaderDisallowsUnsafeInline(): void
     {
         $directives = CspDirectives::legacy();
@@ -136,6 +152,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertStringNotContainsString("'unsafe-inline'", $header);
     }
 
+    #[Test]
     public function testLegacyIsChainable(): void
     {
         $directives = CspDirectives::legacy()
@@ -147,6 +164,7 @@ final class CspDirectivesFactoryTest extends TestCase
     }
 
     // Comparison
+    #[Test]
     public function testFactoryMethodsReturnDifferentPolicies(): void
     {
         $strict      = CspDirectives::strict();
@@ -158,6 +176,7 @@ final class CspDirectivesFactoryTest extends TestCase
         $this->assertNotSame($development->securityPolicy, $legacy->securityPolicy);
     }
 
+    #[Test]
     public function testFactoryMethodsAreEquivalentToConstructor(): void
     {
         $strict1 = CspDirectives::strict();

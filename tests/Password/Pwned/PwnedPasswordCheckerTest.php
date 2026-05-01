@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Pwned;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Logging\SecurityLoggerInterface;
 use Zappzarapp\Security\Password\Exception\PwnedPasswordException;
@@ -16,6 +17,7 @@ use Zappzarapp\Security\Password\Pwned\PwnedPasswordChecker;
 #[CoversClass(PwnedPasswordChecker::class)]
 final class PwnedPasswordCheckerTest extends TestCase
 {
+    #[Test]
     public function testCheckReturnsZeroWhenApiUnavailableInFailOpenMode(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -29,6 +31,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testCheckReturnsFailClosedCountWhenApiUnavailableInFailClosedMode(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -42,6 +45,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertSame(PwnedCheckerConfig::FAIL_CLOSED_COUNT, $result);
     }
 
+    #[Test]
     public function testIsCompromisedReturnsTrueWhenApiUnavailableInFailClosedMode(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -53,6 +57,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertTrue($checker->isCompromised('anypassword'));
     }
 
+    #[Test]
     public function testIsCompromisedReturnsFalseWhenApiUnavailableInFailOpenMode(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -64,6 +69,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertFalse($checker->isCompromised('anypassword'));
     }
 
+    #[Test]
     public function testCheckReturnsOccurrencesWhenPasswordFound(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -78,6 +84,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertSame(12345, $result);
     }
 
+    #[Test]
     public function testCheckReturnsZeroWhenPasswordNotFound(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -90,6 +97,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testIsCompromisedLogsWhenCompromisedPasswordDetected(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -110,6 +118,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->isCompromised('password');
     }
 
+    #[Test]
     public function testIsCompromisedLogsFailClosedModeCorrectly(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -130,6 +139,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->isCompromised('anypassword');
     }
 
+    #[Test]
     public function testIsCompromisedDoesNotLogWhenPasswordNotCompromised(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -143,6 +153,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->isCompromised('unique-password-xyz');
     }
 
+    #[Test]
     public function testCheckAndThrowDoesNotThrowWhenPasswordNotCompromised(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -155,6 +166,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertTrue(true); // Assertion to confirm no exception
     }
 
+    #[Test]
     public function testCheckAndThrowThrowsWhenPasswordCompromised(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -169,6 +181,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->checkAndThrow('password');
     }
 
+    #[Test]
     public function testCheckAndThrowRespectsMinOccurrences(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -183,6 +196,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testCheckAndThrowThrowsWhenExactlyAtMinOccurrences(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -196,6 +210,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->checkAndThrow('password');
     }
 
+    #[Test]
     public function testCheckAndThrowThrowsInFailClosedMode(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -209,6 +224,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $checker->checkAndThrow('anypassword');
     }
 
+    #[Test]
     public function testCheckAndThrowDoesNotThrowInFailOpenModeWhenApiUnavailable(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -222,6 +238,7 @@ final class PwnedPasswordCheckerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testCheckAndThrowExceptionContainsCorrectOccurrences(): void
     {
         $client = $this->createStub(HttpClientInterface::class);

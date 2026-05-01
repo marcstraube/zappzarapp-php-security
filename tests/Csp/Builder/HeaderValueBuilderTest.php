@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csp\Builder;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Builder\HeaderValueBuilder;
@@ -25,6 +26,7 @@ final class HeaderValueBuilderTest extends TestCase
     private const string TEST_NONCE = 'test-nonce-value';
 
     // Basic Build Tests
+    #[Test]
     public function testBuildReturnsString(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -35,6 +37,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
+    #[Test]
     public function testBuildIncludesDefaultSrc(): void
     {
         $directives = new CspDirectives(defaultSrc: "'self' https://example.com");
@@ -46,6 +49,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Script-src Build Tests
+    #[Test]
     public function testBuildScriptSrcIncludesNonce(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -55,6 +59,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString("'nonce-test-nonce-value'", $result);
     }
 
+    #[Test]
     public function testBuildScriptSrcIncludesStrictDynamic(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -64,6 +69,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString("'strict-dynamic'", $result);
     }
 
+    #[Test]
     public function testBuildScriptSrcIncludesUnsafeEvalWhenAllowed(): void
     {
         $directives = new CspDirectives(securityPolicy: SecurityPolicy::UNSAFE_EVAL);
@@ -74,6 +80,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString("'unsafe-eval'", $result);
     }
 
+    #[Test]
     public function testBuildScriptSrcExcludesUnsafeEvalWhenStrict(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -83,6 +90,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringNotContainsString("'unsafe-eval'", $result);
     }
 
+    #[Test]
     public function testBuildWithCustomScriptSrcPrependsNonce(): void
     {
         $directives = new CspDirectives(scriptSrc: "'self' https://scripts.example.com");
@@ -93,6 +101,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString("script-src 'nonce-test-nonce-value' 'self' https://scripts.example.com", $result);
     }
 
+    #[Test]
     public function testBuildWithCustomScriptSrcContainingNonceKeepsAsIs(): void
     {
         $directives = new CspDirectives(scriptSrc: "'nonce-existing' 'self'");
@@ -106,6 +115,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Style-src Build Tests
+    #[Test]
     public function testBuildStyleSrcIncludesNonceWhenStrict(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -115,6 +125,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertMatchesRegularExpression("/style-src '[^']+' 'nonce-test-nonce-value'/", $result);
     }
 
+    #[Test]
     public function testBuildStyleSrcIncludesUnsafeInlineWhenLenient(): void
     {
         $directives = new CspDirectives(securityPolicy: SecurityPolicy::LENIENT);
@@ -126,6 +137,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Connect-src Build Tests
+    #[Test]
     public function testBuildConnectSrcWithoutWebSocket(): void
     {
         $directives = new CspDirectives();
@@ -137,6 +149,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringNotContainsString('wss://', $result);
     }
 
+    #[Test]
     public function testBuildConnectSrcWithWebSocket(): void
     {
         $directives = new CspDirectives(websocketHost: 'localhost:5173');
@@ -148,6 +161,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Empty Nonce Tests
+    #[Test]
     public function testBuildWithEmptyNonceOmitsNonceFromScriptSrc(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), '');
@@ -158,6 +172,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringNotContainsString("'strict-dynamic'", $result);
     }
 
+    #[Test]
     public function testBuildWithEmptyNonceOmitsNonceFromStyleSrc(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), '');
@@ -168,6 +183,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Reporting Tests
+    #[Test]
     public function testBuildIncludesUpgradeInsecureRequests(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -177,6 +193,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString('upgrade-insecure-requests', $result);
     }
 
+    #[Test]
     public function testBuildExcludesUpgradeInsecureRequestsWhenDisabled(): void
     {
         $directives = CspDirectives::strict()->withUpgradeInsecure(false);
@@ -187,6 +204,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringNotContainsString('upgrade-insecure-requests', $result);
     }
 
+    #[Test]
     public function testBuildIncludesReportUri(): void
     {
         $directives = CspDirectives::strict()->withReportUri('/csp-violations');
@@ -197,6 +215,7 @@ final class HeaderValueBuilderTest extends TestCase
         $this->assertStringContainsString('report-uri /csp-violations', $result);
     }
 
+    #[Test]
     public function testBuildIncludesReportTo(): void
     {
         $directives = CspDirectives::strict()->withReportTo('csp-endpoint');
@@ -208,6 +227,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Object-src Tests
+    #[Test]
     public function testBuildAlwaysIncludesObjectSrcNone(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -218,6 +238,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Resource Directives Tests
+    #[Test]
     public function testBuildIncludesAllResourceDirectives(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -235,6 +256,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Navigation Directives Tests
+    #[Test]
     public function testBuildIncludesAllNavigationDirectives(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);
@@ -247,6 +269,7 @@ final class HeaderValueBuilderTest extends TestCase
     }
 
     // Format Tests
+    #[Test]
     public function testBuildSeparatesDirectivesWithSemicolonSpace(): void
     {
         $builder = new HeaderValueBuilder(CspDirectives::strict(), self::TEST_NONCE);

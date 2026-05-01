@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\RateLimiting\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\RateLimiting\Exception\StorageException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\RateLimiting\Exception\StorageException;
 #[CoversClass(StorageException::class)]
 final class StorageExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = new StorageException('Test message');
@@ -19,6 +21,7 @@ final class StorageExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testConnectionFailedFactory(): void
     {
         $exception = StorageException::connectionFailed('Connection refused');
@@ -29,6 +32,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConnectionFailedWithEmptyReason(): void
     {
         $exception = StorageException::connectionFailed('');
@@ -39,6 +43,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConnectionFailedWithDetailedReason(): void
     {
         $exception = StorageException::connectionFailed('Could not connect to Redis at 127.0.0.1:6379');
@@ -49,6 +54,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testReadFailedFactory(): void
     {
         $exception = StorageException::readFailed('rate_limit:user:123', 'Key not found');
@@ -59,6 +65,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testReadFailedWithEmptyKey(): void
     {
         $exception = StorageException::readFailed('', 'Empty key');
@@ -69,6 +76,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testReadFailedWithEmptyReason(): void
     {
         $exception = StorageException::readFailed('key', '');
@@ -79,6 +87,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testReadFailedWithSpecialCharacters(): void
     {
         $exception = StorageException::readFailed('rate_limit:ip:192.168.1.1', 'Timeout');
@@ -89,6 +98,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testWriteFailedFactory(): void
     {
         $exception = StorageException::writeFailed('rate_limit:user:123', 'Disk full');
@@ -99,6 +109,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testWriteFailedWithEmptyKey(): void
     {
         $exception = StorageException::writeFailed('', 'Invalid key');
@@ -109,6 +120,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testWriteFailedWithEmptyReason(): void
     {
         $exception = StorageException::writeFailed('key', '');
@@ -119,6 +131,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testWriteFailedWithDetailedReason(): void
     {
         $exception = StorageException::writeFailed(
@@ -132,6 +145,7 @@ final class StorageExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testDirectConstruction(): void
     {
         $exception = new StorageException('Custom storage error');
@@ -139,6 +153,7 @@ final class StorageExceptionTest extends TestCase
         $this->assertSame('Custom storage error', $exception->getMessage());
     }
 
+    #[Test]
     public function testExceptionCanBeThrown(): void
     {
         $this->expectException(StorageException::class);
@@ -147,6 +162,7 @@ final class StorageExceptionTest extends TestCase
         throw StorageException::connectionFailed('Test');
     }
 
+    #[Test]
     public function testExceptionCanBeCaught(): void
     {
         $caught = false;
@@ -162,6 +178,7 @@ final class StorageExceptionTest extends TestCase
         $this->assertTrue($caught);
     }
 
+    #[Test]
     public function testExceptionChaining(): void
     {
         $previous  = new RuntimeException('Original error');

@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Sanitization\Exception\UnsafeUriException;
@@ -17,6 +18,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Exception Base Class
     // =========================================================================
 
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = UnsafeUriException::blockedScheme('javascript');
@@ -28,6 +30,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Factory Method: blockedScheme()
     // =========================================================================
 
+    #[Test]
     public function testBlockedSchemeCreatesExceptionWithCorrectMessage(): void
     {
         $exception = UnsafeUriException::blockedScheme('javascript');
@@ -36,6 +39,7 @@ final class UnsafeUriExceptionTest extends TestCase
     }
 
     #[DataProvider('blockedSchemeProvider')]
+    #[Test]
     public function testBlockedSchemeWithVariousSchemes(string $scheme, string $expected): void
     {
         $exception = UnsafeUriException::blockedScheme($scheme);
@@ -88,6 +92,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Factory Method: invalidUri()
     // =========================================================================
 
+    #[Test]
     public function testInvalidUriCreatesExceptionWithCorrectMessage(): void
     {
         $exception = UnsafeUriException::invalidUri('not-a-valid-uri');
@@ -96,6 +101,7 @@ final class UnsafeUriExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidUriProvider')]
+    #[Test]
     public function testInvalidUriWithVariousUris(string $uri, string $expected): void
     {
         $exception = UnsafeUriException::invalidUri($uri);
@@ -143,6 +149,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Factory Method: blockedHost()
     // =========================================================================
 
+    #[Test]
     public function testBlockedHostCreatesExceptionWithCorrectMessage(): void
     {
         $exception = UnsafeUriException::blockedHost('evil.com');
@@ -151,6 +158,7 @@ final class UnsafeUriExceptionTest extends TestCase
     }
 
     #[DataProvider('blockedHostProvider')]
+    #[Test]
     public function testBlockedHostWithVariousHosts(string $host, string $expected): void
     {
         $exception = UnsafeUriException::blockedHost($host);
@@ -208,6 +216,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Security: XSS Prevention via URI Schemes
     // =========================================================================
 
+    #[Test]
     public function testBlockedSchemeForXssPrevention(): void
     {
         $xssSchemes = ['javascript', 'vbscript', 'data'];
@@ -223,6 +232,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Security: SSRF Prevention via Host Blocking
     // =========================================================================
 
+    #[Test]
     public function testBlockedHostForSsrfPrevention(): void
     {
         $ssrfHosts = ['127.0.0.1', 'localhost', '0.0.0.0', '169.254.169.254'];
@@ -238,6 +248,7 @@ final class UnsafeUriExceptionTest extends TestCase
     // Immutability: Each Call Creates New Instance
     // =========================================================================
 
+    #[Test]
     public function testFactoryMethodsCreateNewInstances(): void
     {
         $exception1 = UnsafeUriException::blockedScheme('javascript');
@@ -246,6 +257,7 @@ final class UnsafeUriExceptionTest extends TestCase
         $this->assertNotSame($exception1, $exception2);
     }
 
+    #[Test]
     public function testDifferentFactoryMethodsCreateDistinctExceptions(): void
     {
         $blockedScheme = UnsafeUriException::blockedScheme('javascript');

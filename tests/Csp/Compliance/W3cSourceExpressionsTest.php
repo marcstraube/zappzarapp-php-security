@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
@@ -26,6 +27,7 @@ final class W3cSourceExpressionsTest extends TestCase
     // =========================================================================
 
     #[DataProvider('keywordSourceProvider')]
+    #[Test]
     public function testKeywordSourcesAreSingleQuoted(string $keyword, string $directive, string $value): void
     {
         // Use LENIENT policy for unsafe keywords to avoid warnings
@@ -56,6 +58,7 @@ final class W3cSourceExpressionsTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testSelfKeywordFormat(): void
     {
         $directives = new CspDirectives(defaultSrc: "'self'");
@@ -67,6 +70,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringNotContainsString('self ', $header); // unquoted
     }
 
+    #[Test]
     public function testNoneKeywordFormat(): void
     {
         $resources  = new ResourceDirectives(img: "'none'");
@@ -82,6 +86,7 @@ final class W3cSourceExpressionsTest extends TestCase
     // Nonce Source Tests (W3C CSP3 Section 2.3.2)
     // =========================================================================
 
+    #[Test]
     public function testNonceSourceFormat(): void
     {
         $directives = CspDirectives::strict();
@@ -92,6 +97,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertMatchesRegularExpression("/'nonce-[A-Za-z0-9+\\/=]+'/", $header);
     }
 
+    #[Test]
     public function testNonceIsBase64Encoded(): void
     {
         $nonce      = 'dGVzdC1ub25jZQ=='; // base64("test-nonce")
@@ -102,6 +108,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringContainsString("'nonce-$nonce'", $header);
     }
 
+    #[Test]
     public function testNonceInScriptSrc(): void
     {
         $directives = CspDirectives::strict();
@@ -111,6 +118,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertMatchesRegularExpression("/script-src[^;]*'nonce-" . self::NONCE . "'/", $header);
     }
 
+    #[Test]
     public function testNonceInStyleSrc(): void
     {
         $directives = CspDirectives::strict();
@@ -125,6 +133,7 @@ final class W3cSourceExpressionsTest extends TestCase
     // =========================================================================
 
     #[DataProvider('schemeSourceProvider')]
+    #[Test]
     public function testSchemeSourceFormat(string $scheme): void
     {
         $directives = new CspDirectives(defaultSrc: "$scheme:");
@@ -151,6 +160,7 @@ final class W3cSourceExpressionsTest extends TestCase
     // Host Source Tests (W3C CSP3 Section 2.3.4)
     // =========================================================================
 
+    #[Test]
     public function testHostSourceWithScheme(): void
     {
         $directives = new CspDirectives(defaultSrc: "https://example.com");
@@ -160,6 +170,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringContainsString('https://example.com', $header);
     }
 
+    #[Test]
     public function testHostSourceWithWildcardSubdomain(): void
     {
         $directives = new CspDirectives(defaultSrc: "*.example.com");
@@ -169,6 +180,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringContainsString('*.example.com', $header);
     }
 
+    #[Test]
     public function testHostSourceWithPort(): void
     {
         $directives = new CspDirectives(defaultSrc: "https://example.com:443");
@@ -178,6 +190,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringContainsString('https://example.com:443', $header);
     }
 
+    #[Test]
     public function testHostSourceWithPath(): void
     {
         $directives = new CspDirectives(defaultSrc: "https://example.com/scripts/");
@@ -191,6 +204,7 @@ final class W3cSourceExpressionsTest extends TestCase
     // Multiple Sources Tests
     // =========================================================================
 
+    #[Test]
     public function testMultipleSourcesSeparatedBySpace(): void
     {
         $directives = new CspDirectives(
@@ -203,6 +217,7 @@ final class W3cSourceExpressionsTest extends TestCase
         $this->assertStringContainsString("'self' https://cdn.example.com https://api.example.com", $header);
     }
 
+    #[Test]
     public function testCombinedKeywordsAndHosts(): void
     {
         $resources = new ResourceDirectives(

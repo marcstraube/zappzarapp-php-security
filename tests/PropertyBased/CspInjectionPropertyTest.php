@@ -8,6 +8,7 @@ use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\NavigationDirectives;
@@ -37,6 +38,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Semicolons separate CSP directives. Allowing them in values
      * would enable directive injection attacks.
      */
+    #[Test]
     public function testSemicolonsInValuesAreRejected(): void
     {
         $this->forAll(
@@ -64,6 +66,7 @@ final class CspInjectionPropertyTest extends TestCase
      * CR/LF could enable HTTP header injection attacks.
      */
     #[DataProvider('controlCharacterProvider')]
+    #[Test]
     public function testControlCharactersAreRejected(string $char): void
     {
         // Test with a known safe prefix to avoid empty string validation
@@ -92,6 +95,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Attempts to inject new HTTP headers via CSP values are blocked.
      */
     #[DataProvider('headerInjectionProvider')]
+    #[Test]
     public function testHttpHeaderInjectionIsBlocked(string $attempt): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -115,6 +119,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Attempts to inject new CSP directives via semicolon are blocked.
      */
     #[DataProvider('directiveInjectionProvider')]
+    #[Test]
     public function testDirectiveInjectionIsBlocked(string $attempt): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -138,6 +143,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Non-ASCII whitespace could cause parser inconsistencies.
      */
     #[DataProvider('unicodeWhitespaceProvider')]
+    #[Test]
     public function testUnicodeWhitespaceIsRejected(string $char): void
     {
         $value = "'self'" . $char . 'https://example.com';
@@ -174,6 +180,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Valid directive values should produce headers that don't contain
      * injection artifacts.
      */
+    #[Test]
     public function testValidValuesProduceSafeHeaders(): void
     {
         $validValues = [
@@ -202,6 +209,7 @@ final class CspInjectionPropertyTest extends TestCase
     /**
      * Property: ResourceDirectives validation is consistent
      */
+    #[Test]
     public function testResourceDirectivesValidation(): void
     {
         $this->forAll(
@@ -229,6 +237,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Property: NavigationDirectives validation is consistent
      */
     #[DataProvider('navigationMethodProvider')]
+    #[Test]
     public function testNavigationDirectivesValidation(string $method): void
     {
         $injectionValue = "'self'; script-src 'unsafe-inline'";
@@ -251,6 +260,7 @@ final class CspInjectionPropertyTest extends TestCase
      * Property: ReportingConfig validates URIs
      */
     #[DataProvider('reportingInjectionProvider')]
+    #[Test]
     public function testReportingConfigValidation(string $attempt): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -271,6 +281,7 @@ final class CspInjectionPropertyTest extends TestCase
      *
      * CSP headers must be single-line to prevent HTTP response splitting.
      */
+    #[Test]
     public function testGeneratedHeadersAreSingleLine(): void
     {
         $configs = [

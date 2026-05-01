@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sanitization\Uri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Uri\NativeDnsResolver;
 
@@ -18,6 +19,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->resolver = new NativeDnsResolver();
     }
 
+    #[Test]
     public function testResolveLocalhostReturnsLoopback(): void
     {
         $ips = $this->resolver->resolve('localhost');
@@ -25,6 +27,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertContains('127.0.0.1', $ips);
     }
 
+    #[Test]
     public function testResolveNonExistentHostReturnsEmptyArray(): void
     {
         $ips = $this->resolver->resolve('this-host-definitely-does-not-exist-xyz123.invalid');
@@ -32,6 +35,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame([], $ips);
     }
 
+    #[Test]
     public function testResolveReturnsUniqueIps(): void
     {
         // dns.google is a well-known public hostname with stable DNS
@@ -41,6 +45,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame($ips, array_values(array_unique($ips)));
     }
 
+    #[Test]
     public function testResolveReturnsListOfStrings(): void
     {
         $ips = $this->resolver->resolve('localhost');
@@ -56,6 +61,7 @@ final class NativeDnsResolverTest extends TestCase
     // Tests for dns_get_record path using testable subclass
     // =========================================================================
 
+    #[Test]
     public function testResolveUsesGethostbynameResult(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -75,6 +81,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['1.2.3.4'], $ips);
     }
 
+    #[Test]
     public function testResolveUsesDnsGetRecordIpv4Results(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -97,6 +104,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['5.6.7.8', '9.10.11.12'], $ips);
     }
 
+    #[Test]
     public function testResolveUsesDnsGetRecordIpv6Results(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -119,6 +127,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['2001:4860:4860::8888', '2001:4860:4860::8844'], $ips);
     }
 
+    #[Test]
     public function testResolveCombinesBothResolutionMethods(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -141,6 +150,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['1.2.3.4', '5.6.7.8', '2001:db8::1'], $ips);
     }
 
+    #[Test]
     public function testResolveDeduplicatesResults(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -163,6 +173,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['1.2.3.4', '5.6.7.8'], $ips);
     }
 
+    #[Test]
     public function testResolveSkipsRecordsWithNonStringIp(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -188,6 +199,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['5.6.7.8'], $ips);
     }
 
+    #[Test]
     public function testResolveSkipsRecordsWithNonStringIpv6(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -213,6 +225,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['2001:db8::1'], $ips);
     }
 
+    #[Test]
     public function testResolveSkipsRecordsWithoutIpFields(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -235,6 +248,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['5.6.7.8'], $ips);
     }
 
+    #[Test]
     public function testResolveHandlesEmptyDnsGetRecordResult(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -254,6 +268,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['1.2.3.4'], $ips);
     }
 
+    #[Test]
     public function testResolveHandlesMixedRecordTypes(): void
     {
         $resolver = new class extends NativeDnsResolver {
@@ -277,6 +292,7 @@ final class NativeDnsResolverTest extends TestCase
         $this->assertSame(['1.2.3.4', '2001:db8::1', '5.6.7.8', '2001:db8::2'], $ips);
     }
 
+    #[Test]
     public function testResolveReturnsEmptyWhenBothMethodsFail(): void
     {
         $resolver = new class extends NativeDnsResolver {

@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Policy;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PasswordPolicy;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
@@ -20,6 +21,7 @@ use Zappzarapp\Security\Password\Policy\Rules\RequireUppercaseRule;
 #[CoversClass(PasswordPolicy::class)]
 final class PasswordPolicyTest extends TestCase
 {
+    #[Test]
     public function testDefaultConstructorCreatesEmptyPolicy(): void
     {
         $policy = new PasswordPolicy();
@@ -27,6 +29,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertSame([], $policy->rules());
     }
 
+    #[Test]
     public function testConstructorWithRules(): void
     {
         $rules = [
@@ -39,6 +42,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertCount(2, $policy->rules());
     }
 
+    #[Test]
     public function testWithRuleReturnsNewInstance(): void
     {
         $original = new PasswordPolicy();
@@ -49,6 +53,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertCount(1, $modified->rules());
     }
 
+    #[Test]
     public function testWithRuleAddsRuleToEnd(): void
     {
         $policy = (new PasswordPolicy())
@@ -62,6 +67,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertInstanceOf(MaxLengthRule::class, $rules[1]);
     }
 
+    #[Test]
     public function testValidateReturnsEmptyArrayForValidPassword(): void
     {
         $policy = (new PasswordPolicy())
@@ -73,6 +79,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertSame([], $violations);
     }
 
+    #[Test]
     public function testValidateReturnsSingleViolation(): void
     {
         $policy = (new PasswordPolicy())
@@ -84,6 +91,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertStringContainsString('at least 8 characters', $violations[0]);
     }
 
+    #[Test]
     public function testValidateReturnsMultipleViolations(): void
     {
         $policy = (new PasswordPolicy())
@@ -96,6 +104,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertCount(3, $violations);
     }
 
+    #[Test]
     public function testIsValidReturnsTrueForValidPassword(): void
     {
         $policy = (new PasswordPolicy())
@@ -105,6 +114,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertTrue($policy->isValid('ValidPassword123'));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForInvalidPassword(): void
     {
         $policy = (new PasswordPolicy())
@@ -113,6 +123,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertFalse($policy->isValid('short'));
     }
 
+    #[Test]
     public function testIsValidWithEmptyPolicyReturnsTrue(): void
     {
         $policy = new PasswordPolicy();
@@ -121,6 +132,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertTrue($policy->isValid('anypassword'));
     }
 
+    #[Test]
     public function testNistPolicyConfiguration(): void
     {
         $policy = PasswordPolicy::nist();
@@ -140,6 +152,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertSame(128, $maxRule->maxLength());
     }
 
+    #[Test]
     public function testNistPolicyValidation(): void
     {
         $policy = PasswordPolicy::nist();
@@ -148,6 +161,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertFalse($policy->isValid('short'));
     }
 
+    #[Test]
     public function testStrictPolicyConfiguration(): void
     {
         $policy = PasswordPolicy::strict();
@@ -162,6 +176,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertInstanceOf(RequireSpecialCharRule::class, $rules[5]);
     }
 
+    #[Test]
     public function testStrictPolicyValidation(): void
     {
         $policy = PasswordPolicy::strict();
@@ -185,6 +200,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertFalse($policy->isValid('Short1!'));
     }
 
+    #[Test]
     public function testLegacyPolicyConfiguration(): void
     {
         $policy = PasswordPolicy::legacy();
@@ -201,6 +217,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertSame(72, $maxRule->maxLength()); // bcrypt limit
     }
 
+    #[Test]
     public function testLegacyPolicyValidation(): void
     {
         $policy = PasswordPolicy::legacy();
@@ -210,6 +227,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertFalse($policy->isValid(str_repeat('a', 73)));
     }
 
+    #[Test]
     public function testEmptyPolicyStaticFactory(): void
     {
         $policy = PasswordPolicy::empty();
@@ -219,6 +237,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertTrue($policy->isValid('anything'));
     }
 
+    #[Test]
     public function testPolicyIsImmutable(): void
     {
         $policy1 = new PasswordPolicy();
@@ -230,6 +249,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertCount(2, $policy3->rules());
     }
 
+    #[Test]
     public function testValidateWithUnicodePassword(): void
     {
         $policy = PasswordPolicy::nist();
@@ -238,6 +258,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertTrue($policy->isValid('SecurePassword'));
     }
 
+    #[Test]
     public function testValidateWithVeryLongPassword(): void
     {
         $policy = (new PasswordPolicy())
@@ -251,6 +272,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertStringContainsString('must not exceed', $violations[0]);
     }
 
+    #[Test]
     public function testValidateWithEmptyPassword(): void
     {
         $policy = PasswordPolicy::strict();
@@ -261,6 +283,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertGreaterThan(1, count($violations));
     }
 
+    #[Test]
     public function testRulesReturnsList(): void
     {
         $policy = (new PasswordPolicy())
@@ -273,6 +296,7 @@ final class PasswordPolicyTest extends TestCase
         $this->assertSame([0, 1], array_keys($rules));
     }
 
+    #[Test]
     public function testCustomRule(): void
     {
         $customRule = new class () implements PolicyRule {

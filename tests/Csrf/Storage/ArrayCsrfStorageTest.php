@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Storage;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\Storage\ArrayCsrfStorage;
 use Zappzarapp\Security\Csrf\Storage\CsrfStorageInterface;
@@ -19,12 +20,14 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->storage = new ArrayCsrfStorage();
     }
 
+    #[Test]
     public function testImplementsCsrfStorageInterface(): void
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection Test verifies interface implementation */
         $this->assertInstanceOf(CsrfStorageInterface::class, $this->storage);
     }
 
+    #[Test]
     public function testStoreAndRetrieve(): void
     {
         $this->storage->store('key1', 'token1');
@@ -32,11 +35,13 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame('token1', $this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testRetrieveReturnsNullForMissingKey(): void
     {
         $this->assertNull($this->storage->retrieve('nonexistent'));
     }
 
+    #[Test]
     public function testHasReturnsTrue(): void
     {
         $this->storage->store('key1', 'token1');
@@ -44,11 +49,13 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertTrue($this->storage->has('key1'));
     }
 
+    #[Test]
     public function testHasReturnsFalse(): void
     {
         $this->assertFalse($this->storage->has('nonexistent'));
     }
 
+    #[Test]
     public function testRemove(): void
     {
         $this->storage->store('key1', 'token1');
@@ -58,6 +65,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('key1'));
     }
 
+    #[Test]
     public function testRemoveNonexistentKey(): void
     {
         $this->storage->remove('nonexistent');
@@ -65,6 +73,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('nonexistent'));
     }
 
+    #[Test]
     public function testClear(): void
     {
         $this->storage->store('key1', 'token1');
@@ -76,6 +85,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertNull($this->storage->retrieve('key2'));
     }
 
+    #[Test]
     public function testMultipleKeys(): void
     {
         $this->storage->store('key1', 'token1');
@@ -87,6 +97,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame('token3', $this->storage->retrieve('key3'));
     }
 
+    #[Test]
     public function testOverwriteExistingKey(): void
     {
         $this->storage->store('key1', 'token1');
@@ -95,6 +106,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame('token2', $this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testStoreWithTtlIgnoresTtl(): void
     {
         $this->storage->store('key1', 'token1', 1);
@@ -104,11 +116,13 @@ final class ArrayCsrfStorageTest extends TestCase
 
     // --- Count Method ---
 
+    #[Test]
     public function testCountReturnsZeroWhenEmpty(): void
     {
         $this->assertSame(0, $this->storage->count());
     }
 
+    #[Test]
     public function testCountReturnsCorrectNumber(): void
     {
         $this->storage->store('key1', 'token1');
@@ -118,6 +132,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame(3, $this->storage->count());
     }
 
+    #[Test]
     public function testCountDecreasesAfterRemove(): void
     {
         $this->storage->store('key1', 'token1');
@@ -128,6 +143,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame(1, $this->storage->count());
     }
 
+    #[Test]
     public function testCountReturnsZeroAfterClear(): void
     {
         $this->storage->store('key1', 'token1');
@@ -138,6 +154,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame(0, $this->storage->count());
     }
 
+    #[Test]
     public function testCountDoesNotChangeOnOverwrite(): void
     {
         $this->storage->store('key1', 'token1');
@@ -148,6 +165,7 @@ final class ArrayCsrfStorageTest extends TestCase
 
     // --- Token Expiration ---
 
+    #[Test]
     public function testTokenExpiresAfterTtl(): void
     {
         $this->storage->store('key1', 'token1', 1);
@@ -159,6 +177,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertNull($this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testExpiredTokenIsRemovedFromCount(): void
     {
         $this->storage->store('key1', 'token1', 1);
@@ -175,6 +194,7 @@ final class ArrayCsrfStorageTest extends TestCase
         $this->assertSame(1, $this->storage->count());
     }
 
+    #[Test]
     public function testHasReturnsFalseForExpiredToken(): void
     {
         $this->storage->store('key1', 'token1', 1);

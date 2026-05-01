@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csp\Nonce;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Csp\Nonce\NonceGenerator;
@@ -24,6 +25,7 @@ final class NonceScopeTest extends TestCase
 
     // --- Basic Functionality ---
 
+    #[Test]
     public function testStartCreatesNewScope(): void
     {
         $scope = NonceScope::start();
@@ -34,6 +36,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testGetReturnsNonceValue(): void
     {
         $scope = NonceScope::start();
@@ -46,6 +49,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testGetReturnsSameValueWithinScope(): void
     {
         $scope = NonceScope::start();
@@ -60,6 +64,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testGeneratorReturnsNonceGenerator(): void
     {
         $scope = NonceScope::start();
@@ -75,6 +80,7 @@ final class NonceScopeTest extends TestCase
 
     // --- Scope Isolation ---
 
+    #[Test]
     public function testNewScopeHasDifferentNonce(): void
     {
         $scope1  = NonceScope::start();
@@ -88,6 +94,7 @@ final class NonceScopeTest extends TestCase
         $this->assertNotSame($nonce1, $nonce2);
     }
 
+    #[Test]
     public function testStartResetsGlobalRegistry(): void
     {
         // Set a nonce in the global registry
@@ -105,6 +112,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testEndResetsGlobalRegistry(): void
     {
         $scope = NonceScope::start();
@@ -124,6 +132,7 @@ final class NonceScopeTest extends TestCase
 
     // --- End Lifecycle ---
 
+    #[Test]
     public function testEndCanBeCalledMultipleTimes(): void
     {
         $scope = NonceScope::start();
@@ -135,6 +144,7 @@ final class NonceScopeTest extends TestCase
         $this->assertTrue($scope->hasEnded());
     }
 
+    #[Test]
     public function testHasEndedReturnsFalseBeforeEnd(): void
     {
         $scope = NonceScope::start();
@@ -144,6 +154,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testHasEndedReturnsTrueAfterEnd(): void
     {
         $scope = NonceScope::start();
@@ -154,6 +165,7 @@ final class NonceScopeTest extends TestCase
 
     // --- Pre-existing Nonce ---
 
+    #[Test]
     public function testWithNonceUsesProvidedValue(): void
     {
         $customNonce = base64_encode(random_bytes(32));
@@ -165,6 +177,7 @@ final class NonceScopeTest extends TestCase
         $scope->end();
     }
 
+    #[Test]
     public function testWithNonceResetsGlobalRegistry(): void
     {
         $originalNonce = NonceRegistry::get();
@@ -180,6 +193,7 @@ final class NonceScopeTest extends TestCase
 
     // --- Try/Finally Pattern ---
 
+    #[Test]
     public function testTryFinallyPatternEnsuresCleanup(): void
     {
         $scope         = NonceScope::start();
@@ -200,6 +214,7 @@ final class NonceScopeTest extends TestCase
         $this->assertNotSame($capturedNonce, $freshNonce);
     }
 
+    #[Test]
     public function testTryFinallyPatternWithException(): void
     {
         $scope = NonceScope::start();
@@ -218,6 +233,7 @@ final class NonceScopeTest extends TestCase
 
     // --- Concurrent Scope Simulation ---
 
+    #[Test]
     public function testMultipleScopesAreIndependent(): void
     {
         // Simulate what would happen with concurrent fibers/coroutines

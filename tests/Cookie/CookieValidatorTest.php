@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Cookie;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\CookieOptions;
@@ -28,6 +29,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator = new CookieValidator();
     }
 
+    #[Test]
     public function testValidateNameAcceptsValidName(): void
     {
         $this->validator->validateName('session_id');
@@ -38,6 +40,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateNameRejectsEmptyName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -69,6 +72,7 @@ final class CookieValidatorTest extends TestCase
     }
 
     #[DataProvider('invalidNameCharactersProvider')]
+    #[Test]
     public function testValidateNameRejectsInvalidCharacters(string $name): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -76,6 +80,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validateName($name);
     }
 
+    #[Test]
     public function testValidateValueAcceptsValidValue(): void
     {
         $this->validator->validateValue('abc123');
@@ -98,6 +103,7 @@ final class CookieValidatorTest extends TestCase
     }
 
     #[DataProvider('invalidValueCharactersProvider')]
+    #[Test]
     public function testValidateValueRejectsInvalidCharacters(string $value): void
     {
         $this->expectException(InvalidCookieValueException::class);
@@ -105,12 +111,14 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validateValue($value);
     }
 
+    #[Test]
     public function testIsValidNameReturnsTrue(): void
     {
         $this->assertTrue($this->validator->isValidName('session'));
         $this->assertTrue($this->validator->isValidName('CSRF_TOKEN'));
     }
 
+    #[Test]
     public function testIsValidNameReturnsFalse(): void
     {
         $this->assertFalse($this->validator->isValidName(''));
@@ -118,12 +126,14 @@ final class CookieValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValidName("name\n"));
     }
 
+    #[Test]
     public function testIsValidValueReturnsTrue(): void
     {
         $this->assertTrue($this->validator->isValidValue('value'));
         $this->assertTrue($this->validator->isValidValue(''));
     }
 
+    #[Test]
     public function testIsValidValueReturnsFalse(): void
     {
         $this->assertFalse($this->validator->isValidValue('value;'));
@@ -132,6 +142,7 @@ final class CookieValidatorTest extends TestCase
 
     // --- Cookie Prefix Validation ---
 
+    #[Test]
     public function testValidatePrefixConstraintsPassesForHostPrefix(): void
     {
         $options = new CookieOptions(
@@ -145,6 +156,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue(true); // No exception means success
     }
 
+    #[Test]
     public function testValidatePrefixConstraintsPassesForSecurePrefix(): void
     {
         $options = new CookieOptions(
@@ -156,6 +168,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidatePrefixConstraintsPassesForNonPrefixedCookie(): void
     {
         // Non-prefixed cookies have no constraints
@@ -170,6 +183,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testHostPrefixRequiresSecureFlag(): void
     {
         $options = new CookieOptions(
@@ -184,6 +198,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validatePrefixConstraints('__Host-session', $options);
     }
 
+    #[Test]
     public function testHostPrefixRequiresRootPath(): void
     {
         $options = new CookieOptions(
@@ -198,6 +213,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validatePrefixConstraints('__Host-session', $options);
     }
 
+    #[Test]
     public function testHostPrefixRequiresEmptyDomain(): void
     {
         $options = new CookieOptions(
@@ -212,6 +228,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validatePrefixConstraints('__Host-session', $options);
     }
 
+    #[Test]
     public function testSecurePrefixRequiresSecureFlag(): void
     {
         $options = new CookieOptions(
@@ -224,6 +241,7 @@ final class CookieValidatorTest extends TestCase
         $this->validator->validatePrefixConstraints('__Secure-token', $options);
     }
 
+    #[Test]
     public function testSecurePrefixAllowsCustomPathAndDomain(): void
     {
         // __Secure- only requires Secure flag, path and domain are flexible
@@ -238,16 +256,19 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testHasPrefixDetectsHostPrefix(): void
     {
         $this->assertTrue($this->validator->hasPrefix('__Host-session'));
     }
 
+    #[Test]
     public function testHasPrefixDetectsSecurePrefix(): void
     {
         $this->assertTrue($this->validator->hasPrefix('__Secure-token'));
     }
 
+    #[Test]
     public function testHasPrefixReturnsFalseForNonPrefixed(): void
     {
         $this->assertFalse($this->validator->hasPrefix('session'));
@@ -255,6 +276,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertFalse($this->validator->hasPrefix('Host-session'));
     }
 
+    #[Test]
     public function testIsValidPrefixConstraintsReturnsTrue(): void
     {
         $options = new CookieOptions(path: '/', domain: '', secure: true);
@@ -262,6 +284,7 @@ final class CookieValidatorTest extends TestCase
         $this->assertTrue($this->validator->isValidPrefixConstraints('__Host-session', $options));
     }
 
+    #[Test]
     public function testIsValidPrefixConstraintsReturnsFalse(): void
     {
         $options = new CookieOptions(secure: false);

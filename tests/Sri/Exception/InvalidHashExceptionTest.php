@@ -7,12 +7,14 @@ namespace Zappzarapp\Security\Tests\Sri\Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sri\Exception\InvalidHashException;
 
 #[CoversClass(InvalidHashException::class)]
 final class InvalidHashExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidHashException::invalidFormat('test');
@@ -20,6 +22,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testInvalidFormatFactoryMethod(): void
     {
         $hash      = 'not-a-valid-hash-format';
@@ -29,6 +32,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString($hash, $exception->getMessage());
     }
 
+    #[Test]
     public function testUnsupportedAlgorithmFactoryMethod(): void
     {
         $algorithm = 'md5';
@@ -39,6 +43,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString('sha384, sha512', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidBase64FactoryMethod(): void
     {
         $hash      = 'not!!!valid+++base64';
@@ -65,6 +70,7 @@ final class InvalidHashExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidFormatProvider')]
+    #[Test]
     public function testInvalidFormatWithVariousInputs(string $hash): void
     {
         $exception = InvalidHashException::invalidFormat($hash);
@@ -90,6 +96,7 @@ final class InvalidHashExceptionTest extends TestCase
     }
 
     #[DataProvider('unsupportedAlgorithmProvider')]
+    #[Test]
     public function testUnsupportedAlgorithmWithVariousInputs(string $algorithm): void
     {
         $exception = InvalidHashException::unsupportedAlgorithm($algorithm);
@@ -115,6 +122,7 @@ final class InvalidHashExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidBase64Provider')]
+    #[Test]
     public function testInvalidBase64WithVariousInputs(string $hash): void
     {
         $exception = InvalidHashException::invalidBase64($hash);
@@ -122,6 +130,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString('SRI hash contains invalid base64:', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidFormatWithLongHash(): void
     {
         $longHash  = str_repeat('a', 500);
@@ -130,6 +139,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString($longHash, $exception->getMessage());
     }
 
+    #[Test]
     public function testUnsupportedAlgorithmWithUppercase(): void
     {
         $exception = InvalidHashException::unsupportedAlgorithm('MD5');
@@ -137,6 +147,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString('MD5', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidBase64WithValidLookingButWrongHash(): void
     {
         // Looks like base64 but might be wrong length for algorithm
@@ -146,6 +157,7 @@ final class InvalidHashExceptionTest extends TestCase
         $this->assertStringContainsString($hash, $exception->getMessage());
     }
 
+    #[Test]
     public function testAllFactoryMethodsReturnSameExceptionClass(): void
     {
         $format    = InvalidHashException::invalidFormat('test');

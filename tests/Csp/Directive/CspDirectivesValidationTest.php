@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
@@ -16,6 +17,7 @@ use Zappzarapp\Security\Csp\SecurityPolicy;
 final class CspDirectivesValidationTest extends TestCase
 {
     // Empty Value Validation
+    #[Test]
     public function testThrowsForEmptyDefaultSrc(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -24,6 +26,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(defaultSrc: '');
     }
 
+    #[Test]
     public function testThrowsForWhitespaceOnlyDefaultSrc(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -33,6 +36,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // Semicolon Injection Prevention
+    #[Test]
     public function testThrowsForSemicolonInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -41,6 +45,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(defaultSrc: "'self'; evil-script-src");
     }
 
+    #[Test]
     public function testThrowsForSemicolonInScriptSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -49,6 +54,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(scriptSrc: "'self'; evil");
     }
 
+    #[Test]
     public function testThrowsForSemicolonInStyleSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -58,6 +64,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // Newline Injection Prevention
+    #[Test]
     public function testThrowsForNewlineInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -66,6 +73,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(defaultSrc: "'self'\nevil");
     }
 
+    #[Test]
     public function testThrowsForCarriageReturnInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -74,6 +82,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(defaultSrc: "'self'\revil");
     }
 
+    #[Test]
     public function testThrowsForCrLfInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -83,6 +92,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // WebSocket Host Validation
+    #[Test]
     public function testThrowsForInvalidWebSocketHostWithoutPort(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -91,6 +101,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'example.com');
     }
 
+    #[Test]
     public function testThrowsForInvalidWebSocketHostWithProtocol(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -99,6 +110,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'wss://example.com:443');
     }
 
+    #[Test]
     public function testThrowsForInvalidWebSocketHostWithPath(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -107,6 +119,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'example.com:443/path');
     }
 
+    #[Test]
     public function testThrowsForInvalidWebSocketHostEmpty(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -116,6 +129,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // Valid WebSocket Hosts
+    #[Test]
     public function testAcceptsValidWebSocketHostWithDomain(): void
     {
         $directives = new CspDirectives(websocketHost: 'example.com:443');
@@ -123,6 +137,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame('example.com:443', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithSubdomain(): void
     {
         $directives = new CspDirectives(websocketHost: 'ws.api.example.com:8080');
@@ -130,6 +145,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame('ws.api.example.com:8080', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIp(): void
     {
         $directives = new CspDirectives(websocketHost: '192.168.1.100:5173');
@@ -137,6 +153,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame('192.168.1.100:5173', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithLocalhost(): void
     {
         $directives = new CspDirectives(websocketHost: 'localhost:8443');
@@ -145,6 +162,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // WebSocket Port Range Validation
+    #[Test]
     public function testThrowsForWebSocketPortZero(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -153,6 +171,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'localhost:0');
     }
 
+    #[Test]
     public function testThrowsForWebSocketPortAboveMax(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -161,6 +180,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'localhost:65536');
     }
 
+    #[Test]
     public function testThrowsForWebSocketPortWayAboveMax(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -169,6 +189,7 @@ final class CspDirectivesValidationTest extends TestCase
         new CspDirectives(websocketHost: 'example.com:99999');
     }
 
+    #[Test]
     public function testAcceptsWebSocketPortOne(): void
     {
         $directives = new CspDirectives(websocketHost: 'localhost:1');
@@ -176,6 +197,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame('localhost:1', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsWebSocketPortMax(): void
     {
         $directives = new CspDirectives(websocketHost: 'localhost:65535');
@@ -184,6 +206,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // Valid Directive Values
+    #[Test]
     public function testAcceptsValidDefaultSrc(): void
     {
         $directives = new CspDirectives(defaultSrc: "'self' https://example.com https://cdn.example.com");
@@ -191,6 +214,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame("'self' https://example.com https://cdn.example.com", $directives->defaultSrc);
     }
 
+    #[Test]
     public function testAcceptsValidScriptSrc(): void
     {
         // Use LENIENT policy to avoid policy conflict warning
@@ -202,6 +226,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertSame("'self' 'unsafe-inline' https://scripts.example.com", $directives->scriptSrc);
     }
 
+    #[Test]
     public function testAcceptsValidStyleSrc(): void
     {
         // Use LENIENT policy to avoid policy conflict warning
@@ -214,6 +239,7 @@ final class CspDirectivesValidationTest extends TestCase
     }
 
     // Policy Conflict Warning Tests
+        #[Test]
         public function testWarnsOnStrictWithUnsafeInlineInScriptSrc(): void
     {
         $warnings = [];
@@ -236,6 +262,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertStringContainsString("'unsafe-inline' in script-src", $warnings[0]);
     }
 
+        #[Test]
         public function testWarnsOnStrictWithUnsafeEvalInScriptSrc(): void
     {
         $warnings = [];
@@ -258,6 +285,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertStringContainsString("'unsafe-eval' in script-src", $warnings[0]);
     }
 
+        #[Test]
         public function testWarnsOnStrictWithUnsafeInlineInStyleSrc(): void
     {
         $warnings = [];
@@ -280,6 +308,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertStringContainsString("'unsafe-inline' in style-src", $warnings[0]);
     }
 
+        #[Test]
         public function testNoWarningOnLenientWithUnsafeInline(): void
     {
         $warnings = [];
@@ -301,6 +330,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertCount(0, $warnings);
     }
 
+        #[Test]
         public function testNoWarningOnStrictWithoutUnsafeDirectives(): void
     {
         $warnings = [];
@@ -322,6 +352,7 @@ final class CspDirectivesValidationTest extends TestCase
         $this->assertCount(0, $warnings);
     }
 
+        #[Test]
         public function testMultipleWarningsOnStrictWithMultipleConflicts(): void
     {
         $warnings = [];

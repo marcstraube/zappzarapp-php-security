@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Algorithm\AlgorithmType;
 use Zappzarapp\Security\RateLimiting\RateLimitConfig;
@@ -15,6 +16,7 @@ use Zappzarapp\Security\RateLimiting\RateLimitConfig;
 #[CoversClass(RateLimitConfig::class)]
 final class RateLimitConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $config = new RateLimitConfig();
@@ -26,6 +28,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::SLIDING_WINDOW, $config->algorithm);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $config = new RateLimitConfig(
@@ -43,6 +46,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::TOKEN_BUCKET, $config->algorithm);
     }
 
+    #[Test]
     public function testWithLimit(): void
     {
         $config    = new RateLimitConfig();
@@ -53,6 +57,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithWindow(): void
     {
         $config    = new RateLimitConfig();
@@ -62,6 +67,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(120, $newConfig->window);
     }
 
+    #[Test]
     public function testWithBurst(): void
     {
         $config    = new RateLimitConfig();
@@ -71,6 +77,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(10, $newConfig->burst);
     }
 
+    #[Test]
     public function testWithPrefix(): void
     {
         $config    = new RateLimitConfig();
@@ -80,6 +87,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame('api:', $newConfig->prefix);
     }
 
+    #[Test]
     public function testWithAlgorithm(): void
     {
         $config    = new RateLimitConfig();
@@ -89,6 +97,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::TOKEN_BUCKET, $newConfig->algorithm);
     }
 
+    #[Test]
     public function testApiFactory(): void
     {
         $config = RateLimitConfig::api();
@@ -98,6 +107,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::SLIDING_WINDOW, $config->algorithm);
     }
 
+    #[Test]
     public function testLoginFactory(): void
     {
         $config = RateLimitConfig::login();
@@ -107,6 +117,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame('login_limit:', $config->prefix);
     }
 
+    #[Test]
     public function testFormFactory(): void
     {
         $config = RateLimitConfig::form();
@@ -116,6 +127,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame('form_limit:', $config->prefix);
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $config = RateLimitConfig::strict(10);
@@ -126,6 +138,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::TOKEN_BUCKET, $config->algorithm);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new RateLimitConfig();
@@ -143,6 +156,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(AlgorithmType::SLIDING_WINDOW, $original->algorithm);
     }
 
+    #[Test]
     public function testChainedModifications(): void
     {
         $config = (new RateLimitConfig())
@@ -157,6 +171,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame('api:', $config->prefix);
     }
 
+    #[Test]
     public function testConstructorRejectsZeroLimit(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -165,6 +180,7 @@ final class RateLimitConfigTest extends TestCase
         new RateLimitConfig(limit: 0);
     }
 
+    #[Test]
     public function testConstructorRejectsNegativeLimit(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -173,6 +189,7 @@ final class RateLimitConfigTest extends TestCase
         new RateLimitConfig(limit: -1);
     }
 
+    #[Test]
     public function testConstructorRejectsZeroWindow(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -181,6 +198,7 @@ final class RateLimitConfigTest extends TestCase
         new RateLimitConfig(window: 0);
     }
 
+    #[Test]
     public function testConstructorRejectsNegativeWindow(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -189,6 +207,7 @@ final class RateLimitConfigTest extends TestCase
         new RateLimitConfig(window: -1);
     }
 
+    #[Test]
     public function testConstructorRejectsNegativeBurst(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -197,6 +216,7 @@ final class RateLimitConfigTest extends TestCase
         new RateLimitConfig(burst: -1);
     }
 
+    #[Test]
     public function testWithLimitRejectsZero(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -205,6 +225,7 @@ final class RateLimitConfigTest extends TestCase
         (new RateLimitConfig())->withLimit(0);
     }
 
+    #[Test]
     public function testWithLimitRejectsNegative(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -213,6 +234,7 @@ final class RateLimitConfigTest extends TestCase
         (new RateLimitConfig())->withLimit(-5);
     }
 
+    #[Test]
     public function testWithWindowRejectsZero(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -221,6 +243,7 @@ final class RateLimitConfigTest extends TestCase
         (new RateLimitConfig())->withWindow(0);
     }
 
+    #[Test]
     public function testWithWindowRejectsNegative(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -229,6 +252,7 @@ final class RateLimitConfigTest extends TestCase
         (new RateLimitConfig())->withWindow(-10);
     }
 
+    #[Test]
     public function testWithBurstRejectsNegative(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -237,6 +261,7 @@ final class RateLimitConfigTest extends TestCase
         (new RateLimitConfig())->withBurst(-1);
     }
 
+    #[Test]
     public function testStrictRejectsZero(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -245,6 +270,7 @@ final class RateLimitConfigTest extends TestCase
         RateLimitConfig::strict(0);
     }
 
+    #[Test]
     public function testStrictRejectsNegative(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -253,6 +279,7 @@ final class RateLimitConfigTest extends TestCase
         RateLimitConfig::strict(-5);
     }
 
+    #[Test]
     public function testValidEdgeCaseLimitOne(): void
     {
         $config = new RateLimitConfig(limit: 1);
@@ -260,6 +287,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(1, $config->limit);
     }
 
+    #[Test]
     public function testValidEdgeCaseWindowOne(): void
     {
         $config = new RateLimitConfig(window: 1);
@@ -267,6 +295,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(1, $config->window);
     }
 
+    #[Test]
     public function testValidEdgeCaseBurstZero(): void
     {
         $config = new RateLimitConfig(burst: 0);
@@ -274,6 +303,7 @@ final class RateLimitConfigTest extends TestCase
         $this->assertSame(0, $config->burst);
     }
 
+    #[Test]
     public function testValidEdgeCaseStrictWithOne(): void
     {
         $config = RateLimitConfig::strict(1);

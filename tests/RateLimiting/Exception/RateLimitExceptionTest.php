@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\RateLimiting\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\RateLimiting\Exception\RateLimitException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\RateLimiting\Exception\RateLimitException;
 #[CoversClass(RateLimitException::class)]
 final class RateLimitExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = new RateLimitException(60, 100, 0);
@@ -19,6 +21,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testMessage(): void
     {
         $exception = new RateLimitException(60, 100, 0);
@@ -26,6 +29,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame('Rate limit exceeded. Retry after 60 seconds.', $exception->getMessage());
     }
 
+    #[Test]
     public function testMessageWithDifferentRetryAfter(): void
     {
         $exception = new RateLimitException(120, 100, 0);
@@ -33,6 +37,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame('Rate limit exceeded. Retry after 120 seconds.', $exception->getMessage());
     }
 
+    #[Test]
     public function testRetryAfter(): void
     {
         $exception = new RateLimitException(60, 100, 5);
@@ -40,6 +45,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(60, $exception->retryAfter());
     }
 
+    #[Test]
     public function testLimit(): void
     {
         $exception = new RateLimitException(60, 100, 5);
@@ -47,6 +53,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(100, $exception->limit());
     }
 
+    #[Test]
     public function testRemaining(): void
     {
         $exception = new RateLimitException(60, 100, 5);
@@ -54,6 +61,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(5, $exception->remaining());
     }
 
+    #[Test]
     public function testRemainingIsZeroWhenExceeded(): void
     {
         $exception = new RateLimitException(60, 100, 0);
@@ -61,6 +69,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(0, $exception->remaining());
     }
 
+    #[Test]
     public function testExceededFactory(): void
     {
         $exception = RateLimitException::exceeded(30, 50);
@@ -70,6 +79,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(0, $exception->remaining());
     }
 
+    #[Test]
     public function testExceededFactoryMessage(): void
     {
         $exception = RateLimitException::exceeded(30, 50);
@@ -77,6 +87,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame('Rate limit exceeded. Retry after 30 seconds.', $exception->getMessage());
     }
 
+    #[Test]
     public function testExceededFactoryWithZeroRetryAfter(): void
     {
         $exception = RateLimitException::exceeded(0, 100);
@@ -85,6 +96,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame('Rate limit exceeded. Retry after 0 seconds.', $exception->getMessage());
     }
 
+    #[Test]
     public function testExceededFactoryWithLargeValues(): void
     {
         $exception = RateLimitException::exceeded(3600, 10000);
@@ -94,6 +106,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(0, $exception->remaining());
     }
 
+    #[Test]
     public function testConstructorWithNegativeValues(): void
     {
         // Edge case: negative values should be accepted (though not recommended)
@@ -104,6 +117,7 @@ final class RateLimitExceptionTest extends TestCase
         $this->assertSame(-1, $exception->remaining());
     }
 
+    #[Test]
     public function testConstructorWithZeroValues(): void
     {
         $exception = new RateLimitException(0, 0, 0);

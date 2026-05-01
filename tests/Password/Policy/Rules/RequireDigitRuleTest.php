@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Policy\Rules;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
 use Zappzarapp\Security\Password\Policy\Rules\RequireDigitRule;
@@ -20,56 +21,67 @@ final class RequireDigitRuleTest extends TestCase
         $this->rule = new RequireDigitRule();
     }
 
+    #[Test]
     public function testImplementsPolicyRuleInterface(): void
     {
         $this->assertInstanceOf(PolicyRule::class, $this->rule);
     }
 
+    #[Test]
     public function testIsSatisfiedWithSingleDigit(): void
     {
         $this->assertTrue($this->rule->isSatisfied('password1'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithMultipleDigits(): void
     {
         $this->assertTrue($this->rule->isSatisfied('pass123word'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithOnlyDigits(): void
     {
         $this->assertTrue($this->rule->isSatisfied('123456'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithDigitAtStart(): void
     {
         $this->assertTrue($this->rule->isSatisfied('1password'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithDigitAtEnd(): void
     {
         $this->assertTrue($this->rule->isSatisfied('password9'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithNoDigits(): void
     {
         $this->assertFalse($this->rule->isSatisfied('passwordonly'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithEmptyString(): void
     {
         $this->assertFalse($this->rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithOnlyLetters(): void
     {
         $this->assertFalse($this->rule->isSatisfied('ABCDEFGhijklmn'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithSpecialCharsOnly(): void
     {
         $this->assertFalse($this->rule->isSatisfied('!@#$%^&*()'));
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $this->assertSame(
@@ -78,6 +90,7 @@ final class RequireDigitRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testAllDigits(): void
     {
         $digits = '0123456789';
@@ -91,6 +104,7 @@ final class RequireDigitRuleTest extends TestCase
         }
     }
 
+    #[Test]
     public function testDoesNotMatchUnicodeDigits(): void
     {
         // Full-width digits should not match \d
@@ -99,11 +113,13 @@ final class RequireDigitRuleTest extends TestCase
         $this->assertFalse($this->rule->isSatisfied('password' . $fullWidthDigit));
     }
 
+    #[Test]
     public function testWithWhitespace(): void
     {
         $this->assertTrue($this->rule->isSatisfied('pass 1 word'));
     }
 
+    #[Test]
     public function testWithNewlines(): void
     {
         $this->assertTrue($this->rule->isSatisfied("pass\n1\nword"));
@@ -129,6 +145,7 @@ final class RequireDigitRuleTest extends TestCase
     }
 
     #[DataProvider('digitProvider')]
+    #[Test]
     public function testIsSatisfiedWithDataProvider(string $password, bool $expected): void
     {
         $this->assertSame($expected, $this->rule->isSatisfied($password));

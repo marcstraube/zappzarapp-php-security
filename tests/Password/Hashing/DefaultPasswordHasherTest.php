@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Hashing;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Hashing\DefaultPasswordHasher;
 use Zappzarapp\Security\Password\Hashing\HashConfig;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Password\Hashing\PasswordHasher;
 #[CoversClass(DefaultPasswordHasher::class)]
 final class DefaultPasswordHasherTest extends TestCase
 {
+    #[Test]
     public function testImplementsPasswordHasherInterface(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -21,6 +23,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertInstanceOf(PasswordHasher::class, $hasher);
     }
 
+    #[Test]
     public function testDefaultConstructorUsesDefaultConfig(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -30,6 +33,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$argon2id$', $hash);
     }
 
+    #[Test]
     public function testConstructorWithCustomConfig(): void
     {
         $config = HashConfig::bcrypt(10);
@@ -39,6 +43,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$2y$10$', $hash);
     }
 
+    #[Test]
     public function testHashCreatesValidHash(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -49,6 +54,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertNotSame($password, $hash);
     }
 
+    #[Test]
     public function testHashCreatesDifferentHashesForSamePassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -61,6 +67,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertNotSame($hash1, $hash2);
     }
 
+    #[Test]
     public function testVerifyReturnsTrueForCorrectPassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -70,6 +77,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($password, $hash));
     }
 
+    #[Test]
     public function testVerifyReturnsFalseForIncorrectPassword(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -78,6 +86,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('WrongPassword!', $hash));
     }
 
+    #[Test]
     public function testVerifyReturnsFalseForEmptyPassword(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -86,6 +95,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('', $hash));
     }
 
+    #[Test]
     public function testHashAndVerifyWithEmptyPassword(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -95,6 +105,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('notEmpty', $hash));
     }
 
+    #[Test]
     public function testHashAndVerifyWithUnicodePassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -104,6 +115,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($password, $hash));
     }
 
+    #[Test]
     public function testHashAndVerifyWithSpecialCharacters(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -113,6 +125,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($password, $hash));
     }
 
+    #[Test]
     public function testHashAndVerifyWithVeryLongPassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -122,6 +135,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($password, $hash));
     }
 
+    #[Test]
     public function testNeedsRehashReturnsFalseForCurrentConfig(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -130,6 +144,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->needsRehash($hash));
     }
 
+    #[Test]
     public function testNeedsRehashReturnsTrueForDifferentConfig(): void
     {
         $hasher1 = new DefaultPasswordHasher(HashConfig::bcrypt(10));
@@ -140,6 +155,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher2->needsRehash($hash));
     }
 
+    #[Test]
     public function testNeedsRehashReturnsTrueForDifferentAlgorithm(): void
     {
         $bcryptHasher = new DefaultPasswordHasher(HashConfig::bcrypt());
@@ -150,6 +166,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($argonHasher->needsRehash($hash));
     }
 
+    #[Test]
     public function testGetInfoReturnsCorrectStructure(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -162,6 +179,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertArrayHasKey('options', $info);
     }
 
+    #[Test]
     public function testGetInfoForArgon2id(): void
     {
         $hasher = new DefaultPasswordHasher(HashConfig::argon2id());
@@ -175,6 +193,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertArrayHasKey('threads', $info['options']);
     }
 
+    #[Test]
     public function testGetInfoForBcrypt(): void
     {
         $hasher = new DefaultPasswordHasher(HashConfig::bcrypt(10));
@@ -187,6 +206,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertSame(10, $info['options']['cost']);
     }
 
+    #[Test]
     public function testArgon2idStaticFactory(): void
     {
         $hasher = DefaultPasswordHasher::argon2id();
@@ -195,6 +215,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$argon2id$', $hash);
     }
 
+    #[Test]
     public function testBcryptStaticFactoryWithDefaultCost(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();
@@ -203,6 +224,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$2y$12$', $hash);
     }
 
+    #[Test]
     public function testBcryptStaticFactoryWithCustomCost(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt(10);
@@ -211,6 +233,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$2y$10$', $hash);
     }
 
+    #[Test]
     public function testHighSecurityStaticFactory(): void
     {
         $hasher = DefaultPasswordHasher::highSecurity();
@@ -224,6 +247,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertSame(2, $info['options']['threads']);
     }
 
+    #[Test]
     public function testVerifyWithMalformedHash(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -231,6 +255,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('password', 'not-a-valid-hash'));
     }
 
+    #[Test]
     public function testVerifyWithEmptyHash(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -238,6 +263,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('password', ''));
     }
 
+    #[Test]
     public function testNeedsRehashWithInvalidHash(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -245,6 +271,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->needsRehash('invalid-hash'));
     }
 
+    #[Test]
     public function testGetInfoWithInvalidHash(): void
     {
         $hasher = new DefaultPasswordHasher();
@@ -254,6 +281,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertSame('unknown', $info['algoName']);
     }
 
+    #[Test]
     public function testHashWithWhitespacePassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -264,6 +292,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify(trim($password), $hash));
     }
 
+    #[Test]
     public function testHashWithNewlineInPassword(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -273,6 +302,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($password, $hash));
     }
 
+    #[Test]
     public function testHashWithNullByte(): void
     {
         $hasher   = new DefaultPasswordHasher();
@@ -284,6 +314,7 @@ final class DefaultPasswordHasherTest extends TestCase
 
     // --- bcrypt Pre-Hashing Tests ---
 
+    #[Test]
     public function testBcryptWithLongPasswordOver72Bytes(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();
@@ -298,6 +329,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($longPassword, $hash));
     }
 
+    #[Test]
     public function testBcryptDistinguishesLongPasswordsThatDifferAfter72Bytes(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();
@@ -315,6 +347,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify($password2, $hash1));
     }
 
+    #[Test]
     public function testBcryptPreHashingDoesNotAffectShortPasswords(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();
@@ -328,6 +361,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify('DifferentPassword', $hash));
     }
 
+    #[Test]
     public function testArgon2idHandlesLongPasswordsNatively(): void
     {
         $hasher = DefaultPasswordHasher::argon2id();
@@ -340,6 +374,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify($longPassword, $hash));
     }
 
+    #[Test]
     public function testBcryptPreHashingWithExactly72BytePassword(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();
@@ -353,6 +388,7 @@ final class DefaultPasswordHasherTest extends TestCase
         $this->assertFalse($hasher->verify($password72 . 'extra', $hash));
     }
 
+    #[Test]
     public function testBcryptPreHashingWithUnicodeExceeding72Bytes(): void
     {
         $hasher = DefaultPasswordHasher::bcrypt();

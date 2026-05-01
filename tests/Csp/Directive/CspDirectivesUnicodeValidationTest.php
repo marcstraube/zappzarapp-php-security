@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
  */
 final class CspDirectivesUnicodeValidationTest extends TestCase
 {
+    #[Test]
     public function testThrowsForNonBreakingSpaceInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -21,6 +23,7 @@ final class CspDirectivesUnicodeValidationTest extends TestCase
         new CspDirectives(defaultSrc: "'self'\u{00A0}'unsafe-inline'");
     }
 
+    #[Test]
     public function testThrowsForNonBreakingSpaceInScriptSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -29,6 +32,7 @@ final class CspDirectivesUnicodeValidationTest extends TestCase
         new CspDirectives(scriptSrc: "'self'\u{00A0}'unsafe-eval'");
     }
 
+    #[Test]
     public function testThrowsForNonBreakingSpaceInStyleSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -37,6 +41,7 @@ final class CspDirectivesUnicodeValidationTest extends TestCase
         new CspDirectives(styleSrc: "'self'\u{00A0}'unsafe-inline'");
     }
 
+    #[Test]
     public function testThrowsForIdeographicSpaceInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -46,6 +51,7 @@ final class CspDirectivesUnicodeValidationTest extends TestCase
         new CspDirectives(defaultSrc: "'self'\u{3000}'unsafe-inline'");
     }
 
+    #[Test]
     public function testThrowsForEnSpaceInDefaultSrc(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);

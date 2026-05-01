@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Cookie;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\CookieOptions;
@@ -22,6 +23,7 @@ use Zappzarapp\Security\Cookie\SecureCookie;
 #[UsesClass(SameSitePolicy::class)]
 final class SecureCookieTest extends TestCase
 {
+    #[Test]
     public function testConstructorWithDefaults(): void
     {
         $cookie = new SecureCookie('session', 'abc123');
@@ -32,6 +34,7 @@ final class SecureCookieTest extends TestCase
         $this->assertTrue($cookie->options->httpOnly);
     }
 
+    #[Test]
     public function testConstructorWithCustomOptions(): void
     {
         $options = CookieOptions::lax();
@@ -42,6 +45,7 @@ final class SecureCookieTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testConstructorRejectsInvalidName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -49,6 +53,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('invalid;name', 'value');
     }
 
+    #[Test]
     public function testConstructorValidatesHostPrefixConstraints(): void
     {
         // __Host- prefix requires: Secure=true, Path=/, Domain must be empty
@@ -59,6 +64,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('__Host-session', 'value', new CookieOptions(domain: 'example.com'));
     }
 
+    #[Test]
     public function testConstructorValidatesSecurePrefixConstraints(): void
     {
         // __Secure- prefix requires: Secure=true
@@ -69,6 +75,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('__Secure-token', 'value', CookieOptions::development());
     }
 
+    #[Test]
     public function testConstructorRejectsEmptyName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -76,6 +83,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('', 'value');
     }
 
+    #[Test]
     public function testConstructorRejectsInvalidValue(): void
     {
         $this->expectException(InvalidCookieValueException::class);
@@ -83,6 +91,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('name', "value\ninjection");
     }
 
+    #[Test]
     public function testWithValue(): void
     {
         $cookie    = new SecureCookie('name', 'original');
@@ -93,6 +102,7 @@ final class SecureCookieTest extends TestCase
         $this->assertNotSame($cookie, $newCookie);
     }
 
+    #[Test]
     public function testWithValueRejectsInvalid(): void
     {
         $cookie = new SecureCookie('name', 'value');
@@ -101,6 +111,7 @@ final class SecureCookieTest extends TestCase
         $cookie->withValue("invalid;value");
     }
 
+    #[Test]
     public function testWithOptions(): void
     {
         $cookie    = new SecureCookie('name', 'value');
@@ -111,6 +122,7 @@ final class SecureCookieTest extends TestCase
         $this->assertNotSame($cookie, $newCookie);
     }
 
+    #[Test]
     public function testWithMaxAge(): void
     {
         $cookie    = new SecureCookie('name', 'value');
@@ -121,6 +133,7 @@ final class SecureCookieTest extends TestCase
         $this->assertGreaterThanOrEqual($now + 3600, $newCookie->options->expires);
     }
 
+    #[Test]
     public function testWithPath(): void
     {
         $cookie    = new SecureCookie('name', 'value');
@@ -130,6 +143,7 @@ final class SecureCookieTest extends TestCase
         $this->assertSame('/admin', $newCookie->options->path);
     }
 
+    #[Test]
     public function testWithDomain(): void
     {
         $cookie    = new SecureCookie('name', 'value');
@@ -139,6 +153,7 @@ final class SecureCookieTest extends TestCase
         $this->assertSame('example.com', $newCookie->options->domain);
     }
 
+    #[Test]
     public function testHeaderValue(): void
     {
         $cookie = new SecureCookie('session', 'abc123');
@@ -151,6 +166,7 @@ final class SecureCookieTest extends TestCase
         $this->assertStringContainsString('SameSite=Strict', $header);
     }
 
+    #[Test]
     public function testHeaderValueWithExpires(): void
     {
         $expires = time() + 3600;
@@ -161,6 +177,7 @@ final class SecureCookieTest extends TestCase
         $this->assertStringContainsString('Max-Age=', $header);
     }
 
+    #[Test]
     public function testHeaderValueWithDomain(): void
     {
         $cookie = new SecureCookie('name', 'value', new CookieOptions(domain: 'example.com'));
@@ -169,6 +186,7 @@ final class SecureCookieTest extends TestCase
         $this->assertStringContainsString('Domain=example.com', $header);
     }
 
+    #[Test]
     public function testHeaderValueWithoutSecure(): void
     {
         $cookie = new SecureCookie('name', 'value', CookieOptions::development());
@@ -178,6 +196,7 @@ final class SecureCookieTest extends TestCase
         $this->assertStringNotContainsString('; Secure', $header);
     }
 
+    #[Test]
     public function testToDelete(): void
     {
         $cookie       = new SecureCookie('session', 'abc123');
@@ -188,6 +207,7 @@ final class SecureCookieTest extends TestCase
         $this->assertSame(1, $deleteCookie->options->expires);
     }
 
+    #[Test]
     public function testSessionFactory(): void
     {
         $cookie = SecureCookie::session('SESSID', 'token123');
@@ -199,6 +219,7 @@ final class SecureCookieTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testPersistentFactory(): void
     {
         $now    = time();
@@ -209,6 +230,7 @@ final class SecureCookieTest extends TestCase
         $this->assertGreaterThanOrEqual($now + 86400, $cookie->options->expires);
     }
 
+    #[Test]
     public function testCookieValueWithSpacesIsInvalid(): void
     {
         // RFC 6265: Cookie values cannot contain spaces (must be URL-encoded by the application)
@@ -217,6 +239,7 @@ final class SecureCookieTest extends TestCase
         new SecureCookie('name', 'value with spaces');
     }
 
+    #[Test]
     public function testCookieValueWithSpecialCharacters(): void
     {
         // Valid cookie value characters (alphanumeric)
@@ -226,6 +249,7 @@ final class SecureCookieTest extends TestCase
         $this->assertStringContainsString('name=abc123XYZ', $header);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new SecureCookie('name', 'value');
@@ -257,6 +281,7 @@ final class SecureCookieTest extends TestCase
      *
      * This test verifies send() returns a boolean and can be called.
      */
+    #[Test]
     public function testSendReturnsBoolean(): void
     {
         $cookie = new SecureCookie('session', 'value123');
@@ -271,6 +296,7 @@ final class SecureCookieTest extends TestCase
      * The validation in the constructor ensures invalid cookies are rejected early,
      * before send() is ever called.
      */
+    #[Test]
     public function testSendValidatesBeforeSending(): void
     {
         // Valid cookie can be created and send() called

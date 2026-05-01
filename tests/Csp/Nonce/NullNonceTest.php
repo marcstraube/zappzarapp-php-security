@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Nonce;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Nonce\NonceProvider;
@@ -11,6 +12,7 @@ use Zappzarapp\Security\Csp\Nonce\NullNonce;
 
 final class NullNonceTest extends TestCase
 {
+    #[Test]
     public function testImplementsNonceProvider(): void
     {
         $nullNonce = new NullNonce();
@@ -22,6 +24,7 @@ final class NullNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testReturnsEmptyString(): void
     {
         $nullNonce = new NullNonce();
@@ -32,6 +35,7 @@ final class NullNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testAlwaysReturnsEmptyString(): void
     {
         $nullNonce = new NullNonce();

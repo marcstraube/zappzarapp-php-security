@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Cookie;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\CookieOptions;
@@ -19,6 +20,7 @@ use Zappzarapp\Security\Cookie\SameSitePolicy;
 #[UsesClass(SameSitePolicy::class)]
 final class CookieOptionsTest extends TestCase
 {
+    #[Test]
     public function testDefaultValuesAreSecure(): void
     {
         $options = new CookieOptions();
@@ -31,6 +33,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $options->sameSite);
     }
 
+    #[Test]
     public function testWithExpires(): void
     {
         $options    = new CookieOptions();
@@ -42,6 +45,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithMaxAge(): void
     {
         $options    = new CookieOptions();
@@ -53,6 +57,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertLessThanOrEqual($now + 3601, $newOptions->expires);
     }
 
+    #[Test]
     public function testWithPath(): void
     {
         $options    = new CookieOptions();
@@ -63,6 +68,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithDomain(): void
     {
         $options    = new CookieOptions();
@@ -73,6 +79,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithSecure(): void
     {
         $options    = new CookieOptions(secure: false);
@@ -83,6 +90,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithoutSecure(): void
     {
         $options    = new CookieOptions();
@@ -93,6 +101,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithHttpOnly(): void
     {
         $options    = new CookieOptions(httpOnly: false);
@@ -103,6 +112,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithoutHttpOnly(): void
     {
         $options    = new CookieOptions();
@@ -113,6 +123,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testWithSameSite(): void
     {
         $options    = new CookieOptions();
@@ -123,6 +134,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertNotSame($options, $newOptions);
     }
 
+    #[Test]
     public function testToArray(): void
     {
         $options = new CookieOptions(
@@ -144,6 +156,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame('Lax', $array['samesite']);
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $options = CookieOptions::strict();
@@ -153,6 +166,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $options->sameSite);
     }
 
+    #[Test]
     public function testLaxFactory(): void
     {
         $options = CookieOptions::lax();
@@ -162,6 +176,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $options->sameSite);
     }
 
+    #[Test]
     public function testJsAccessibleFactory(): void
     {
         $options = CookieOptions::jsAccessible();
@@ -171,6 +186,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $options->sameSite);
     }
 
+    #[Test]
     public function testDevelopmentFactory(): void
     {
         $options = CookieOptions::development();
@@ -180,6 +196,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $options->sameSite);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new CookieOptions();
@@ -199,6 +216,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $original->sameSite);
     }
 
+    #[Test]
     public function testChainedModifications(): void
     {
         $options = (new CookieOptions())
@@ -216,6 +234,7 @@ final class CookieOptionsTest extends TestCase
         $this->assertSame(SameSitePolicy::NONE, $options->sameSite);
     }
 
+    #[Test]
     public function testWithSameSiteNoneThrowsWithoutSecure(): void
     {
         $options = (new CookieOptions())->withoutSecure();
@@ -226,6 +245,7 @@ final class CookieOptionsTest extends TestCase
         $options->withSameSite(SameSitePolicy::NONE);
     }
 
+    #[Test]
     public function testWithSameSiteNoneAutoEnablesSecure(): void
     {
         $options = (new CookieOptions())
@@ -237,6 +257,7 @@ final class CookieOptionsTest extends TestCase
     }
 
     #[DataProvider('invalidDomainProvider')]
+    #[Test]
     public function testWithDomainRejectsHeaderInjectionCharacters(string $invalidDomain): void
     {
         $options = new CookieOptions();
@@ -262,6 +283,7 @@ final class CookieOptionsTest extends TestCase
     }
 
     #[DataProvider('invalidPathProvider')]
+    #[Test]
     public function testWithPathRejectsHeaderInjectionCharacters(string $invalidPath): void
     {
         $options = new CookieOptions();

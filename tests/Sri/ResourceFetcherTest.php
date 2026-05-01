@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Uri\PrivateNetworkValidator;
@@ -26,6 +27,7 @@ use Zappzarapp\Security\Sri\ResourceFetcherConfig;
 #[UsesClass(PrivateNetworkValidator::class)]
 final class ResourceFetcherTest extends TestCase
 {
+    #[Test]
     public function testFetchWithCustomHttpClient(): void
     {
         $expectedContent = 'console.log("hello");';
@@ -49,6 +51,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertSame($expectedContent, $result);
     }
 
+    #[Test]
     public function testFetchThrowsOnHttpClientFailure(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -60,6 +63,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetch('https://example.com/script.js');
     }
 
+    #[Test]
     public function testFetchThrowsOnInvalidUrl(): void
     {
         $fetcher = new ResourceFetcher();
@@ -68,6 +72,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetch('not-a-valid-url');
     }
 
+    #[Test]
     public function testFetchThrowsOnNonHttpScheme(): void
     {
         $fetcher = new ResourceFetcher();
@@ -76,6 +81,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetch('ftp://example.com/file.txt');
     }
 
+    #[Test]
     public function testFetchThrowsOnContentExceedingMaxSize(): void
     {
         $largeContent = str_repeat('x', 1000);
@@ -91,6 +97,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetch('https://example.com/large-file.js');
     }
 
+    #[Test]
     public function testFetchPassesConfigToClient(): void
     {
         $client = $this->createMock(HttpClientInterface::class);
@@ -129,6 +136,7 @@ final class ResourceFetcherTest extends TestCase
     }
 
     #[DataProvider('blockedSchemeProvider')]
+    #[Test]
     public function testFileGetContentsHttpClientBlocksNonHttpSchemes(string $url): void
     {
         $client = new FileGetContentsHttpClient();
@@ -138,6 +146,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertNull($result, "URL with blocked scheme should return null: {$url}");
     }
 
+    #[Test]
     public function testFileGetContentsHttpClientAllowsHttpScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -150,6 +159,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testFileGetContentsHttpClientAllowsHttpsScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -161,6 +171,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testFileGetContentsHttpClientIsCaseInsensitiveForScheme(): void
     {
         $client = new FileGetContentsHttpClient(defaultTimeout: 1);
@@ -174,6 +185,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testFetchAndHashReturnsIntegrityAttribute(): void
     {
         $content = 'console.log("test");';
@@ -190,6 +202,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertStringStartsWith('sha384-', $integrity->value());
     }
 
+    #[Test]
     public function testFetchAndHashWithCustomAlgorithm(): void
     {
         $content = 'var x = 1;';
@@ -205,6 +218,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testFetchAndHashWithSha512(): void
     {
         $content = 'function test() {}';
@@ -220,6 +234,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testFetchAndHashThrowsOnFetchFailure(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -231,6 +246,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetchAndHash('https://example.com/script.js');
     }
 
+    #[Test]
     public function testFetchAndHashProducesVerifiableHash(): void
     {
         $content = 'alert("verified");';
@@ -273,6 +289,7 @@ final class ResourceFetcherTest extends TestCase
     }
 
     #[DataProvider('ssrfBlockedUrlProvider')]
+    #[Test]
     public function testFetchBlocksSsrfAttacks(string $url): void
     {
         $client = $this->createMock(HttpClientInterface::class);
@@ -286,6 +303,7 @@ final class ResourceFetcherTest extends TestCase
         $fetcher->fetch($url);
     }
 
+    #[Test]
     public function testFetchAllowsPublicUrls(): void
     {
         $content = 'console.log("public");';
@@ -301,6 +319,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertSame($content, $result);
     }
 
+    #[Test]
     public function testFetchWithSsrfValidatorDisabled(): void
     {
         $content = 'internal content';
@@ -323,6 +342,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertSame($content, $result);
     }
 
+    #[Test]
     public function testFetchWithRealSsrfValidatorAllowsPublicHosts(): void
     {
         // Use a real PrivateNetworkValidator instance
@@ -345,6 +365,7 @@ final class ResourceFetcherTest extends TestCase
         $this->assertSame('content', $result);
     }
 
+    #[Test]
     public function testFetchSsrfExceptionContainsHostInfo(): void
     {
         $client = $this->createMock(HttpClientInterface::class);

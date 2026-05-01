@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -26,11 +27,13 @@ final class CspHeaderFormatTest extends TestCase
     // Header Name Tests
     // =========================================================================
 
+    #[Test]
     public function testHeaderNameIsCorrect(): void
     {
         $this->assertSame('Content-Security-Policy', HeaderBuilder::HEADER_CSP);
     }
 
+    #[Test]
     public function testReportOnlyHeaderNameIsCorrect(): void
     {
         $this->assertSame('Content-Security-Policy-Report-Only', HeaderBuilder::HEADER_CSP_REPORT_ONLY);
@@ -39,6 +42,7 @@ final class CspHeaderFormatTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildHeaderIncludesHeaderName(): void
     {
         $directives = CspDirectives::strict();
@@ -51,6 +55,7 @@ final class CspHeaderFormatTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildReportOnlyHeaderIncludesHeaderName(): void
     {
         $directives = CspDirectives::strict();
@@ -64,6 +69,7 @@ final class CspHeaderFormatTest extends TestCase
     // Directive Separator Tests
     // =========================================================================
 
+    #[Test]
     public function testDirectivesSeparatedBySemicolonSpace(): void
     {
         $directives = CspDirectives::strict();
@@ -74,6 +80,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringContainsString('; ', $header);
     }
 
+    #[Test]
     public function testNoTrailingSemicolon(): void
     {
         $directives = CspDirectives::strict();
@@ -85,6 +92,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringEndsNotWith('; ', $header);
     }
 
+    #[Test]
     public function testNoLeadingSemicolon(): void
     {
         $directives = CspDirectives::strict();
@@ -95,6 +103,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringStartsNotWith(';', $header);
     }
 
+    #[Test]
     public function testNoDoubleSemicolons(): void
     {
         $directives = CspDirectives::strict();
@@ -109,6 +118,7 @@ final class CspHeaderFormatTest extends TestCase
     // Source Value Separator Tests
     // =========================================================================
 
+    #[Test]
     public function testSourceValuesSeparatedBySpace(): void
     {
         $directives = new CspDirectives(
@@ -121,6 +131,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringContainsString("'self' https://cdn.example.com https://api.example.com", $header);
     }
 
+    #[Test]
     public function testDirectiveNameAndValueSeparatedBySpace(): void
     {
         $directives = new CspDirectives(defaultSrc: "'self'");
@@ -135,6 +146,7 @@ final class CspHeaderFormatTest extends TestCase
     // No Injection Characters Tests
     // =========================================================================
 
+    #[Test]
     public function testHeaderContainsNoNewlines(): void
     {
         $directives = CspDirectives::strict()
@@ -147,6 +159,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringNotContainsString("\r", $header);
     }
 
+    #[Test]
     public function testHeaderContainsNoInternalSemicolonsInValues(): void
     {
         // Semicolons should only appear as directive separators
@@ -166,6 +179,7 @@ final class CspHeaderFormatTest extends TestCase
     // ASCII Character Tests
     // =========================================================================
 
+    #[Test]
     public function testHeaderContainsOnlyAsciiCharacters(): void
     {
         $directives = CspDirectives::strict()
@@ -182,6 +196,7 @@ final class CspHeaderFormatTest extends TestCase
     // Directive Order Tests (Informational)
     // =========================================================================
 
+    #[Test]
     public function testDefaultSrcComesFirst(): void
     {
         $directives = CspDirectives::strict();
@@ -192,6 +207,7 @@ final class CspHeaderFormatTest extends TestCase
         $this->assertStringStartsWith('default-src', $header);
     }
 
+    #[Test]
     public function testReportingDirectivesComeLast(): void
     {
         $reporting  = new ReportingConfig(uri: '/csp', endpoint: 'csp');
@@ -211,6 +227,7 @@ final class CspHeaderFormatTest extends TestCase
     // Valueless Directive Tests
     // =========================================================================
 
+    #[Test]
     public function testUpgradeInsecureRequestsHasNoValue(): void
     {
         $directives = CspDirectives::strict();

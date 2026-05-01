@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sri\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Sri\Exception\FetchException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Sri\Exception\FetchException;
 #[CoversClass(FetchException::class)]
 final class FetchExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = FetchException::failed('https://example.com', 'Connection refused');
@@ -19,6 +21,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testFailedFactoryMethod(): void
     {
         $url       = 'https://cdn.example.com/lib.js';
@@ -30,6 +33,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($reason, $exception->getMessage());
     }
 
+    #[Test]
     public function testTimeoutFactoryMethod(): void
     {
         $url       = 'https://slow-server.example.com/large-file.js';
@@ -39,6 +43,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($url, $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidUrlFactoryMethod(): void
     {
         $url       = 'not-a-valid-url';
@@ -48,6 +53,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($url, $exception->getMessage());
     }
 
+    #[Test]
     public function testFailedWithSpecialCharactersInUrl(): void
     {
         $url       = 'https://example.com/path?param=value&other=123';
@@ -58,6 +64,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($reason, $exception->getMessage());
     }
 
+    #[Test]
     public function testFailedWithEmptyReason(): void
     {
         $url       = 'https://example.com/file.js';
@@ -66,6 +73,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($url, $exception->getMessage());
     }
 
+    #[Test]
     public function testTimeoutWithLongUrl(): void
     {
         $url       = 'https://example.com/' . str_repeat('a', 200);
@@ -74,6 +82,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString($url, $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidUrlWithEmptyString(): void
     {
         $exception = FetchException::invalidUrl('');
@@ -81,6 +90,7 @@ final class FetchExceptionTest extends TestCase
         $this->assertStringContainsString('Invalid URL:', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidUrlWithMalformedUrl(): void
     {
         $malformedUrls = [
@@ -97,6 +107,7 @@ final class FetchExceptionTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFailedWithNetworkErrors(): void
     {
         $networkErrors = [
@@ -114,6 +125,7 @@ final class FetchExceptionTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFailedWithHttpStatusErrors(): void
     {
         $httpErrors = [

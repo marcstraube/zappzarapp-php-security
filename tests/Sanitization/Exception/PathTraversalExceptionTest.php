@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Sanitization\Exception\PathTraversalException;
@@ -17,6 +18,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Exception Base Class
     // =========================================================================
 
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = PathTraversalException::traversalDetected('/etc/../passwd');
@@ -28,6 +30,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Factory Method: traversalDetected()
     // =========================================================================
 
+    #[Test]
     public function testTraversalDetectedCreatesExceptionWithCorrectMessage(): void
     {
         $exception = PathTraversalException::traversalDetected('/var/www/../../../etc/passwd');
@@ -36,6 +39,7 @@ final class PathTraversalExceptionTest extends TestCase
     }
 
     #[DataProvider('traversalPathProvider')]
+    #[Test]
     public function testTraversalDetectedWithVariousPaths(string $path, string $expected): void
     {
         $exception = PathTraversalException::traversalDetected($path);
@@ -88,6 +92,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Factory Method: nullByteDetected()
     // =========================================================================
 
+    #[Test]
     public function testNullByteDetectedCreatesExceptionWithCorrectMessage(): void
     {
         $exception = PathTraversalException::nullByteDetected("/var/www/file.txt\0.jpg");
@@ -95,6 +100,7 @@ final class PathTraversalExceptionTest extends TestCase
         $this->assertSame('Null byte detected in path: /var/www/file.txt\\0.jpg', $exception->getMessage());
     }
 
+    #[Test]
     public function testNullByteDetectedEscapesNullBytes(): void
     {
         $pathWithNullByte = "test\0file";
@@ -106,6 +112,7 @@ final class PathTraversalExceptionTest extends TestCase
     }
 
     #[DataProvider('nullBytePathProvider')]
+    #[Test]
     public function testNullByteDetectedWithVariousPaths(string $path, string $expected): void
     {
         $exception = PathTraversalException::nullByteDetected($path);
@@ -153,6 +160,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Factory Method: outsideBasePath()
     // =========================================================================
 
+    #[Test]
     public function testOutsideBasePathCreatesExceptionWithCorrectMessage(): void
     {
         $exception = PathTraversalException::outsideBasePath('/etc/passwd', '/var/www');
@@ -161,6 +169,7 @@ final class PathTraversalExceptionTest extends TestCase
     }
 
     #[DataProvider('outsideBasePathProvider')]
+    #[Test]
     public function testOutsideBasePathWithVariousPaths(string $path, string $basePath, string $expected): void
     {
         $exception = PathTraversalException::outsideBasePath($path, $basePath);
@@ -214,6 +223,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Security: Message Content
     // =========================================================================
 
+    #[Test]
     public function testTraversalMessageIncludesPathForLogging(): void
     {
         $maliciousPath = '../../../etc/shadow';
@@ -223,6 +233,7 @@ final class PathTraversalExceptionTest extends TestCase
         $this->assertStringContainsString($maliciousPath, $exception->getMessage());
     }
 
+    #[Test]
     public function testNullByteMessageEscapesForSafeLogging(): void
     {
         $pathWithNullByte = "upload\0.php";
@@ -238,6 +249,7 @@ final class PathTraversalExceptionTest extends TestCase
     // Immutability: Each Call Creates New Instance
     // =========================================================================
 
+    #[Test]
     public function testFactoryMethodsCreateNewInstances(): void
     {
         $exception1 = PathTraversalException::traversalDetected('../test');
@@ -246,6 +258,7 @@ final class PathTraversalExceptionTest extends TestCase
         $this->assertNotSame($exception1, $exception2);
     }
 
+    #[Test]
     public function testDifferentFactoryMethodsCreateDistinctExceptions(): void
     {
         $traversal   = PathTraversalException::traversalDetected('../test');

@@ -7,12 +7,14 @@ namespace Zappzarapp\Security\Tests\Headers\Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Exception\InvalidHeaderValueException;
 
 #[CoversClass(InvalidHeaderValueException::class)]
 final class InvalidHeaderValueExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter('Test', 'value');
@@ -21,6 +23,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testContainsControlCharacterWithLineFeed(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(
@@ -34,6 +37,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('header injection', $exception->getMessage());
     }
 
+    #[Test]
     public function testContainsControlCharacterWithCarriageReturn(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(
@@ -45,6 +49,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('\\x0D', $exception->getMessage());
     }
 
+    #[Test]
     public function testContainsControlCharacterWithCrLf(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(
@@ -57,6 +62,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('\\x0A', $exception->getMessage());
     }
 
+    #[Test]
     public function testContainsControlCharacterEscapesInOutput(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(
@@ -69,6 +75,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringNotContainsString("\r", $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidMaxAgeWithNegativeValue(): void
     {
         $exception = InvalidHeaderValueException::invalidMaxAge(-1);
@@ -78,6 +85,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('-1', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidMaxAgeWithLargeNegativeValue(): void
     {
         $exception = InvalidHeaderValueException::invalidMaxAge(-9999);
@@ -85,6 +93,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('-9999', $exception->getMessage());
     }
 
+    #[Test]
     public function testPreloadRequiresIncludeSubDomains(): void
     {
         $exception = InvalidHeaderValueException::preloadRequiresIncludeSubDomains();
@@ -93,6 +102,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('includeSubDomains', $exception->getMessage());
     }
 
+    #[Test]
     public function testPreloadRequiresMinMaxAge(): void
     {
         $exception = InvalidHeaderValueException::preloadRequiresMinMaxAge(31536000, 86400);
@@ -103,6 +113,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('86400', $exception->getMessage());
     }
 
+    #[Test]
     public function testPreloadRequiresMinMaxAgeWithZero(): void
     {
         $exception = InvalidHeaderValueException::preloadRequiresMinMaxAge(31536000, 0);
@@ -111,6 +122,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('got: 0', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidPermissionAllowlist(): void
     {
         $exception = InvalidHeaderValueException::invalidPermissionAllowlist(
@@ -123,6 +135,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('contains invalid origin', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidPermissionAllowlistWithDifferentFeature(): void
     {
         $exception = InvalidHeaderValueException::invalidPermissionAllowlist(
@@ -134,6 +147,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('newline detected', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidOrigin(): void
     {
         $exception = InvalidHeaderValueException::invalidOrigin('not-a-valid-origin');
@@ -143,6 +157,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('scheme://host', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidOriginWithPath(): void
     {
         $exception = InvalidHeaderValueException::invalidOrigin('https://example.com/path');
@@ -150,6 +165,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('https://example.com/path', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidOriginWithMissingScheme(): void
     {
         $exception = InvalidHeaderValueException::invalidOrigin('example.com');
@@ -158,6 +174,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
     }
 
     #[DataProvider('headerInjectionAttemptProvider')]
+    #[Test]
     public function testContainsControlCharacterDetectsInjectionAttempts(string $value, string $expectedEscaped): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter('Test-Header', $value);
@@ -198,6 +215,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testContainsControlCharacterWithNullByte(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(
@@ -210,6 +228,7 @@ final class InvalidHeaderValueExceptionTest extends TestCase
         $this->assertStringContainsString('control character', $exception->getMessage());
     }
 
+    #[Test]
     public function testContainsControlCharacterWithTab(): void
     {
         $exception = InvalidHeaderValueException::containsControlCharacter(

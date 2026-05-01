@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\Csp\Nonce;
 
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use ReflectionClass;
@@ -28,6 +29,7 @@ final class NonceRegistryTest extends TestCase
         NonceRegistry::reset();
     }
 
+    #[Test]
     public function testCannotBeInstantiated(): void
     {
         $reflection  = new ReflectionClass(NonceRegistry::class);
@@ -37,6 +39,7 @@ final class NonceRegistryTest extends TestCase
         $this->assertTrue($constructor->isPrivate());
     }
 
+    #[Test]
     public function testGeneratorReturnsNonceGeneratorInstance(): void
     {
         $generator = NonceRegistry::generator();
@@ -45,6 +48,7 @@ final class NonceRegistryTest extends TestCase
         $this->assertInstanceOf(NonceGenerator::class, $generator);
     }
 
+    #[Test]
     public function testGeneratorReturnsSameInstance(): void
     {
         $generator1 = NonceRegistry::generator();
@@ -56,6 +60,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsNonceValue(): void
     {
         $nonce = NonceRegistry::get();
@@ -67,6 +72,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsSameNonceValue(): void
     {
         $nonce1 = NonceRegistry::get();
@@ -78,6 +84,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsValueFromGenerator(): void
     {
         $generatorNonce = NonceRegistry::generator()->get();
@@ -89,6 +96,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetOverridesNonce(): void
     {
         $originalNonce = NonceRegistry::get();
@@ -103,6 +111,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetAcceptsValidBase64Nonce(): void
     {
         $validNonce = 'dGVzdC1ub25jZS12YWx1ZQ==';
@@ -115,6 +124,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetAcceptsAlphanumericNonce(): void
     {
         $validNonce = 'abc123XYZ789';
@@ -127,6 +137,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testResetClearsGeneratorAndNonce(): void
     {
         $nonce1     = NonceRegistry::get();
@@ -141,6 +152,7 @@ final class NonceRegistryTest extends TestCase
         $this->assertNotSame($generator1, $generator2);
     }
 
+    #[Test]
     public function testResetWhenGeneratorIsNull(): void
     {
         // Ensure generator is null (fresh state after setUp)
@@ -154,6 +166,7 @@ final class NonceRegistryTest extends TestCase
     }
 
     // Defense in Depth: Validation Tests
+    #[Test]
     public function testSetRejectsEmptyNonce(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -162,6 +175,7 @@ final class NonceRegistryTest extends TestCase
         NonceRegistry::set('');
     }
 
+    #[Test]
     public function testSetRejectsSemicolon(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -170,6 +184,7 @@ final class NonceRegistryTest extends TestCase
         NonceRegistry::set("valid'; script-src 'unsafe-inline");
     }
 
+    #[Test]
     public function testSetRejectsNewline(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -178,6 +193,7 @@ final class NonceRegistryTest extends TestCase
         NonceRegistry::set("valid\nX-Injected-Header: malicious");
     }
 
+    #[Test]
     public function testSetRejectsCarriageReturn(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -186,6 +202,7 @@ final class NonceRegistryTest extends TestCase
         NonceRegistry::set("valid\rX-Injected-Header: malicious");
     }
 
+    #[Test]
     public function testSetRejectsSingleQuote(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -224,6 +241,7 @@ final class NonceRegistryTest extends TestCase
     }
 
     #[DataProvider('injectionAttackVectorsProvider')]
+    #[Test]
     public function testSetRejectsInjectionAttackVectors(
         string $maliciousNonce,
         string $expectedMessage,
@@ -237,6 +255,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testLongRunningProcessWorkflow(): void
     {
         // Request 1
@@ -257,6 +276,7 @@ final class NonceRegistryTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testFrameworkIntegrationWorkflow(): void
     {
         // Framework provides a nonce

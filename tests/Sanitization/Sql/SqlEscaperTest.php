@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Sql;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Sql\SqlEscaper;
 
@@ -20,37 +21,44 @@ final class SqlEscaperTest extends TestCase
         $this->escaper = new SqlEscaper();
     }
 
+    #[Test]
     public function testEscapeLikeEscapesPercent(): void
     {
         $this->assertSame('50\\%', $this->escaper->escapeLike('50%'));
     }
 
+    #[Test]
     public function testEscapeLikeEscapesUnderscore(): void
     {
         $this->assertSame('test\\_value', $this->escaper->escapeLike('test_value'));
     }
 
+    #[Test]
     public function testEscapeLikeEscapesBackslash(): void
     {
         $this->assertSame('path\\\\to\\\\file', $this->escaper->escapeLike('path\\to\\file'));
     }
 
+    #[Test]
     public function testEscapeLikeEscapesMultipleSpecialChars(): void
     {
         $this->assertSame('100\\% of\\_users', $this->escaper->escapeLike('100% of_users'));
     }
 
+    #[Test]
     public function testEscapeLikeWithCustomEscapeChar(): void
     {
         $this->assertSame('50!%', $this->escaper->escapeLike('50%', '!'));
     }
 
+    #[Test]
     public function testEscapeLikeWithEmptyString(): void
     {
         $this->assertSame('', $this->escaper->escapeLike(''));
     }
 
     #[DataProvider('validIdentifierProvider')]
+    #[Test]
     public function testIsValidIdentifierReturnsTrueForValidIdentifiers(string $identifier): void
     {
         $this->assertTrue($this->escaper->isValidIdentifier($identifier));
@@ -72,6 +80,7 @@ final class SqlEscaperTest extends TestCase
     }
 
     #[DataProvider('invalidIdentifierProvider')]
+    #[Test]
     public function testIsValidIdentifierReturnsFalseForInvalidIdentifiers(string $identifier): void
     {
         $this->assertFalse($this->escaper->isValidIdentifier($identifier));
@@ -92,6 +101,7 @@ final class SqlEscaperTest extends TestCase
         yield 'contains backtick' => ['user`name'];
     }
 
+    #[Test]
     public function testValidateIdentifierReturnsIdentifierWhenInAllowedList(): void
     {
         $result = $this->escaper->validateIdentifier('name', ['name', 'email', 'id']);
@@ -99,6 +109,7 @@ final class SqlEscaperTest extends TestCase
         $this->assertSame('name', $result);
     }
 
+    #[Test]
     public function testValidateIdentifierThrowsWhenNotInAllowedList(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -107,6 +118,7 @@ final class SqlEscaperTest extends TestCase
         $this->escaper->validateIdentifier('password', ['name', 'email', 'id']);
     }
 
+    #[Test]
     public function testValidateIdentifierThrowsWithEmptyAllowedList(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -114,6 +126,7 @@ final class SqlEscaperTest extends TestCase
         $this->escaper->validateIdentifier('name', []);
     }
 
+    #[Test]
     public function testValidateIdentifierIsCaseSensitive(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -121,6 +134,7 @@ final class SqlEscaperTest extends TestCase
         $this->escaper->validateIdentifier('Name', ['name', 'email']);
     }
 
+    #[Test]
     public function testValidateIdentifierShowsAllowedInErrorMessage(): void
     {
         $this->expectException(InvalidArgumentException::class);

@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\Csrf\Exception;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\Exception\InvalidCsrfTokenException;
 
 #[CoversClass(InvalidCsrfTokenException::class)]
 final class InvalidCsrfTokenExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = new InvalidCsrfTokenException('test');
@@ -19,6 +21,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testEmptyToken(): void
     {
         $exception = InvalidCsrfTokenException::emptyToken();
@@ -28,6 +31,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertSame('CSRF token cannot be empty', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidFormat(): void
     {
         $exception = InvalidCsrfTokenException::invalidFormat('bad-token', 'contains special chars');
@@ -38,6 +42,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertStringContainsString('bad-token', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidFormatEscapesNewlines(): void
     {
         $exception = InvalidCsrfTokenException::invalidFormat("token\r\nwith\nnewlines", 'control chars');
@@ -49,6 +54,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertStringNotContainsString("\n", $message);
     }
 
+    #[Test]
     public function testInvalidBase64(): void
     {
         $exception = InvalidCsrfTokenException::invalidBase64('not!base64!!!');
@@ -59,6 +65,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertStringContainsString('not!base64!!!', $exception->getMessage());
     }
 
+    #[Test]
     public function testInsufficientEntropy(): void
     {
         $exception = InvalidCsrfTokenException::insufficientEntropy(32, 16);
@@ -70,6 +77,7 @@ final class InvalidCsrfTokenExceptionTest extends TestCase
         $this->assertStringContainsString('16', $exception->getMessage());
     }
 
+    #[Test]
     public function testCustomMessage(): void
     {
         $exception = new InvalidCsrfTokenException('Custom validation error');

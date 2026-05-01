@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sanitization\Path;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Path\PathValidationConfig;
 
 #[CoversClass(PathValidationConfig::class)]
 final class PathValidationConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $config = new PathValidationConfig();
@@ -22,6 +24,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertSame([], $config->blockedExtensions);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $config = new PathValidationConfig(
@@ -39,6 +42,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertSame(['php', 'exe'], $config->blockedExtensions);
     }
 
+    #[Test]
     public function testWithBasePath(): void
     {
         $config    = new PathValidationConfig();
@@ -49,6 +53,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithDotFiles(): void
     {
         $config    = new PathValidationConfig();
@@ -58,6 +63,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertTrue($newConfig->allowDotFiles);
     }
 
+    #[Test]
     public function testWithSymlinks(): void
     {
         $config    = new PathValidationConfig();
@@ -67,6 +73,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertTrue($newConfig->allowSymlinks);
     }
 
+    #[Test]
     public function testWithBlockedExtensions(): void
     {
         $config    = new PathValidationConfig();
@@ -76,6 +83,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertSame(['php', 'exe'], $newConfig->blockedExtensions);
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $config = PathValidationConfig::strict('/uploads');
@@ -89,6 +97,7 @@ final class PathValidationConfigTest extends TestCase
         $this->assertContains('phar', $config->blockedExtensions);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new PathValidationConfig();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Cookie;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\CookieBuilder;
@@ -24,6 +25,7 @@ use Zappzarapp\Security\Cookie\SecureCookie;
 #[UsesClass(SameSitePolicy::class)]
 final class CookieBuilderTest extends TestCase
 {
+    #[Test]
     public function testCreateFactoryMethod(): void
     {
         $builder = CookieBuilder::create('session', 'abc123');
@@ -31,6 +33,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertInstanceOf(CookieBuilder::class, $builder);
     }
 
+    #[Test]
     public function testConstructor(): void
     {
         $builder = new CookieBuilder('name', 'value');
@@ -38,6 +41,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertInstanceOf(CookieBuilder::class, $builder);
     }
 
+    #[Test]
     public function testConstructorWithDefaultEmptyValue(): void
     {
         $builder = new CookieBuilder('name');
@@ -46,6 +50,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('', $cookie->value);
     }
 
+    #[Test]
     public function testBuildReturnsSecureCookie(): void
     {
         $builder = CookieBuilder::create('session', 'abc123');
@@ -56,6 +61,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('abc123', $cookie->value);
     }
 
+    #[Test]
     public function testBuildWithSecureDefaults(): void
     {
         $cookie = CookieBuilder::create('session', 'value')->build();
@@ -68,6 +74,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(0, $cookie->options->expires);
     }
 
+    #[Test]
     public function testValueMethod(): void
     {
         $cookie = CookieBuilder::create('name')
@@ -77,6 +84,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('updated_value', $cookie->value);
     }
 
+    #[Test]
     public function testExpiresMethod(): void
     {
         $timestamp = time() + 3600;
@@ -87,6 +95,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame($timestamp, $cookie->options->expires);
     }
 
+    #[Test]
     public function testMaxAgeMethod(): void
     {
         $now     = time();
@@ -99,6 +108,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertLessThanOrEqual($now + $seconds + 2, $cookie->options->expires);
     }
 
+    #[Test]
     public function testPathMethod(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -108,6 +118,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('/admin', $cookie->options->path);
     }
 
+    #[Test]
     public function testDomainMethod(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -117,6 +128,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('example.com', $cookie->options->domain);
     }
 
+    #[Test]
     public function testSecureMethodEnables(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -127,6 +139,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertTrue($cookie->options->secure);
     }
 
+    #[Test]
     public function testSecureMethodDisables(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -136,6 +149,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertFalse($cookie->options->secure);
     }
 
+    #[Test]
     public function testSecureMethodDefaultsToTrue(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -145,6 +159,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertTrue($cookie->options->secure);
     }
 
+    #[Test]
     public function testHttpOnlyMethodEnables(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -155,6 +170,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertTrue($cookie->options->httpOnly);
     }
 
+    #[Test]
     public function testHttpOnlyMethodDisables(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -164,6 +180,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertFalse($cookie->options->httpOnly);
     }
 
+    #[Test]
     public function testHttpOnlyMethodDefaultsToTrue(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -173,6 +190,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertTrue($cookie->options->httpOnly);
     }
 
+    #[Test]
     public function testSameSiteMethod(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -182,6 +200,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testSameSiteNone(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -191,6 +210,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::NONE, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testStrictPreset(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -205,6 +225,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::STRICT, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testLaxPreset(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -216,6 +237,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testDevelopmentPreset(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -227,6 +249,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testFluentApiChaining(): void
     {
         $now    = time();
@@ -249,6 +272,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite);
     }
 
+    #[Test]
     public function testBuildThrowsOnInvalidName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -256,6 +280,7 @@ final class CookieBuilderTest extends TestCase
         CookieBuilder::create('invalid;name', 'value')->build();
     }
 
+    #[Test]
     public function testBuildThrowsOnEmptyName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -263,6 +288,7 @@ final class CookieBuilderTest extends TestCase
         CookieBuilder::create('', 'value')->build();
     }
 
+    #[Test]
     public function testBuildThrowsOnInvalidValue(): void
     {
         $this->expectException(InvalidCookieValueException::class);
@@ -270,6 +296,7 @@ final class CookieBuilderTest extends TestCase
         CookieBuilder::create('name', "value\ninjection")->build();
     }
 
+    #[Test]
     public function testValueMethodWithInvalidValueThrowsOnBuild(): void
     {
         $this->expectException(InvalidCookieValueException::class);
@@ -279,6 +306,7 @@ final class CookieBuilderTest extends TestCase
             ->build();
     }
 
+    #[Test]
     public function testSendMethod(): void
     {
         // Note: send() uses setcookie() internally.
@@ -295,6 +323,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertIsBool($result);
     }
 
+    #[Test]
     public function testSendThrowsOnInvalidName(): void
     {
         $this->expectException(InvalidCookieNameException::class);
@@ -302,6 +331,7 @@ final class CookieBuilderTest extends TestCase
         CookieBuilder::create('invalid=name', 'value')->send();
     }
 
+    #[Test]
     public function testSendThrowsOnInvalidValue(): void
     {
         $this->expectException(InvalidCookieValueException::class);
@@ -309,6 +339,7 @@ final class CookieBuilderTest extends TestCase
         CookieBuilder::create('name', "value\rinjection")->send();
     }
 
+    #[Test]
     public function testMultipleBuildsProduceIndependentCookies(): void
     {
         $builder = CookieBuilder::create('name', 'value1');
@@ -322,6 +353,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertNotSame($cookie1, $cookie2);
     }
 
+    #[Test]
     public function testBuilderCanBeReused(): void
     {
         $builder = CookieBuilder::create('session', 'initial')
@@ -341,6 +373,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('example.com', $cookie2->options->domain);
     }
 
+    #[Test]
     public function testPathDefaultsToRoot(): void
     {
         $cookie = CookieBuilder::create('name', 'value')->build();
@@ -348,6 +381,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('/', $cookie->options->path);
     }
 
+    #[Test]
     public function testDomainDefaultsToEmpty(): void
     {
         $cookie = CookieBuilder::create('name', 'value')->build();
@@ -355,6 +389,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame('', $cookie->options->domain);
     }
 
+    #[Test]
     public function testExpiresDefaultsToZero(): void
     {
         $cookie = CookieBuilder::create('name', 'value')->build();
@@ -362,6 +397,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(0, $cookie->options->expires);
     }
 
+    #[Test]
     public function testOverridingPresetsWithIndividualSettings(): void
     {
         $cookie = CookieBuilder::create('name', 'value')
@@ -374,6 +410,7 @@ final class CookieBuilderTest extends TestCase
         $this->assertSame(SameSitePolicy::LAX, $cookie->options->sameSite); // From development
     }
 
+    #[Test]
     public function testComplexRealWorldScenario(): void
     {
         $now = time();

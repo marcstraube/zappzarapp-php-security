@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Security;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Security\ClearsMemory;
 
@@ -23,6 +24,7 @@ final class ClearsMemoryTest extends TestCase
         $this->helper = new ClearsMemoryTestHelper();
     }
 
+    #[Test]
     public function testClearMemoryClearsString(): void
     {
         if (!function_exists('sodium_memzero')) {
@@ -37,6 +39,7 @@ final class ClearsMemoryTest extends TestCase
         $this->assertNotSame('secret123', $password);
     }
 
+    #[Test]
     public function testClearMemoryWithSodiumSetsToEmptyOrNull(): void
     {
         if (!function_exists('sodium_memzero')) {
@@ -50,6 +53,7 @@ final class ClearsMemoryTest extends TestCase
         $this->assertEmpty($password);
     }
 
+    #[Test]
     public function testWithClearedMemoryReturnsCallbackResult(): void
     {
         $result = $this->helper->testCallback('password', fn(string $d): string => strtoupper($d));
@@ -57,6 +61,7 @@ final class ClearsMemoryTest extends TestCase
         $this->assertSame('PASSWORD', $result);
     }
 
+    #[Test]
     public function testWithClearedMemoryClearsDataAfterCallback(): void
     {
         $captured = null;
@@ -71,6 +76,7 @@ final class ClearsMemoryTest extends TestCase
         $this->assertSame('secret', $captured);
     }
 
+    #[Test]
     public function testWithClearedMemoryHandlesEmptyString(): void
     {
         $result = $this->helper->testCallback('', fn(string $d): int => strlen($d));
@@ -78,6 +84,7 @@ final class ClearsMemoryTest extends TestCase
         $this->assertSame(0, $result);
     }
 
+    #[Test]
     public function testClearMemoryHandlesEmptyString(): void
     {
         if (!function_exists('sodium_memzero')) {
@@ -102,6 +109,7 @@ final class ClearsMemoryTestHelper
 {
     use ClearsMemory;
 
+    #[Test]
     public function testClear(string &$data): void
     {
         $this->clearMemory($data);
@@ -114,6 +122,7 @@ final class ClearsMemoryTestHelper
      *
      * @return T
      */
+    #[Test]
     public function testCallback(string $data, callable $callback): mixed
     {
         return $this->withClearedMemory($data, $callback);

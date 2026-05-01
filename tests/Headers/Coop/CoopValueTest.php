@@ -5,42 +5,50 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Headers\Coop;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Coop\CoopValue;
 
 #[CoversClass(CoopValue::class)]
 final class CoopValueTest extends TestCase
 {
+    #[Test]
     public function testUnsafeNoneValue(): void
     {
         $this->assertSame('unsafe-none', CoopValue::UNSAFE_NONE->value);
     }
 
+    #[Test]
     public function testSameOriginAllowPopupsValue(): void
     {
         $this->assertSame('same-origin-allow-popups', CoopValue::SAME_ORIGIN_ALLOW_POPUPS->value);
     }
 
+    #[Test]
     public function testSameOriginValue(): void
     {
         $this->assertSame('same-origin', CoopValue::SAME_ORIGIN->value);
     }
 
+    #[Test]
     public function testHeaderValueUnsafeNone(): void
     {
         $this->assertSame('unsafe-none', CoopValue::UNSAFE_NONE->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueSameOriginAllowPopups(): void
     {
         $this->assertSame('same-origin-allow-popups', CoopValue::SAME_ORIGIN_ALLOW_POPUPS->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueSameOrigin(): void
     {
         $this->assertSame('same-origin', CoopValue::SAME_ORIGIN->headerValue());
     }
 
+    #[Test]
     public function testAllCasesExist(): void
     {
         $cases = CoopValue::cases();

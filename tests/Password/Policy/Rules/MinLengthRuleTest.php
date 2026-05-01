@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Policy\Rules;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
 use Zappzarapp\Security\Password\Policy\Rules\MinLengthRule;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Password\Policy\Rules\MinLengthRule;
 #[CoversClass(MinLengthRule::class)]
 final class MinLengthRuleTest extends TestCase
 {
+    #[Test]
     public function testImplementsPolicyRuleInterface(): void
     {
         $rule = new MinLengthRule();
@@ -20,6 +22,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertInstanceOf(PolicyRule::class, $rule);
     }
 
+    #[Test]
     public function testDefaultMinLength(): void
     {
         $rule = new MinLengthRule();
@@ -27,6 +30,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertSame(12, $rule->minLength());
     }
 
+    #[Test]
     public function testCustomMinLength(): void
     {
         $rule = new MinLengthRule(8);
@@ -34,6 +38,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertSame(8, $rule->minLength());
     }
 
+    #[Test]
     public function testIsSatisfiedWithExactLength(): void
     {
         $rule = new MinLengthRule(8);
@@ -41,6 +46,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('12345678'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithLongerPassword(): void
     {
         $rule = new MinLengthRule(8);
@@ -48,6 +54,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('123456789012'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithShorterPassword(): void
     {
         $rule = new MinLengthRule(8);
@@ -55,6 +62,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('1234567'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithEmptyPassword(): void
     {
         $rule = new MinLengthRule(8);
@@ -62,6 +70,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testIsSatisfiedWithEmptyPasswordAndZeroMinLength(): void
     {
         $rule = new MinLengthRule(0);
@@ -69,6 +78,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $rule = new MinLengthRule(8);
@@ -79,6 +89,7 @@ final class MinLengthRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testErrorMessageWithDifferentLength(): void
     {
         $rule = new MinLengthRule(16);
@@ -89,6 +100,7 @@ final class MinLengthRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testHandlesUnicodeCharacters(): void
     {
         $rule = new MinLengthRule(4);
@@ -98,6 +110,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('test'));
     }
 
+    #[Test]
     public function testHandlesMultiByteCharacters(): void
     {
         $rule = new MinLengthRule(6);
@@ -107,6 +120,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('passw'));
     }
 
+    #[Test]
     public function testHandlesEmojiCharacters(): void
     {
         $rule = new MinLengthRule(4);
@@ -116,6 +130,7 @@ final class MinLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied($emoji));
     }
 
+    #[Test]
     public function testHandlesWhitespace(): void
     {
         $rule = new MinLengthRule(8);
@@ -142,6 +157,7 @@ final class MinLengthRuleTest extends TestCase
     }
 
     #[DataProvider('minLengthProvider')]
+    #[Test]
     public function testIsSatisfiedWithDataProvider(int $minLength, string $password, bool $expected): void
     {
         $rule = new MinLengthRule($minLength);

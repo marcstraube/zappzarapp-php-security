@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Path;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Exception\PathTraversalException;
 use Zappzarapp\Security\Sanitization\Path\PathValidationConfig;
@@ -23,6 +24,7 @@ final class PathValidatorTest extends TestCase
         $this->validator = new PathValidator();
     }
 
+    #[Test]
     public function testValidateAcceptsValidPath(): void
     {
         $this->validator->validate('/var/www/html/file.txt');
@@ -32,6 +34,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateRejectsNullByte(): void
     {
         $this->expectException(PathTraversalException::class);
@@ -59,6 +62,7 @@ final class PathValidatorTest extends TestCase
     }
 
     #[DataProvider('traversalPathProvider')]
+    #[Test]
     public function testValidateRejectsTraversal(string $path): void
     {
         $this->expectException(PathTraversalException::class);
@@ -66,18 +70,21 @@ final class PathValidatorTest extends TestCase
         $this->validator->validate($path);
     }
 
+    #[Test]
     public function testIsSafeReturnsTrue(): void
     {
         $this->assertTrue($this->validator->isSafe('/var/www/html/file.txt'));
         $this->assertTrue($this->validator->isSafe('uploads/image.jpg'));
     }
 
+    #[Test]
     public function testIsSafeReturnsFalse(): void
     {
         $this->assertFalse($this->validator->isSafe('../etc/passwd'));
         $this->assertFalse($this->validator->isSafe("/file.txt\0.php"));
     }
 
+    #[Test]
     public function testNormalize(): void
     {
         $validator = new PathValidator(new PathValidationConfig(normalizePath: true));
@@ -86,6 +93,7 @@ final class PathValidatorTest extends TestCase
         $this->assertSame('uploads/file.txt', $normalized);
     }
 
+    #[Test]
     public function testNormalizeRemovesRedundantSlashes(): void
     {
         $validator = new PathValidator(new PathValidationConfig(normalizePath: true));
@@ -94,6 +102,7 @@ final class PathValidatorTest extends TestCase
         $this->assertSame('uploads/path/file.txt', $normalized);
     }
 
+    #[Test]
     public function testNormalizeRemovesTrailingSlash(): void
     {
         $validator = new PathValidator(new PathValidationConfig(normalizePath: true));
@@ -102,6 +111,7 @@ final class PathValidatorTest extends TestCase
         $this->assertSame('uploads/path', $normalized);
     }
 
+    #[Test]
     public function testNormalizeKeepsRootSlash(): void
     {
         $validator = new PathValidator(new PathValidationConfig(normalizePath: true));
@@ -110,6 +120,7 @@ final class PathValidatorTest extends TestCase
         $this->assertSame('/', $normalized);
     }
 
+    #[Test]
     public function testNormalizeWithoutNormalizationEnabled(): void
     {
         $validator = new PathValidator(new PathValidationConfig(normalizePath: false));
@@ -118,6 +129,7 @@ final class PathValidatorTest extends TestCase
         $this->assertSame('uploads\\file.txt', $normalized);
     }
 
+    #[Test]
     public function testValidateRejectsDotFiles(): void
     {
         $validator = new PathValidator(new PathValidationConfig(allowDotFiles: false));
@@ -127,6 +139,7 @@ final class PathValidatorTest extends TestCase
         $validator->validate('/var/www/.htaccess');
     }
 
+    #[Test]
     public function testValidateAllowsDotFilesWhenEnabled(): void
     {
         $validator = new PathValidator(new PathValidationConfig(allowDotFiles: true));
@@ -136,6 +149,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateRejectsBlockedExtensions(): void
     {
         $validator = new PathValidator(new PathValidationConfig(blockedExtensions: ['php', 'phtml']));
@@ -145,6 +159,7 @@ final class PathValidatorTest extends TestCase
         $validator->validate('/var/www/shell.php');
     }
 
+    #[Test]
     public function testValidateAllowsNonBlockedExtensions(): void
     {
         $validator = new PathValidator(new PathValidationConfig(blockedExtensions: ['php', 'phtml']));
@@ -155,6 +170,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateWithBasePath(): void
     {
         $basePath  = sys_get_temp_dir();
@@ -165,6 +181,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateRejectsPathOutsideBasePath(): void
     {
         $basePath  = sys_get_temp_dir() . '/test-' . uniqid();
@@ -180,6 +197,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateDetectsSymlinksInPath(): void
     {
         // Create a test directory structure with a symlink
@@ -211,6 +229,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateAllowsSymlinksWhenEnabled(): void
     {
         // Create a test directory structure with a symlink
@@ -242,6 +261,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateChecksEntirePathForSymlinks(): void
     {
         // Create a nested structure with a symlink in the middle
@@ -275,6 +295,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateHandlesRootPathInSymlinkCheck(): void
     {
         // Edge case: test with root-relative path
@@ -289,6 +310,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateHandlesDotPathInSymlinkCheck(): void
     {
         // Edge case: relative path starting with .
@@ -301,6 +323,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateRejectsSymlinkForNonExistentFile(): void
     {
         // Test case: file doesn't exist, but parent directory contains a symlink
@@ -329,6 +352,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateAllowsNonExistentFileWithSymlinksEnabled(): void
     {
         // Test case: file doesn't exist, symlinks allowed
@@ -356,6 +380,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateWithAbsolutePathReachingRoot(): void
     {
         // Test symlink check loop termination at root '/'
@@ -379,6 +404,7 @@ final class PathValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidateWithEmptyPathComponent(): void
     {
         // Test handling of paths with empty segments
@@ -391,6 +417,7 @@ final class PathValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateRejectsPathWhenBasePathDoesNotExist(): void
     {
         // Test case: base path that doesn't exist

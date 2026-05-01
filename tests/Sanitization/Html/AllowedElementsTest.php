@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Html;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Html\AllowedElements;
 
@@ -18,6 +19,7 @@ final class AllowedElementsTest extends TestCase
     // Constructor and Default Configuration
     // =========================================================================
 
+    #[Test]
     public function testDefaultConstructorCreatesEmptyList(): void
     {
         $config = new AllowedElements();
@@ -25,6 +27,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertSame([], $config->all());
     }
 
+    #[Test]
     public function testDefaultConstructorAllowsNoElements(): void
     {
         $config = new AllowedElements();
@@ -34,6 +37,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertFalse($config->isAllowed('span'));
     }
 
+    #[Test]
     public function testConstructorWithElementList(): void
     {
         $config = new AllowedElements(['p', 'span']);
@@ -47,6 +51,7 @@ final class AllowedElementsTest extends TestCase
     // Factory Method: none()
     // =========================================================================
 
+    #[Test]
     public function testNoneCreatesEmptyConfiguration(): void
     {
         $config = AllowedElements::none();
@@ -60,6 +65,7 @@ final class AllowedElementsTest extends TestCase
     // Factory Method: basic()
     // =========================================================================
 
+    #[Test]
     public function testBasicIncludesFormattingElements(): void
     {
         $config = AllowedElements::basic();
@@ -86,6 +92,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('small'));
     }
 
+    #[Test]
     public function testBasicDoesNotIncludeStructureElements(): void
     {
         $config = AllowedElements::basic();
@@ -99,6 +106,7 @@ final class AllowedElementsTest extends TestCase
     // Factory Method: standard()
     // =========================================================================
 
+    #[Test]
     public function testStandardIncludesBasicElements(): void
     {
         $config = AllowedElements::standard();
@@ -109,6 +117,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('strong'));
     }
 
+    #[Test]
     public function testStandardIncludesStructureElements(): void
     {
         $config = AllowedElements::standard();
@@ -126,6 +135,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('code'));
     }
 
+    #[Test]
     public function testStandardIncludesListElements(): void
     {
         $config = AllowedElements::standard();
@@ -138,6 +148,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('dd'));
     }
 
+    #[Test]
     public function testStandardDoesNotIncludeLinkElements(): void
     {
         $config = AllowedElements::standard();
@@ -151,6 +162,7 @@ final class AllowedElementsTest extends TestCase
     // Factory Method: rich()
     // =========================================================================
 
+    #[Test]
     public function testRichIncludesAllStandardElements(): void
     {
         $config = AllowedElements::rich();
@@ -161,6 +173,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('ul'));
     }
 
+    #[Test]
     public function testRichIncludesLinkElements(): void
     {
         $config = AllowedElements::rich();
@@ -170,6 +183,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('area'));
     }
 
+    #[Test]
     public function testRichDoesNotIncludeMediaElements(): void
     {
         $config = AllowedElements::rich();
@@ -183,6 +197,7 @@ final class AllowedElementsTest extends TestCase
     // Factory Method: full()
     // =========================================================================
 
+    #[Test]
     public function testFullIncludesAllCommonElements(): void
     {
         $config = AllowedElements::full();
@@ -204,6 +219,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('img'));
     }
 
+    #[Test]
     public function testFullIncludesMediaElements(): void
     {
         $config = AllowedElements::full();
@@ -217,6 +233,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('figcaption'));
     }
 
+    #[Test]
     public function testFullIncludesCitationElements(): void
     {
         $config = AllowedElements::full();
@@ -227,6 +244,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('ins'));
     }
 
+    #[Test]
     public function testFullIncludesTableElements(): void
     {
         $config = AllowedElements::full();
@@ -247,6 +265,7 @@ final class AllowedElementsTest extends TestCase
     // with() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithReturnsNewInstance(): void
     {
         $original = new AllowedElements();
@@ -255,6 +274,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithDoesNotModifyOriginal(): void
     {
         $original = new AllowedElements();
@@ -264,6 +284,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertFalse($original->isAllowed('span'));
     }
 
+    #[Test]
     public function testWithAddsElements(): void
     {
         $config = (new AllowedElements())->with(['custom-element', 'another-element']);
@@ -272,6 +293,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('another-element'));
     }
 
+    #[Test]
     public function testWithCanBeChained(): void
     {
         $config = (new AllowedElements())
@@ -284,6 +306,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('div'));
     }
 
+    #[Test]
     public function testWithPreservesExistingElements(): void
     {
         $config = (new AllowedElements(['p']))
@@ -293,6 +316,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('span'));
     }
 
+    #[Test]
     public function testWithEmptyArrayDoesNotChangeElements(): void
     {
         $config = (new AllowedElements(['p', 'span']))
@@ -307,6 +331,7 @@ final class AllowedElementsTest extends TestCase
     // isAllowed() - Case Normalization
     // =========================================================================
 
+    #[Test]
     public function testIsAllowedNormalizesToLowercase(): void
     {
         $config = new AllowedElements(['p', 'div']);
@@ -316,6 +341,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertTrue($config->isAllowed('Div'));
     }
 
+    #[Test]
     public function testIsAllowedHandlesMixedCase(): void
     {
         $config = new AllowedElements(['custom']);
@@ -329,6 +355,7 @@ final class AllowedElementsTest extends TestCase
     // all() - Get All Elements
     // =========================================================================
 
+    #[Test]
     public function testAllReturnsAllElements(): void
     {
         $elements = ['p', 'span', 'div'];
@@ -337,6 +364,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertSame($elements, $config->all());
     }
 
+    #[Test]
     public function testAllReturnsEmptyForNone(): void
     {
         $config = AllowedElements::none();
@@ -344,6 +372,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertSame([], $config->all());
     }
 
+    #[Test]
     public function testAllReturnsCorrectCountForBasic(): void
     {
         $config = AllowedElements::basic();
@@ -358,6 +387,7 @@ final class AllowedElementsTest extends TestCase
     // =========================================================================
 
     #[DataProvider('dangerousElementProvider')]
+    #[Test]
     public function testDangerousElementsNotInAnyPreset(string $element): void
     {
         $basic    = AllowedElements::basic();
@@ -398,6 +428,7 @@ final class AllowedElementsTest extends TestCase
     // Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testEmptyElementNameIsNotAllowed(): void
     {
         $config = AllowedElements::full();
@@ -405,6 +436,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertFalse($config->isAllowed(''));
     }
 
+    #[Test]
     public function testWithDuplicateElementsPreservesDuplicates(): void
     {
         $config = (new AllowedElements(['p']))
@@ -416,6 +448,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertContains('span', $all);
     }
 
+    #[Test]
     public function testFactoryMethodsReturnNewInstances(): void
     {
         $none1 = AllowedElements::none();
@@ -429,6 +462,7 @@ final class AllowedElementsTest extends TestCase
         $this->assertNotSame($basic1, $basic2);
     }
 
+    #[Test]
     public function testPresetHierarchy(): void
     {
         $basic    = AllowedElements::basic();

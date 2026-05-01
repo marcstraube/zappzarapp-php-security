@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
@@ -26,6 +27,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP3: strict-dynamic
     // =========================================================================
 
+    #[Test]
     public function testStrictDynamicIsCsp3Feature(): void
     {
         // strict-dynamic is CSP Level 3 only
@@ -37,6 +39,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertStringContainsString("'strict-dynamic'", $header);
     }
 
+    #[Test]
     public function testStrictDynamicIncludedWithNonce(): void
     {
         // strict-dynamic allows scripts loaded by trusted scripts
@@ -53,6 +56,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP2/3: Nonce Backward Compatibility
     // =========================================================================
 
+    #[Test]
     public function testNonceFormatCompatible(): void
     {
         // Nonce format is the same in CSP2 and CSP3
@@ -64,6 +68,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertMatchesRegularExpression("/'nonce-[A-Za-z0-9+\\/=-]+'/", $header);
     }
 
+    #[Test]
     public function testScriptSrcIncludesSelfForCsp2Fallback(): void
     {
         // 'self' provides fallback for CSP2 browsers that don't support strict-dynamic
@@ -78,6 +83,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP3: worker-src
     // =========================================================================
 
+    #[Test]
     public function testWorkerSrcIsCsp3Feature(): void
     {
         // worker-src was introduced in CSP3
@@ -90,6 +96,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertStringContainsString('worker-src', $header);
     }
 
+    #[Test]
     public function testChildSrcProvidesCsp2Fallback(): void
     {
         // child-src is CSP2, provides fallback for worker-src
@@ -104,6 +111,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP3: manifest-src
     // =========================================================================
 
+    #[Test]
     public function testManifestSrcIsCsp3Feature(): void
     {
         // manifest-src controls web app manifest loading (CSP3)
@@ -119,6 +127,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP2/3: frame-src vs child-src
     // =========================================================================
 
+    #[Test]
     public function testFrameSrcAndChildSrcBothIncluded(): void
     {
         // CSP2 deprecated frame-src in favor of child-src
@@ -136,6 +145,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP2/3: Reporting
     // =========================================================================
 
+    #[Test]
     public function testReportUriIsCsp2(): void
     {
         // report-uri is CSP2 (deprecated but widely supported)
@@ -146,6 +156,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertStringContainsString('report-uri', $header);
     }
 
+    #[Test]
     public function testReportToIsCsp3(): void
     {
         // report-to is CSP3 (uses Reporting API)
@@ -156,6 +167,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertStringContainsString('report-to', $header);
     }
 
+    #[Test]
     public function testBothReportUriAndReportToCanBeUsed(): void
     {
         // For maximum compatibility, use both
@@ -175,6 +187,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // CSP2/3: unsafe-hashes (Not Implemented)
     // =========================================================================
 
+    #[Test]
     public function testUnsafeHashesNotImplemented(): void
     {
         // 'unsafe-hashes' is a CSP3 feature for event handlers
@@ -190,6 +203,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
     // Security Policy Levels
     // =========================================================================
 
+    #[Test]
     public function testStrictPolicyUsesModernCsp3Features(): void
     {
         $directives = new CspDirectives(securityPolicy: SecurityPolicy::STRICT);
@@ -204,6 +218,7 @@ final class Csp2Csp3CompatibilityTest extends TestCase
         $this->assertStringNotContainsString("'unsafe-eval'", $header);
     }
 
+    #[Test]
     public function testLenientPolicyProvidesCsp2Fallback(): void
     {
         $directives = new CspDirectives(securityPolicy: SecurityPolicy::LENIENT);

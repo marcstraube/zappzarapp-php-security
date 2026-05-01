@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Html;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Html\AllowedAttributes;
 use Zappzarapp\Security\Sanitization\Html\AllowedElements;
@@ -26,6 +27,7 @@ final class HtmlSanitizerTest extends TestCase
     // Empty String Handling (Mutants 5, 6)
     // =========================================================================
 
+    #[Test]
     public function testEmptyStringReturnsEmptyString(): void
     {
         $result = $this->sanitizer->sanitize('');
@@ -33,6 +35,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertSame('', $result);
     }
 
+    #[Test]
     public function testNonEmptyStringIsProcessed(): void
     {
         $result = $this->sanitizer->sanitize('Hello');
@@ -45,6 +48,7 @@ final class HtmlSanitizerTest extends TestCase
     // No Elements Allowed - Escape Everything (Mutants 7, 8)
     // =========================================================================
 
+    #[Test]
     public function testNoElementsAllowedEscapesEverything(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::stripAll());
@@ -58,6 +62,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('&gt;', $result);
     }
 
+    #[Test]
     public function testStripAllConfigEscapesQuotes(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::stripAll());
@@ -73,6 +78,7 @@ final class HtmlSanitizerTest extends TestCase
     // HTML Parsing and Wrapping (Mutants 9-16)
     // =========================================================================
 
+    #[Test]
     public function testHtmlParsingPreservesContent(): void
     {
         $input  = '<p>Test content</p>';
@@ -83,6 +89,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('<p>', $result);
     }
 
+    #[Test]
     public function testHtmlParsingWithSpecialCharacters(): void
     {
         $input  = '<p>Test with UTF-8: äöü</p>';
@@ -91,6 +98,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('äöü', $result);
     }
 
+    #[Test]
     public function testMalformedHtmlIsSanitized(): void
     {
         // Without libxml flags (LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD), parsing could fail
@@ -109,6 +117,7 @@ final class HtmlSanitizerTest extends TestCase
      * @param list<string> $mustNotContain
      */
     #[DataProvider('uppercaseNormalizationProvider')]
+    #[Test]
     public function testUppercaseNormalization(
         string $input,
         HtmlSanitizerConfig $config,
@@ -173,6 +182,7 @@ final class HtmlSanitizerTest extends TestCase
     // Loop Control Flow (Mutants 18, 21, 23)
     // =========================================================================
 
+    #[Test]
     public function testMultipleDisallowedElementsAreRemoved(): void
     {
         $config    = new HtmlSanitizerConfig(AllowedElements::basic());
@@ -189,6 +199,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('Third', $result);
     }
 
+    #[Test]
     public function testMultipleAttributesAreProcessed(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -208,6 +219,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('onclick', $result);
     }
 
+    #[Test]
     public function testAttributeLoopProcessesAllAttributes(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -231,6 +243,7 @@ final class HtmlSanitizerTest extends TestCase
     // Recursive Sanitization (Mutant 19)
     // =========================================================================
 
+    #[Test]
     public function testNestedElementsAreSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -251,6 +264,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('onclick', $result);
     }
 
+    #[Test]
     public function testDeeplyNestedStructure(): void
     {
         $input = '<p><strong><em><u>Deep</u></em></strong></p>';
@@ -269,6 +283,7 @@ final class HtmlSanitizerTest extends TestCase
      * @param list<string> $mustNotContain
      */
     #[DataProvider('anchorRelProvider')]
+    #[Test]
     public function testAnchorRelBehavior(
         string $input,
         array $mustContain,
@@ -339,6 +354,7 @@ final class HtmlSanitizerTest extends TestCase
     // Remove Element Keep Content - While Loop (Mutant 29)
     // =========================================================================
 
+    #[Test]
     public function testDisallowedElementChildrenArePreserved(): void
     {
         $config    = new HtmlSanitizerConfig(AllowedElements::basic());
@@ -353,6 +369,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('<div', $result);
     }
 
+    #[Test]
     public function testMultipleChildrenOfDisallowedElement(): void
     {
         $config    = new HtmlSanitizerConfig(AllowedElements::basic());
@@ -372,6 +389,7 @@ final class HtmlSanitizerTest extends TestCase
     // Extract HTML - Body Item Index (Mutants 30, 31, 32)
     // =========================================================================
 
+    #[Test]
     public function testExtractHtmlReturnsBodyContent(): void
     {
         $input  = '<p>Body content</p>';
@@ -384,6 +402,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('<html', $result);
     }
 
+    #[Test]
     public function testExtractHtmlWithMultipleElements(): void
     {
         $input  = '<p>First</p><p>Second</p>';
@@ -397,6 +416,7 @@ final class HtmlSanitizerTest extends TestCase
     // Extract HTML - Foreach Loop (Mutants 33, 34)
     // =========================================================================
 
+    #[Test]
     public function testExtractHtmlConcatenatesAllChildren(): void
     {
         $input  = '<p>One</p><p>Two</p><p>Three</p>';
@@ -408,6 +428,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('Three', $result);
     }
 
+    #[Test]
     public function testExtractHtmlWithMixedContent(): void
     {
         $input  = 'Text before <p>Paragraph</p> text after';
@@ -423,6 +444,7 @@ final class HtmlSanitizerTest extends TestCase
     // IsSafe Always Returns True
     // =========================================================================
 
+    #[Test]
     public function testIsSafeAlwaysReturnsTrue(): void
     {
         $this->assertTrue($this->sanitizer->isSafe('<script>evil</script>'));
@@ -439,6 +461,7 @@ final class HtmlSanitizerTest extends TestCase
      * @param list<string> $mustNotContain
      */
     #[DataProvider('urlAttributeProvider')]
+    #[Test]
     public function testUrlAttributeSanitization(
         string $input,
         array $mustContain,
@@ -508,6 +531,7 @@ final class HtmlSanitizerTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testImgSrcsetAndAltBehavior(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -536,6 +560,7 @@ final class HtmlSanitizerTest extends TestCase
     // URL Attribute Coverage - All Element Types (isUrlAttribute branches)
     // =========================================================================
 
+    #[Test]
     public function testAreaHrefIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -555,6 +580,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testVideoSrcAndPosterAreUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -580,6 +606,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testAudioSrcIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -599,6 +626,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testSourceSrcIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -618,6 +646,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testTrackSrcIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -637,6 +666,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testBlockquoteCiteIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -656,6 +686,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testQCiteIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -675,6 +706,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('javascript:', $result);
     }
 
+    #[Test]
     public function testDelInsCiteIsUrlSanitized(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -708,6 +740,7 @@ final class HtmlSanitizerTest extends TestCase
     // Additional Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testWhitespaceOnlyInput(): void
     {
         $result = $this->sanitizer->sanitize('   ');
@@ -716,6 +749,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertNotNull($result);
     }
 
+    #[Test]
     public function testSpecialHtmlEntities(): void
     {
         $input  = '<p>&amp; &lt; &gt;</p>';
@@ -726,6 +760,7 @@ final class HtmlSanitizerTest extends TestCase
     }
 
     #[DataProvider('xssPayloadProvider')]
+    #[Test]
     public function testXssPayloadsAreSanitized(string $payload): void
     {
         $result = $this->sanitizer->sanitize($payload);
@@ -753,6 +788,7 @@ final class HtmlSanitizerTest extends TestCase
     // rel Attribute Concatenation Order (Mutants 13, 14)
     // =========================================================================
 
+    #[Test]
     public function testRelAttributePreservesExistingValueFirst(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -771,6 +807,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertMatchesRegularExpression('/rel="author\s+noopener/', $result);
     }
 
+    #[Test]
     public function testRelAttributeWithEmptyValueGetsNoLeadingSpace(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -793,6 +830,7 @@ final class HtmlSanitizerTest extends TestCase
     // Continue vs Break in Element Loop (Mutant 8)
     // =========================================================================
 
+    #[Test]
     public function testAllDisallowedElementsAreProcessed(): void
     {
         $config    = new HtmlSanitizerConfig(AllowedElements::basic());
@@ -820,6 +858,7 @@ final class HtmlSanitizerTest extends TestCase
     // Attribute Loop Bounds (Mutant 10)
     // =========================================================================
 
+    #[Test]
     public function testAllAttributesAreIterated(): void
     {
         $config = new HtmlSanitizerConfig(
@@ -843,6 +882,7 @@ final class HtmlSanitizerTest extends TestCase
     // Empty String Early Return (Mutant 2)
     // =========================================================================
 
+    #[Test]
     public function testEmptyStringDoesNotContinueProcessing(): void
     {
         // The early return for empty string is important for performance
@@ -859,6 +899,7 @@ final class HtmlSanitizerTest extends TestCase
     // UTF-8 Validation (mXSS Prevention)
     // =========================================================================
 
+    #[Test]
     public function testInvalidUtf8IsNotParsedAsHtml(): void
     {
         // Invalid UTF-8 sequence (overlong encoding that could bypass filters)
@@ -874,6 +915,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertIsString($result);
     }
 
+    #[Test]
     public function testInvalidUtf8WithHtmlEntitiesUsesCorrectFlags(): void
     {
         // Input with < and > that would be escaped differently with different flags
@@ -892,6 +934,7 @@ final class HtmlSanitizerTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValidUtf8IsProcessed(): void
     {
         // Valid UTF-8 with multibyte characters
@@ -908,6 +951,7 @@ final class HtmlSanitizerTest extends TestCase
     // Null Byte Removal (XSS Prevention)
     // =========================================================================
 
+    #[Test]
     public function testNullBytesAreRemoved(): void
     {
         // Null bytes can be used to truncate strings in some contexts
@@ -922,6 +966,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('Hello', $result);
     }
 
+    #[Test]
     public function testMultipleNullBytesAreRemoved(): void
     {
         $multiNullInput = "<p>Test\0\0\0String</p>";
@@ -933,6 +978,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('TestString', $result);
     }
 
+    #[Test]
     public function testNullByteRemovalPreventsTagSplitting(): void
     {
         // Null byte in the middle of a tag name could potentially split the tag
@@ -946,6 +992,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('HelloWorld', $result);
     }
 
+    #[Test]
     public function testNullByteInAttributeIsRemoved(): void
     {
         // Null byte in attribute value
@@ -957,6 +1004,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString("\0", $result);
     }
 
+    #[Test]
     public function testNullByteRemovalChangesStringContent(): void
     {
         // This test specifically verifies that str_replace for null bytes changes the input
@@ -970,6 +1018,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertSame('AB', $result);
     }
 
+    #[Test]
     public function testNullByteBetweenHtmlElementsIsRemoved(): void
     {
         // Null byte between HTML elements
@@ -983,6 +1032,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringContainsString('Second', $result);
     }
 
+    #[Test]
     public function testNullByteRemovedWhenNoElementsAllowed(): void
     {
         // When no elements are allowed, input is escaped via htmlspecialchars
@@ -998,6 +1048,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertSame('TestString', $result);
     }
 
+    #[Test]
     public function testNullByteInScriptContentRemovedBeforeEscaping(): void
     {
         // With stripAll config, the whole input is escaped
@@ -1018,6 +1069,7 @@ final class HtmlSanitizerTest extends TestCase
     // HTML Comment Removal (Security Measure)
     // =========================================================================
 
+    #[Test]
     public function testHtmlCommentsAreRemoved(): void
     {
         $input = '<p>Before</p><!-- This is a comment --><p>After</p>';
@@ -1031,6 +1083,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('comment', $result);
     }
 
+    #[Test]
     public function testMultipleHtmlCommentsAreRemoved(): void
     {
         $input = '<!-- First -->Text<!-- Second -->More<!-- Third -->';
@@ -1044,6 +1097,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('Third', $result);
     }
 
+    #[Test]
     public function testNestedHtmlCommentsInElementsAreRemoved(): void
     {
         $input = '<div><p>Text<!-- Hidden comment --></p></div>';
@@ -1058,6 +1112,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('<!--', $result);
     }
 
+    #[Test]
     public function testConditionalCommentsAreRemoved(): void
     {
         // Internet Explorer conditional comments (legacy XSS vector)
@@ -1071,6 +1126,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('[if IE]', $result);
     }
 
+    #[Test]
     public function testCommentsWithMaliciousContentAreRemoved(): void
     {
         // Comments can be used to hide malicious content that might be exposed by DOM quirks
@@ -1083,6 +1139,7 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('XSS', $result);
     }
 
+    #[Test]
     public function testEmptyCommentsAreRemoved(): void
     {
         $input = '<p>Text</p><!----><p>More</p>';

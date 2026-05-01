@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -19,6 +20,7 @@ final class CspDirectivesHeaderStructureTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testIncludesAllDirectives(): void
     {
         $generator = new NonceGenerator();
@@ -45,6 +47,7 @@ final class CspDirectivesHeaderStructureTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testFormatsWithSemicolonSeparators(): void
     {
         $generator = new NonceGenerator();
@@ -57,6 +60,7 @@ final class CspDirectivesHeaderStructureTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testDirectiveFormatIsCorrect(): void
     {
         $generator = new NonceGenerator();

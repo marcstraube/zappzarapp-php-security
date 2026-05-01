@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\ReportingConfig;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
 final class ReportingConfigTest extends TestCase
 {
     // Default Values
+    #[Test]
     public function testDefaultValues(): void
     {
         $reporting = new ReportingConfig();
@@ -22,6 +24,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertNull($reporting->endpoint);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $reporting = new ReportingConfig(
@@ -36,6 +39,7 @@ final class ReportingConfigTest extends TestCase
     }
 
     // Immutability
+    #[Test]
     public function testWithUpgradeInsecureReturnsNewInstance(): void
     {
         $original = new ReportingConfig();
@@ -46,6 +50,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertFalse($modified->upgradeInsecure);
     }
 
+    #[Test]
     public function testWithUriReturnsNewInstance(): void
     {
         $original = new ReportingConfig();
@@ -56,6 +61,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('/csp-report', $modified->uri);
     }
 
+    #[Test]
     public function testWithEndpointReturnsNewInstance(): void
     {
         $original = new ReportingConfig();
@@ -66,6 +72,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('csp-endpoint', $modified->endpoint);
     }
 
+    #[Test]
     public function testFluentApiChaining(): void
     {
         $reporting = (new ReportingConfig())
@@ -79,6 +86,7 @@ final class ReportingConfigTest extends TestCase
     }
 
     // Validation
+    #[Test]
     public function testValidationThrowsForSemicolonInUri(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -87,6 +95,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(uri: '/csp-report; evil');
     }
 
+    #[Test]
     public function testValidationThrowsForNewlineInUri(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -95,6 +104,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(uri: "/csp-report\nevil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInEndpoint(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -103,6 +113,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(endpoint: 'endpoint; evil');
     }
 
+    #[Test]
     public function testValidationThrowsForNewlineInEndpoint(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -111,6 +122,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(endpoint: "endpoint\nevil");
     }
 
+    #[Test]
     public function testValidationThrowsForCarriageReturnInUri(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -121,6 +133,7 @@ final class ReportingConfigTest extends TestCase
 
     // --- HTTPS Security Validation ---
 
+    #[Test]
     public function testValidationThrowsForHttpReportUri(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -129,6 +142,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(uri: 'http://example.com/csp-report');
     }
 
+    #[Test]
     public function testValidationThrowsForUppercaseHttpReportUri(): void
     {
         // Tests that scheme comparison is case-insensitive (kills strtolower mutation)
@@ -138,6 +152,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(uri: 'HTTP://example.com/csp-report');
     }
 
+    #[Test]
     public function testValidationThrowsForMixedCaseHttpReportUri(): void
     {
         // Tests mixed case "Http://"
@@ -147,6 +162,7 @@ final class ReportingConfigTest extends TestCase
         new ReportingConfig(uri: 'Http://example.com/csp-report');
     }
 
+    #[Test]
     public function testValidationAllowsHttpsReportUri(): void
     {
         $config = new ReportingConfig(uri: 'https://example.com/csp-report');
@@ -154,6 +170,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('https://example.com/csp-report', $config->uri);
     }
 
+    #[Test]
     public function testValidationAllowsRelativeReportUri(): void
     {
         $config = new ReportingConfig(uri: '/csp-report');
@@ -161,6 +178,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('/csp-report', $config->uri);
     }
 
+    #[Test]
     public function testWithUriThrowsForHttpScheme(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -170,6 +188,7 @@ final class ReportingConfigTest extends TestCase
     }
 
     // Preservation Tests (kills ?? swap mutations)
+    #[Test]
     public function testWithUpgradeInsecurePreservesOtherValues(): void
     {
         $original = new ReportingConfig(
@@ -185,6 +204,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('original-endpoint', $modified->endpoint);
     }
 
+    #[Test]
     public function testWithUriPreservesOtherValues(): void
     {
         $original = new ReportingConfig(
@@ -200,6 +220,7 @@ final class ReportingConfigTest extends TestCase
         $this->assertSame('original-endpoint', $modified->endpoint);
     }
 
+    #[Test]
     public function testWithEndpointPreservesOtherValues(): void
     {
         $original = new ReportingConfig(

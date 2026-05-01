@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -24,6 +25,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testIncludesWebSocketInConnectSrc(): void
     {
         $generator = new NonceGenerator();
@@ -39,6 +41,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testConnectSrcWithoutWebSocketReturnsOnlyBaseValue(): void
     {
         $generator = new NonceGenerator();
@@ -57,6 +60,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testWebSocketHostAcceptsUppercaseHostname(): void
     {
         $generator = new NonceGenerator();
@@ -72,6 +76,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testWebSocketWithLenientPolicy(): void
     {
         $generator = new NonceGenerator();
@@ -87,6 +92,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     }
 
     // Upgrade Insecure Requests
+    #[Test]
     public function testIncludesUpgradeInsecureRequestsByDefault(): void
     {
         $header = (new CspDirectives())->toHeaderValue('test-nonce');
@@ -94,6 +100,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
         $this->assertStringContainsString('upgrade-insecure-requests', $header);
     }
 
+    #[Test]
     public function testExcludesUpgradeInsecureRequestsWhenDisabled(): void
     {
         $reporting = new ReportingConfig(upgradeInsecure: false);
@@ -103,6 +110,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     }
 
     // Reporting Directives
+    #[Test]
     public function testIncludesReportUri(): void
     {
         $reporting = new ReportingConfig(uri: '/csp-report');
@@ -111,6 +119,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
         $this->assertStringContainsString('report-uri /csp-report', $header);
     }
 
+    #[Test]
     public function testIncludesReportTo(): void
     {
         $reporting = new ReportingConfig(endpoint: 'csp-endpoint');
@@ -119,6 +128,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
         $this->assertStringContainsString('report-to csp-endpoint', $header);
     }
 
+    #[Test]
     public function testIncludesBothReportUriAndReportTo(): void
     {
         $reporting = new ReportingConfig(uri: '/csp-report', endpoint: 'csp-endpoint');
@@ -129,6 +139,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     }
 
     // Object-src Default
+    #[Test]
     public function testAlwaysIncludesObjectSrcNone(): void
     {
         $header = (new CspDirectives())->toHeaderValue('test-nonce');
@@ -137,6 +148,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
     }
 
     // Sub-Value-Object Integration
+    #[Test]
     public function testIncludesCustomResourceDirectives(): void
     {
         $customResources = new ResourceDirectives(
@@ -153,6 +165,7 @@ final class CspDirectivesHeaderDirectivesTest extends TestCase
         $this->assertStringContainsString("connect-src 'self' https://api.cdn.com", $header);
     }
 
+    #[Test]
     public function testIncludesCustomNavigationDirectives(): void
     {
         $customNavigation = new NavigationDirectives(

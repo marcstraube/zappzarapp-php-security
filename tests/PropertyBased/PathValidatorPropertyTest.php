@@ -9,6 +9,7 @@ namespace Zappzarapp\Security\Tests\PropertyBased;
 use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Exception\PathTraversalException;
 use Zappzarapp\Security\Sanitization\Path\PathValidationConfig;
@@ -27,6 +28,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Paths with null bytes are ALWAYS rejected
      */
+    #[Test]
     public function testPathsWithNullBytesAreAlwaysRejected(): void
     {
         $validator = new PathValidator();
@@ -47,6 +49,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Paths with traversal sequences are ALWAYS rejected
      */
+    #[Test]
     public function testPathsWithTraversalAreAlwaysRejected(): void
     {
         $validator = new PathValidator();
@@ -80,6 +83,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: URL-encoded traversal sequences are ALWAYS rejected
      */
+    #[Test]
     public function testEncodedTraversalIsRejected(): void
     {
         $validator = new PathValidator();
@@ -104,6 +108,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Common path traversal attack patterns are rejected
      */
+    #[Test]
     public function testCommonTraversalAttacksAreRejected(): void
     {
         $validator = new PathValidator();
@@ -130,6 +135,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Safe paths are preserved
      */
+    #[Test]
     public function testSafePathsArePreserved(): void
     {
         $validator = new PathValidator(new PathValidationConfig(allowDotFiles: true));
@@ -153,6 +159,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Normalized paths never contain traversal sequences
      */
+    #[Test]
     public function testNormalizedPathsNeverContainTraversal(): void
     {
         $validator = new PathValidator();
@@ -179,6 +186,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Dot files are blocked by default
      */
+    #[Test]
     public function testDotFilesBlockedByDefault(): void
     {
         $validator = new PathValidator(new PathValidationConfig(allowDotFiles: false));
@@ -202,6 +210,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: Blocked extensions are rejected
      */
+    #[Test]
     public function testBlockedExtensionsAreRejected(): void
     {
         $validator = new PathValidator(new PathValidationConfig(
@@ -227,6 +236,7 @@ final class PathValidatorPropertyTest extends TestCase
     /**
      * Property: isSafe is consistent with validate()
      */
+    #[Test]
     public function testIsSafeConsistentWithValidate(): void
     {
         $validator = new PathValidator();

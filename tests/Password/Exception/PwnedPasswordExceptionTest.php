@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Password\Exception\PwnedPasswordException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Password\Exception\PwnedPasswordException;
 #[CoversClass(PwnedPasswordException::class)]
 final class PwnedPasswordExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = new PwnedPasswordException(1);
@@ -19,6 +21,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testConstructorSetsOccurrences(): void
     {
         $exception = new PwnedPasswordException(12345);
@@ -26,6 +29,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         $this->assertSame(12345, $exception->occurrences());
     }
 
+    #[Test]
     public function testConstructorSetsSingularMessage(): void
     {
         $exception = new PwnedPasswordException(1);
@@ -36,6 +40,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConstructorSetsPluralMessage(): void
     {
         $exception = new PwnedPasswordException(5);
@@ -46,6 +51,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConstructorWithZeroOccurrences(): void
     {
         $exception = new PwnedPasswordException(0);
@@ -57,6 +63,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConstructorWithLargeNumber(): void
     {
         $exception = new PwnedPasswordException(10000000);
@@ -65,6 +72,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         $this->assertStringContainsString('10000000', $exception->getMessage());
     }
 
+    #[Test]
     public function testBreachedFactoryMethod(): void
     {
         $exception = PwnedPasswordException::breached(500);
@@ -76,6 +84,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testBreachedFactoryMethodWithSingular(): void
     {
         $exception = PwnedPasswordException::breached(1);
@@ -87,6 +96,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testBreachedFactoryMethodEquivalentToConstructor(): void
     {
         $viaConstructor = new PwnedPasswordException(100);
@@ -96,6 +106,7 @@ final class PwnedPasswordExceptionTest extends TestCase
         $this->assertSame($viaConstructor->getMessage(), $viaFactory->getMessage());
     }
 
+    #[Test]
     public function testTwoOccurrencesIsPlural(): void
     {
         $exception = new PwnedPasswordException(2);

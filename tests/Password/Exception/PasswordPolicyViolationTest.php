@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\Password\Exception;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Exception\PasswordPolicyViolation;
 
 #[CoversClass(PasswordPolicyViolation::class)]
 final class PasswordPolicyViolationTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = new PasswordPolicyViolation(['Violation']);
@@ -19,6 +21,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testConstructorSetsViolations(): void
     {
         $violations = ['Must be longer', 'Must contain digit'];
@@ -27,6 +30,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertSame($violations, $exception->violations());
     }
 
+    #[Test]
     public function testConstructorSetsMessage(): void
     {
         $violations = ['Must be longer', 'Must contain digit'];
@@ -38,6 +42,7 @@ final class PasswordPolicyViolationTest extends TestCase
         );
     }
 
+    #[Test]
     public function testConstructorWithSingleViolation(): void
     {
         $exception = new PasswordPolicyViolation(['Single violation']);
@@ -49,6 +54,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertCount(1, $exception->violations());
     }
 
+    #[Test]
     public function testConstructorWithEmptyViolations(): void
     {
         $exception = new PasswordPolicyViolation([]);
@@ -60,6 +66,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertSame([], $exception->violations());
     }
 
+    #[Test]
     public function testMinLengthFactoryMethod(): void
     {
         $exception = PasswordPolicyViolation::minLength(12, 5);
@@ -74,6 +81,7 @@ final class PasswordPolicyViolationTest extends TestCase
         );
     }
 
+    #[Test]
     public function testMinLengthWithZeroActual(): void
     {
         $exception = PasswordPolicyViolation::minLength(8, 0);
@@ -81,6 +89,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertStringContainsString('at least 8 characters (got 0)', $exception->getMessage());
     }
 
+    #[Test]
     public function testMaxLengthFactoryMethod(): void
     {
         $exception = PasswordPolicyViolation::maxLength(128, 200);
@@ -95,6 +104,7 @@ final class PasswordPolicyViolationTest extends TestCase
         );
     }
 
+    #[Test]
     public function testMissingCharacterClassFactoryMethod(): void
     {
         $exception = PasswordPolicyViolation::missingCharacterClass('uppercase');
@@ -109,6 +119,7 @@ final class PasswordPolicyViolationTest extends TestCase
         );
     }
 
+    #[Test]
     public function testMissingCharacterClassWithDifferentClasses(): void
     {
         $classes = ['lowercase', 'digit', 'special'];
@@ -120,6 +131,7 @@ final class PasswordPolicyViolationTest extends TestCase
         }
     }
 
+    #[Test]
     public function testMultipleFactoryMethod(): void
     {
         $violations = [
@@ -135,6 +147,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertStringContainsString('Missing digit', $exception->getMessage());
     }
 
+    #[Test]
     public function testMultipleWithEmptyArray(): void
     {
         $exception = PasswordPolicyViolation::multiple([]);
@@ -142,6 +155,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertSame([], $exception->violations());
     }
 
+    #[Test]
     public function testViolationsReturnsNewArray(): void
     {
         $violations = ['Violation 1', 'Violation 2'];
@@ -154,6 +168,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertSame($violations, $returned1);
     }
 
+    #[Test]
     public function testWithUnicodeViolationMessages(): void
     {
         $violations = ['Passwort muss Grossbuchstaben enthalten', 'Mindestens 8 Zeichen erforderlich'];
@@ -162,6 +177,7 @@ final class PasswordPolicyViolationTest extends TestCase
         $this->assertSame($violations, $exception->violations());
     }
 
+    #[Test]
     public function testWithSpecialCharactersInViolationMessages(): void
     {
         $violations = ['Must contain: !@#$%^&*()', 'Length < 8'];
