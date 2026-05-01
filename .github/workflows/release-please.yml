@@ -24,8 +24,8 @@ jobs:
         id: release
         with:
           token: ${{ steps.app-token.outputs.token }}
-          release-type: php
-          package-name: zappzarapp/security
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
       # If a release was created, generate and attach SBOM
       - name: Checkout code
