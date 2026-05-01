@@ -29,6 +29,9 @@ if (!$limiter->consume($identifier)) {
 | `TokenBucketLimiter`   | Token bucket algorithm (bursty traffic) |
 | `SlidingWindowLimiter` | Sliding window algorithm (smooth rate)  |
 | `InMemoryStorage`      | In-memory storage (single server)       |
+| `PdoStorage`           | PDO storage (MySQL, PostgreSQL, SQLite) |
+| `RedisStorage`         | Redis storage (distributed)             |
+| `MemcachedStorage`     | Memcached storage (distributed)         |
 
 ## Algorithms
 
@@ -114,24 +117,62 @@ use Zappzarapp\Security\RateLimiting\Storage\InMemoryStorage;
 $storage = new InMemoryStorage();
 ```
 
-### Custom Storage (Redis, etc.)
+### PDO (MySQL, PostgreSQL, SQLite)
 
-Implement the storage interface for distributed rate limiting:
+For environments without Redis or Memcached:
 
 ```php
-use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorageInterface;
+use Zappzarapp\Security\RateLimiting\Storage\PdoStorage;
 
-class RedisRateLimitStorage implements RateLimitStorageInterface
+// Create the table (run once during setup/migration)
+$driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+$schema = PdoStorage::SCHEMA[$driver];
+
+// MySQL needs 1 table name arg, PostgreSQL/SQLite need 3 (table, index, table)
+$pdo->exec(sprintf($schema, 'rate_limits', 'rate_limits', 'rate_limits'));
+
+$storage = new PdoStorage(
+    pdo: $pdo,
+    table: 'rate_limits',  // default
+    prefix: 'ratelimit:',  // default
+);
+```
+
+**Cleanup expired entries** (recommended via cron):
+
+```php
+$storage->cleanup(); // Returns number of deleted rows
+```
+
+### Redis
+
+```php
+use Zappzarapp\Security\RateLimiting\Storage\RedisStorage;
+
+$storage = new RedisStorage(client: $redis, prefix: 'ratelimit:');
+```
+
+### Memcached
+
+```php
+use Zappzarapp\Security\RateLimiting\Storage\MemcachedStorage;
+
+$storage = new MemcachedStorage(client: $memcached, prefix: 'ratelimit:');
+```
+
+### Custom Storage
+
+Implement the storage interface for other backends:
+
+```php
+use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorage;
+
+class CustomStorage implements RateLimitStorage
 {
-    public function get(string $key): ?array
-    {
-        // Get from Redis
-    }
-
-    public function set(string $key, array $data, int $ttl): void
-    {
-        // Store in Redis
-    }
+    public function get(string $key): ?array { /* ... */ }
+    public function set(string $key, array $data, int $ttl): void { /* ... */ }
+    public function delete(string $key): void { /* ... */ }
+    public function increment(string $key, int $amount, int $ttl): int { /* ... */ }
 }
 ```
 
