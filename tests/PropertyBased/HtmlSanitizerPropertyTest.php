@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\PropertyBased;
 use Eris\Generators;
 use Eris\TestTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Html\HtmlSanitizer;
 use Zappzarapp\Security\Sanitization\Html\HtmlSanitizerConfig;
@@ -24,6 +25,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized output NEVER contains script tags
      */
+    #[Test]
     public function testSanitizedOutputNeverContainsScriptTags(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::standard());
@@ -42,6 +44,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized output NEVER contains event handler attributes
      */
+    #[Test]
     public function testSanitizedOutputNeverContainsEventHandlers(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::standard());
@@ -70,6 +73,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
     /**
      * Property: Sanitized output NEVER contains javascript: URIs
      */
+    #[Test]
     public function testSanitizedOutputNeverContainsJavascriptUri(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::rich());
@@ -93,6 +97,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
      *
      * Specifically tests common XSS attack patterns.
      */
+    #[Test]
     public function testCommonXssPayloadsAreNeutralized(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::standard());
@@ -122,6 +127,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
     /**
      * Property: stripAll configuration removes ALL HTML
      */
+    #[Test]
     public function testStripAllRemovesAllHtml(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::stripAll());
@@ -148,6 +154,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
      * Note: Some edge cases with entity encoding may differ, so we test
      * that dangerous patterns remain removed.
      */
+    #[Test]
     public function testSanitizedContentRemainsSafe(): void
     {
         $sanitizer = new HtmlSanitizer(HtmlSanitizerConfig::standard());
@@ -185,6 +192,7 @@ final class HtmlSanitizerPropertyTest extends TestCase
     /**
      * Property: Empty input produces empty output
      */
+    #[Test]
     public function testEmptyInputProducesEmptyOutput(): void
     {
         $sanitizer = new HtmlSanitizer();

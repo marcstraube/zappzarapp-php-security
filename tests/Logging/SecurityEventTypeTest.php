@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\Logging;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Logging\SecurityEventType;
 
 #[CoversClass(SecurityEventType::class)]
 final class SecurityEventTypeTest extends TestCase
 {
+    #[Test]
     public function testAllCasesHaveUniqueValues(): void
     {
         $values       = array_map(fn(SecurityEventType $type) => $type->value, SecurityEventType::cases());
@@ -20,6 +22,7 @@ final class SecurityEventTypeTest extends TestCase
         $this->assertCount(count($values), $uniqueValues, 'All event types must have unique values');
     }
 
+    #[Test]
     public function testAllCasesHaveSeverity(): void
     {
         foreach (SecurityEventType::cases() as $type) {
@@ -28,6 +31,7 @@ final class SecurityEventTypeTest extends TestCase
         }
     }
 
+    #[Test]
     public function testAllCasesHaveDescription(): void
     {
         foreach (SecurityEventType::cases() as $type) {
@@ -38,6 +42,7 @@ final class SecurityEventTypeTest extends TestCase
     }
 
     #[DataProvider('warningEventsProvider')]
+    #[Test]
     public function testWarningSeverityEvents(SecurityEventType $type): void
     {
         $this->assertSame('warning', $type->severity());
@@ -55,6 +60,7 @@ final class SecurityEventTypeTest extends TestCase
     }
 
     #[DataProvider('alertEventsProvider')]
+    #[Test]
     public function testAlertSeverityEvents(SecurityEventType $type): void
     {
         $this->assertSame('alert', $type->severity());
@@ -73,6 +79,7 @@ final class SecurityEventTypeTest extends TestCase
     }
 
     #[DataProvider('criticalEventsProvider')]
+    #[Test]
     public function testCriticalSeverityEvents(SecurityEventType $type): void
     {
         $this->assertSame('critical', $type->severity());
@@ -92,6 +99,7 @@ final class SecurityEventTypeTest extends TestCase
         yield 'session_fixation_attempt' => [SecurityEventType::SESSION_FIXATION_ATTEMPT];
     }
 
+    #[Test]
     public function testValueFormat(): void
     {
         foreach (SecurityEventType::cases() as $type) {

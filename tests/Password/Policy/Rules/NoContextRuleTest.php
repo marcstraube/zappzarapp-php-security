@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Policy\Rules;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
 use Zappzarapp\Security\Password\Policy\Rules\NoContextRule;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Password\Policy\Rules\NoContextRule;
 #[CoversClass(NoContextRule::class)]
 final class NoContextRuleTest extends TestCase
 {
+    #[Test]
     public function testImplementsPolicyRuleInterface(): void
     {
         $rule = new NoContextRule([]);
@@ -20,6 +22,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertInstanceOf(PolicyRule::class, $rule);
     }
 
+    #[Test]
     public function testIsSatisfiedWithEmptyContextStrings(): void
     {
         $rule = new NoContextRule([]);
@@ -27,6 +30,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('anypassword'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithEmptyPassword(): void
     {
         $rule = new NoContextRule(['username']);
@@ -34,6 +38,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWhenPasswordContainsUsername(): void
     {
         $rule = new NoContextRule(['johndoe']);
@@ -41,6 +46,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('myjohndoepassword'));
     }
 
+    #[Test]
     public function testIsSatisfiedWhenPasswordDoesNotContainContext(): void
     {
         $rule = new NoContextRule(['johndoe']);
@@ -48,6 +54,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('SecurePassword123!'));
     }
 
+    #[Test]
     public function testCaseInsensitiveMatching(): void
     {
         $rule = new NoContextRule(['JohnDoe']);
@@ -57,6 +64,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('myJohnDoepassword'));
     }
 
+    #[Test]
     public function testCaseInsensitiveMatchingWithUppercasePassword(): void
     {
         $rule = new NoContextRule(['johndoe']);
@@ -64,6 +72,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('myJOHNDOEpassword'));
     }
 
+    #[Test]
     public function testIgnoresContextStringsShorterThanMinMatchLength(): void
     {
         $rule = new NoContextRule(['ab', 'abc', 'abcd'], 3);
@@ -73,6 +82,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('xyzabdef')); // no 'abc' or 'abcd'
     }
 
+    #[Test]
     public function testCustomMinMatchLength(): void
     {
         $rule = new NoContextRule(['ab'], 2);
@@ -80,6 +90,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('xyzabdef'));
     }
 
+    #[Test]
     public function testDefaultMinMatchLengthIsThree(): void
     {
         $rule = new NoContextRule(['ab', 'abc']);
@@ -89,6 +100,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('xyzabcdef'));
     }
 
+    #[Test]
     public function testMultipleContextStrings(): void
     {
         $rule = new NoContextRule(['john', 'jane', 'admin']);
@@ -99,6 +111,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('SecurePassword123!'));
     }
 
+    #[Test]
     public function testContextStringsGetter(): void
     {
         $contextStrings = ['john', 'jane'];
@@ -107,6 +120,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertSame($contextStrings, $rule->contextStrings());
     }
 
+    #[Test]
     public function testMinMatchLengthGetter(): void
     {
         $rule = new NoContextRule([], 5);
@@ -114,6 +128,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertSame(5, $rule->minMatchLength());
     }
 
+    #[Test]
     public function testDefaultMinMatchLengthGetter(): void
     {
         $rule = new NoContextRule([]);
@@ -121,6 +136,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertSame(3, $rule->minMatchLength());
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $rule = new NoContextRule(['username']);
@@ -131,6 +147,7 @@ final class NoContextRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testForUsernameFactory(): void
     {
         $rule = NoContextRule::forUsername('johndoe');
@@ -140,6 +157,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('SecurePassword123!'));
     }
 
+    #[Test]
     public function testForEmailFactoryExtractsLocalPartAndDomain(): void
     {
         $rule = NoContextRule::forEmail('johndoe@example.com');
@@ -150,6 +168,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('SecurePassword123!'));
     }
 
+    #[Test]
     public function testForEmailFactoryWithSubdomain(): void
     {
         $rule = NoContextRule::forEmail('user@mail.example.com');
@@ -159,6 +178,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('mail.examplepass'));
     }
 
+    #[Test]
     public function testForEmailFactoryWithNoAtSign(): void
     {
         $rule = NoContextRule::forEmail('invalid-email');
@@ -166,6 +186,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertSame(['invalid-email'], $rule->contextStrings());
     }
 
+    #[Test]
     public function testForEmailFactoryWithEmptyLocalPart(): void
     {
         $rule = NoContextRule::forEmail('@example.com');
@@ -175,6 +196,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('myexamplepassword'));
     }
 
+    #[Test]
     public function testForEmailFactoryWithSinglePartDomain(): void
     {
         $rule = NoContextRule::forEmail('user@localhost');
@@ -183,6 +205,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertSame(['user'], $rule->contextStrings());
     }
 
+    #[Test]
     public function testForContextsFactory(): void
     {
         $contexts = ['john', 'jane', 'admin'];
@@ -195,6 +218,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('SecurePassword123!'));
     }
 
+    #[Test]
     public function testForContextsFactoryWithEmptyArray(): void
     {
         $rule = NoContextRule::forContexts([]);
@@ -203,6 +227,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('anypassword'));
     }
 
+    #[Test]
     public function testHandlesUnicodeCharacters(): void
     {
         $rule = new NoContextRule(['mueller']);
@@ -211,6 +236,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('testmuller123'));
     }
 
+    #[Test]
     public function testHandlesUnicodeInContextString(): void
     {
         $rule = new NoContextRule(['admin']);
@@ -218,6 +244,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('Admin123'));
     }
 
+    #[Test]
     public function testUnicodeCaseInsensitiveMatching(): void
     {
         $rule = new NoContextRule(['MÜLLER']);
@@ -225,6 +252,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('testmüller123'));
     }
 
+    #[Test]
     public function testPasswordExactlyMatchesContext(): void
     {
         $rule = new NoContextRule(['password']);
@@ -232,6 +260,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('password'));
     }
 
+    #[Test]
     public function testContextAtStartOfPassword(): void
     {
         $rule = new NoContextRule(['admin']);
@@ -239,6 +268,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('admin123'));
     }
 
+    #[Test]
     public function testContextAtEndOfPassword(): void
     {
         $rule = new NoContextRule(['admin']);
@@ -246,6 +276,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('super_admin'));
     }
 
+    #[Test]
     public function testMinMatchLengthZeroMatchesAllStrings(): void
     {
         $rule = new NoContextRule(['a'], 0);
@@ -253,6 +284,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('password'));
     }
 
+    #[Test]
     public function testVeryLongContextString(): void
     {
         $longContext = str_repeat('a', 100);
@@ -262,6 +294,7 @@ final class NoContextRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied(str_repeat('a', 99)));
     }
 
+    #[Test]
     public function testEmptyStringInContextIsIgnored(): void
     {
         $rule = new NoContextRule(['', 'valid']);
@@ -296,6 +329,7 @@ final class NoContextRuleTest extends TestCase
      * @param list<string> $contextStrings
      */
     #[DataProvider('contextMatchingProvider')]
+    #[Test]
     public function testIsSatisfiedWithDataProvider(array $contextStrings, string $password, bool $expected): void
     {
         $rule = new NoContextRule($contextStrings);
@@ -327,6 +361,7 @@ final class NoContextRuleTest extends TestCase
      * @param list<string> $expectedContext
      */
     #[DataProvider('forEmailProvider')]
+    #[Test]
     public function testForEmailExtraction(string $email, array $expectedContext): void
     {
         $rule = NoContextRule::forEmail($email);

@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Strength;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Strength\PasswordStrengthMeter;
 use Zappzarapp\Security\Password\Strength\StrengthLevel;
@@ -20,6 +21,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->meter = new PasswordStrengthMeter();
     }
 
+    #[Test]
     public function testMeasureReturnsCorrectStructure(): void
     {
         $result = $this->meter->measure('TestPassword123!');
@@ -32,6 +34,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertIsArray($result['feedback']);
     }
 
+    #[Test]
     public function testMeasureWithEmptyPassword(): void
     {
         $result = $this->meter->measure('');
@@ -40,6 +43,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertSame(0.0, $result['entropy']);
     }
 
+    #[Test]
     public function testMeasureWithWeakPassword(): void
     {
         $result = $this->meter->measure('abc');
@@ -48,6 +52,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertNotEmpty($result['feedback']);
     }
 
+    #[Test]
     public function testMeasureWithStrongPassword(): void
     {
         // 11 chars with mixed charset (~72 bits entropy) = STRONG (60-79 bits)
@@ -57,6 +62,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertSame([], $result['feedback']);
     }
 
+    #[Test]
     public function testLevelReturnsStrengthLevel(): void
     {
         $level = $this->meter->level('TestPassword123!');
@@ -64,11 +70,13 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertInstanceOf(StrengthLevel::class, $level);
     }
 
+    #[Test]
     public function testLevelWithVeryWeakPassword(): void
     {
         $this->assertSame(StrengthLevel::VERY_WEAK, $this->meter->level('abc'));
     }
 
+    #[Test]
     public function testLevelWithVeryStrongPassword(): void
     {
         // Long mixed-case password for testing very strong level (not a real password)
@@ -76,6 +84,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertSame(StrengthLevel::VERY_STRONG, $this->meter->level($password));
     }
 
+    #[Test]
     public function testEntropyReturnsFloat(): void
     {
         $entropy = $this->meter->entropy('TestPassword');
@@ -83,11 +92,13 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertIsFloat($entropy);
     }
 
+    #[Test]
     public function testEntropyWithEmptyPassword(): void
     {
         $this->assertSame(0.0, $this->meter->entropy(''));
     }
 
+    #[Test]
     public function testEntropyIncreasesWithLength(): void
     {
         $short = $this->meter->entropy('abc');
@@ -96,6 +107,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertGreaterThan($short, $long);
     }
 
+    #[Test]
     public function testEntropyIncreasesWithCharacterDiversity(): void
     {
         $lowerOnly = $this->meter->entropy('abcdefgh');
@@ -104,16 +116,19 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertGreaterThan($lowerOnly, $mixed);
     }
 
+    #[Test]
     public function testMeetsMinimumReturnsTrueWhenMet(): void
     {
         $this->assertTrue($this->meter->meetsMinimum('TestPass123!', StrengthLevel::FAIR));
     }
 
+    #[Test]
     public function testMeetsMinimumReturnsFalseWhenNotMet(): void
     {
         $this->assertFalse($this->meter->meetsMinimum('abc', StrengthLevel::STRONG));
     }
 
+    #[Test]
     public function testMeetsMinimumWithExactLevel(): void
     {
         // FAIR password should meet FAIR requirement
@@ -123,6 +138,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertTrue($this->meter->meetsMinimum($password, $level));
     }
 
+    #[Test]
     public function testFeedbackForShortPassword(): void
     {
         $result = $this->meter->measure('Abc1!');
@@ -130,6 +146,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Use at least 12 characters', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForMediumLengthPassword(): void
     {
         // 12-15 characters should get "consider using more" feedback if not strong
@@ -138,6 +155,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Consider using more characters for better security', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForMissingUppercase(): void
     {
         // Use a password that is FAIR level (not STRONG) so feedback is generated
@@ -146,6 +164,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Add uppercase letters', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForMissingLowercase(): void
     {
         // Use a password that is FAIR level (not STRONG) so feedback is generated
@@ -154,6 +173,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Add lowercase letters', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForMissingDigits(): void
     {
         // Use a password that is FAIR level (not STRONG) so feedback is generated
@@ -162,6 +182,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Add numbers', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForMissingSpecialChars(): void
     {
         // Use a password that is FAIR level (not STRONG) so feedback is generated
@@ -170,6 +191,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Add special characters', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForRepeatingPattern(): void
     {
         $result = $this->meter->measure('abcabc');
@@ -177,6 +199,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Avoid repeating patterns', $result['feedback']);
     }
 
+    #[Test]
     public function testFeedbackForSequentialPattern(): void
     {
         $result = $this->meter->measure('abcdefgh');
@@ -184,6 +207,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Avoid sequential characters', $result['feedback']);
     }
 
+    #[Test]
     public function testNoFeedbackForStrongPassword(): void
     {
         $result = $this->meter->measure('Abcd1234!@#$XyZ');
@@ -191,6 +215,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertSame([], $result['feedback']);
     }
 
+    #[Test]
     public function testRepeatingPatternDetection(): void
     {
         $result1 = $this->meter->measure('abab');
@@ -200,6 +225,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Avoid repeating patterns', $result2['feedback']);
     }
 
+    #[Test]
     public function testSequentialPatternDetection(): void
     {
         // Sequential numbers
@@ -211,6 +237,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertContains('Avoid sequential characters', $result2['feedback']);
     }
 
+    #[Test]
     public function testNoSequentialPatternForShortSequences(): void
     {
         // Less than 4 sequential characters should not trigger
@@ -219,6 +246,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertNotContains('Avoid sequential characters', $result['feedback']);
     }
 
+    #[Test]
     public function testMeasureWithUnicodePassword(): void
     {
         $result = $this->meter->measure('SecurePassword');
@@ -227,6 +255,7 @@ final class PasswordStrengthMeterTest extends TestCase
         $this->assertArrayHasKey('entropy', $result);
     }
 
+    #[Test]
     public function testMeasureWithSpecialCharacters(): void
     {
         $result = $this->meter->measure('P@ss!word#123$');
@@ -250,6 +279,7 @@ final class PasswordStrengthMeterTest extends TestCase
     }
 
     #[DataProvider('strengthLevelProvider')]
+    #[Test]
     public function testLevelWithDataProvider(string $password, StrengthLevel $expected): void
     {
         $this->assertSame($expected, $this->meter->level($password));

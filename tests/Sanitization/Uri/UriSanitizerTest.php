@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Uri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Zappzarapp\Security\Sanitization\Exception\UnsafeUriException;
@@ -28,6 +29,7 @@ final class UriSanitizerTest extends TestCase
     // Basic Validation (Mutants 35-37)
     // =========================================================================
 
+    #[Test]
     public function testValidateIsPublic(): void
     {
         $this->sanitizer->validate('https://example.com');
@@ -35,6 +37,7 @@ final class UriSanitizerTest extends TestCase
     }
 
     #[DataProvider('validUriProvider')]
+    #[Test]
     public function testValidUrisPass(string $uri): void
     {
         $this->sanitizer->validate($uri);
@@ -62,6 +65,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('blockedSchemeProvider')]
+    #[Test]
     public function testBlockedSchemesThrowException(string $uri): void
     {
         $this->expectException(UnsafeUriException::class);
@@ -83,6 +87,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('blockedHostProvider')]
+    #[Test]
     public function testBlockedHostsThrowException(string $uri, UriSanitizerConfig $config): void
     {
         $sanitizer = new UriSanitizer($config);
@@ -120,6 +125,7 @@ final class UriSanitizerTest extends TestCase
         yield 'uppercase config subdomain' => ['https://sub.evil.com/path', $upperConfig];
     }
 
+    #[Test]
     public function testBlockedHostRequiresDotPrefixForSubdomain(): void
     {
         $config = new UriSanitizerConfig(
@@ -138,11 +144,13 @@ final class UriSanitizerTest extends TestCase
     // IsSafe Method (Mutant 41)
     // =========================================================================
 
+    #[Test]
     public function testIsSafeReturnsFalseForUnsafe(): void
     {
         $this->assertFalse($this->sanitizer->isSafe('javascript:alert(1)'));
     }
 
+    #[Test]
     public function testIsSafeReturnsTrueForSafe(): void
     {
         $this->assertTrue($this->sanitizer->isSafe('https://example.com'));
@@ -152,6 +160,7 @@ final class UriSanitizerTest extends TestCase
     // Normalization (Mutants 43-47)
     // =========================================================================
 
+    #[Test]
     public function testNormalizeTrimsWhitespace(): void
     {
         $result = $this->sanitizer->sanitize('  https://example.com  ');
@@ -159,6 +168,7 @@ final class UriSanitizerTest extends TestCase
     }
 
     #[DataProvider('obfuscationBypassProvider')]
+    #[Test]
     public function testObfuscationBypassesAreBlocked(string $uri): void
     {
         $this->expectException(UnsafeUriException::class);
@@ -177,18 +187,21 @@ final class UriSanitizerTest extends TestCase
         yield 'hex entity obfuscation' => ['&#x6a;avascript:alert(1)'];
     }
 
+    #[Test]
     public function testControlCharactersAreRemoved(): void
     {
         $result = $this->sanitizer->sanitize("https://example.com/path\x0d\x0a");
         $this->assertNotSame('', $result);
     }
 
+    #[Test]
     public function testUnicodeNormalizationIsApplied(): void
     {
         $result = $this->sanitizer->sanitize('https://example.com/café');
         $this->assertStringContainsString('example.com', $result);
     }
 
+    #[Test]
     public function testHtmlEntityQuoteDecoding(): void
     {
         $result = $this->sanitizer->sanitize('https://example.com?q=test&amp;foo=bar');
@@ -200,6 +213,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('mixedScriptIdnProvider')]
+    #[Test]
     public function testMixedScriptIdnIsBlocked(string $uri): void
     {
         $config = new UriSanitizerConfig(
@@ -225,6 +239,7 @@ final class UriSanitizerTest extends TestCase
     }
 
     #[DataProvider('pureScriptIdnProvider')]
+    #[Test]
     public function testPureScriptIdnIsAllowed(string $uri): void
     {
         $config = new UriSanitizerConfig(
@@ -248,6 +263,7 @@ final class UriSanitizerTest extends TestCase
         yield 'pure ascii' => ['https://example.com'];
     }
 
+    #[Test]
     public function testIdnValidationCanBeDisabled(): void
     {
         $config = new UriSanitizerConfig(
@@ -265,11 +281,13 @@ final class UriSanitizerTest extends TestCase
     // Sanitize Method
     // =========================================================================
 
+    #[Test]
     public function testSanitizeReturnsEmptyForUnsafe(): void
     {
         $this->assertSame('', $this->sanitizer->sanitize('javascript:alert(1)'));
     }
 
+    #[Test]
     public function testSanitizeReturnsUriForSafe(): void
     {
         $this->assertSame('https://example.com', $this->sanitizer->sanitize('https://example.com'));
@@ -279,6 +297,7 @@ final class UriSanitizerTest extends TestCase
     // Allowed Schemes and Hosts
     // =========================================================================
 
+    #[Test]
     public function testAllowedSchemesEnforced(): void
     {
         $config = new UriSanitizerConfig(
@@ -292,6 +311,7 @@ final class UriSanitizerTest extends TestCase
         $sanitizer->validate('http://example.com');
     }
 
+    #[Test]
     public function testRelativeUriWithRelativeDisabled(): void
     {
         $config = new UriSanitizerConfig(
@@ -305,6 +325,7 @@ final class UriSanitizerTest extends TestCase
         $sanitizer->validate('/relative/path');
     }
 
+    #[Test]
     public function testRelativeUriWithRelativeEnabled(): void
     {
         $config = new UriSanitizerConfig(
@@ -318,6 +339,7 @@ final class UriSanitizerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testSchemeExtractedFromStart(): void
     {
         $config = new UriSanitizerConfig(
@@ -336,6 +358,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('xssUriPayloadProvider')]
+    #[Test]
     public function testXssUriPayloadsAreBlocked(string $payload): void
     {
         $this->assertFalse($this->sanitizer->isSafe($payload));
@@ -359,6 +382,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('allowedHostProvider')]
+    #[Test]
     public function testAllowedHostBehavior(string $uri, UriSanitizerConfig $config, bool $shouldPass): void
     {
         $sanitizer = new UriSanitizer($config);
@@ -398,6 +422,7 @@ final class UriSanitizerTest extends TestCase
     // Throw vs Non-Throw (Mutant 22)
     // =========================================================================
 
+    #[Test]
     public function testBlockedSchemeActuallyThrows(): void
     {
         $threw = false;
@@ -415,6 +440,7 @@ final class UriSanitizerTest extends TestCase
     // Regex Anchor for Scheme (Mutant 29)
     // =========================================================================
 
+    #[Test]
     public function testSchemeOnlyMatchedAtStart(): void
     {
         $config = new UriSanitizerConfig(
@@ -433,6 +459,7 @@ final class UriSanitizerTest extends TestCase
     // =========================================================================
 
     #[DataProvider('ssrfBlockedUriProvider')]
+    #[Test]
     public function testSsrfProtectionBlocksPrivateNetworks(string $uri): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -467,6 +494,7 @@ final class UriSanitizerTest extends TestCase
     }
 
     #[DataProvider('ssrfAllowedUriProvider')]
+    #[Test]
     public function testSsrfProtectionAllowsPublicUrls(string $uri): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -486,6 +514,7 @@ final class UriSanitizerTest extends TestCase
         yield 'public with query' => ['https://example.com/search?q=test'];
     }
 
+    #[Test]
     public function testSsrfProtectionIsDisabledByDefault(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::web());
@@ -495,6 +524,7 @@ final class UriSanitizerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testServerSideConfigBlocksRelativeUrls(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -503,6 +533,7 @@ final class UriSanitizerTest extends TestCase
         $sanitizer->validate('/relative/path');
     }
 
+    #[Test]
     public function testServerSideConfigBlocksDangerousSchemes(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -511,6 +542,7 @@ final class UriSanitizerTest extends TestCase
         $sanitizer->validate('file:///etc/passwd');
     }
 
+    #[Test]
     public function testCustomPrivateNetworkValidatorCanBeInjected(): void
     {
         // Create a real validator with a logger to verify it's being used
@@ -530,6 +562,7 @@ final class UriSanitizerTest extends TestCase
         $sanitizer->validate('https://localhost/');
     }
 
+    #[Test]
     public function testIsSafeReturnsFalseForSsrfAttempt(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -537,6 +570,7 @@ final class UriSanitizerTest extends TestCase
         $this->assertFalse($sanitizer->isSafe('http://169.254.169.254/'));
     }
 
+    #[Test]
     public function testSanitizeReturnsEmptyForSsrfAttempt(): void
     {
         $sanitizer = new UriSanitizer(UriSanitizerConfig::serverSide());
@@ -548,6 +582,7 @@ final class UriSanitizerTest extends TestCase
     // InputFilter Interface Implementation
     // =========================================================================
 
+    #[Test]
     public function testImplementsInputFilterInterface(): void
     {
         $sanitizer = new UriSanitizer();
@@ -556,6 +591,7 @@ final class UriSanitizerTest extends TestCase
         $this->assertInstanceOf(InputFilter::class, $sanitizer);
     }
 
+    #[Test]
     public function testInputFilterSanitizeMethodWorks(): void
     {
         $sanitizer = new UriSanitizer();
@@ -566,6 +602,7 @@ final class UriSanitizerTest extends TestCase
         $this->assertSame('', $sanitizer->sanitize('javascript:alert(1)'));
     }
 
+    #[Test]
     public function testInputFilterIsSafeMethodWorks(): void
     {
         $sanitizer = new UriSanitizer();

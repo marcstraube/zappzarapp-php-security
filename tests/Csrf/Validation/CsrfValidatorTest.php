@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Validation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\Exception\CsrfTokenMismatchException;
 use Zappzarapp\Security\Csrf\Exception\InvalidCsrfTokenException;
@@ -29,6 +30,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Store and Get Token ---
 
+    #[Test]
     public function testStoreToken(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -38,6 +40,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertSame($token->value(), $this->storage->retrieve('_csrf'));
     }
 
+    #[Test]
     public function testStoreTokenWithTtl(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -47,6 +50,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertSame($token->value(), $this->storage->retrieve('_csrf'));
     }
 
+    #[Test]
     public function testGetStoredToken(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -57,11 +61,13 @@ final class CsrfValidatorTest extends TestCase
         $this->assertSame($token->value(), $stored);
     }
 
+    #[Test]
     public function testGetStoredTokenReturnsNullWhenEmpty(): void
     {
         $this->assertNull($this->validator->getStoredToken());
     }
 
+    #[Test]
     public function testCustomStorageKey(): void
     {
         $validator = new CsrfValidator($this->storage, 'custom_key');
@@ -75,6 +81,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Clear Token ---
 
+    #[Test]
     public function testClearToken(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -85,6 +92,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertNull($this->validator->getStoredToken());
     }
 
+    #[Test]
     public function testClearTokenDoesNotThrowWhenEmpty(): void
     {
         $this->validator->clearToken();
@@ -94,6 +102,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Validate Success ---
 
+    #[Test]
     public function testValidateSucceeds(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -104,6 +113,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertTrue(true); // No exception means success
     }
 
+    #[Test]
     public function testValidateDoesNotConsumeByDefault(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -116,6 +126,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateConsumesWhenRequested(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -128,6 +139,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Validate Failures ---
 
+    #[Test]
     public function testValidateThrowsOnEmptyToken(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -139,6 +151,7 @@ final class CsrfValidatorTest extends TestCase
         $this->validator->validate('');
     }
 
+    #[Test]
     public function testValidateThrowsOnNoStoredToken(): void
     {
         $this->expectException(CsrfTokenMismatchException::class);
@@ -147,6 +160,7 @@ final class CsrfValidatorTest extends TestCase
         $this->validator->validate(base64_encode(random_bytes(32)));
     }
 
+    #[Test]
     public function testValidateThrowsOnMismatch(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -158,6 +172,7 @@ final class CsrfValidatorTest extends TestCase
         $this->validator->validate(base64_encode(random_bytes(32)));
     }
 
+    #[Test]
     public function testValidateThrowsOnInvalidBase64(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -169,6 +184,7 @@ final class CsrfValidatorTest extends TestCase
         $this->validator->validate('not!valid!base64!!!');
     }
 
+    #[Test]
     public function testValidateThrowsOnInsufficientEntropy(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -180,6 +196,7 @@ final class CsrfValidatorTest extends TestCase
         $this->validator->validate(base64_encode('short'));
     }
 
+    #[Test]
     public function testValidateThrowsOnControlCharacters(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -193,6 +210,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- isValid Method ---
 
+    #[Test]
     public function testIsValidReturnsTrue(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -201,6 +219,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertTrue($this->validator->isValid($token->value()));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseOnMismatch(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -209,6 +228,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseOnEmpty(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -217,11 +237,13 @@ final class CsrfValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid(''));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseWhenNoStoredToken(): void
     {
         $this->assertFalse($this->validator->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseOnInvalidFormat(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -230,6 +252,7 @@ final class CsrfValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid('invalid!!!'));
     }
 
+    #[Test]
     public function testIsValidDoesNotConsumeToken(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));
@@ -243,6 +266,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Logging ---
 
+    #[Test]
     public function testLogsOnMissingToken(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -264,6 +288,7 @@ final class CsrfValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testLogsOnNoStoredToken(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -283,6 +308,7 @@ final class CsrfValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testLogsOnTokenMismatch(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -304,6 +330,7 @@ final class CsrfValidatorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testLogContextIncludesStorageKey(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -325,6 +352,7 @@ final class CsrfValidatorTest extends TestCase
 
     // --- Timing Attack Resistance ---
 
+    #[Test]
     public function testUsesConstantTimeComparison(): void
     {
         $token = new CsrfToken(base64_encode(random_bytes(32)));

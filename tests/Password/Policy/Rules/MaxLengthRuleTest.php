@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Policy\Rules;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
 use Zappzarapp\Security\Password\Policy\Rules\MaxLengthRule;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Password\Policy\Rules\MaxLengthRule;
 #[CoversClass(MaxLengthRule::class)]
 final class MaxLengthRuleTest extends TestCase
 {
+    #[Test]
     public function testImplementsPolicyRuleInterface(): void
     {
         $rule = new MaxLengthRule();
@@ -20,6 +22,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertInstanceOf(PolicyRule::class, $rule);
     }
 
+    #[Test]
     public function testDefaultMaxLength(): void
     {
         $rule = new MaxLengthRule();
@@ -27,6 +30,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertSame(128, $rule->maxLength());
     }
 
+    #[Test]
     public function testCustomMaxLength(): void
     {
         $rule = new MaxLengthRule(72);
@@ -34,6 +38,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertSame(72, $rule->maxLength());
     }
 
+    #[Test]
     public function testIsSatisfiedWithExactLength(): void
     {
         $rule = new MaxLengthRule(8);
@@ -41,6 +46,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('12345678'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithShorterPassword(): void
     {
         $rule = new MaxLengthRule(8);
@@ -48,6 +54,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied('1234'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithLongerPassword(): void
     {
         $rule = new MaxLengthRule(8);
@@ -55,6 +62,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('123456789'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithEmptyPassword(): void
     {
         $rule = new MaxLengthRule(8);
@@ -62,6 +70,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithZeroMaxLengthAndNonEmptyPassword(): void
     {
         $rule = new MaxLengthRule(0);
@@ -69,6 +78,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('a'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithZeroMaxLengthAndEmptyPassword(): void
     {
         $rule = new MaxLengthRule(0);
@@ -76,6 +86,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertTrue($rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $rule = new MaxLengthRule(128);
@@ -86,6 +97,7 @@ final class MaxLengthRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testErrorMessageWithDifferentLength(): void
     {
         $rule = new MaxLengthRule(72);
@@ -96,6 +108,7 @@ final class MaxLengthRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testHandlesUnicodeCharacters(): void
     {
         $rule = new MaxLengthRule(4);
@@ -104,6 +117,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('Tests'));
     }
 
+    #[Test]
     public function testHandlesMultiByteCharacters(): void
     {
         $rule = new MaxLengthRule(6);
@@ -112,6 +126,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('passwor'));
     }
 
+    #[Test]
     public function testHandlesEmojiCharacters(): void
     {
         $rule = new MaxLengthRule(4);
@@ -123,6 +138,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied($fiveEmojis));
     }
 
+    #[Test]
     public function testHandlesWhitespace(): void
     {
         $rule = new MaxLengthRule(8);
@@ -131,6 +147,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('         ')); // 9 spaces
     }
 
+    #[Test]
     public function testPreventsDoSWithVeryLongPassword(): void
     {
         $rule = new MaxLengthRule(128);
@@ -140,6 +157,7 @@ final class MaxLengthRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied($veryLongPassword));
     }
 
+    #[Test]
     public function testBcryptLimit(): void
     {
         $rule = new MaxLengthRule(72);
@@ -166,6 +184,7 @@ final class MaxLengthRuleTest extends TestCase
     }
 
     #[DataProvider('maxLengthProvider')]
+    #[Test]
     public function testIsSatisfiedWithDataProvider(int $maxLength, string $password, bool $expected): void
     {
         $rule = new MaxLengthRule($maxLength);

@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Hashing;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use ReflectionMethod;
@@ -26,6 +27,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->hasher = new PepperedPasswordHasher(self::TEST_PEPPER);
     }
 
+    #[Test]
     public function testHashProducesValidHash(): void
     {
         $hash = $this->hasher->hash(self::TEST_PASSWORD);
@@ -34,6 +36,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertNotSame(self::TEST_PASSWORD, $hash);
     }
 
+    #[Test]
     public function testVerifyWithCorrectPassword(): void
     {
         $hash = $this->hasher->hash(self::TEST_PASSWORD);
@@ -41,6 +44,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertTrue($this->hasher->verify(self::TEST_PASSWORD, $hash));
     }
 
+    #[Test]
     public function testVerifyWithIncorrectPassword(): void
     {
         $hash = $this->hasher->hash(self::TEST_PASSWORD);
@@ -48,6 +52,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($this->hasher->verify('WrongPassword', $hash));
     }
 
+    #[Test]
     public function testVerifyFailsWithWrongPepper(): void
     {
         $hash = $this->hasher->hash(self::TEST_PASSWORD);
@@ -57,6 +62,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($otherHasher->verify(self::TEST_PASSWORD, $hash));
     }
 
+    #[Test]
     public function testSamePasswordDifferentPeppersProduceDifferentHashes(): void
     {
         $hasher1 = new PepperedPasswordHasher('pepper-one-123456789012345678901');
@@ -75,6 +81,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertTrue($hasher2->verify(self::TEST_PASSWORD, $hash2));
     }
 
+    #[Test]
     public function testNeedsRehashDelegates(): void
     {
         $hash = $this->hasher->hash(self::TEST_PASSWORD);
@@ -83,6 +90,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($this->hasher->needsRehash($hash));
     }
 
+    #[Test]
     public function testNeedsRehashDetectsAlgorithmChange(): void
     {
         // Create hash with bcrypt
@@ -101,6 +109,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertTrue($argonHasher->needsRehash($bcryptHash));
     }
 
+    #[Test]
     public function testFactoryMethodArgon2id(): void
     {
         $hasher = PepperedPasswordHasher::argon2id(self::TEST_PEPPER);
@@ -111,6 +120,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertStringContainsString('$argon2id$', $hash);
     }
 
+    #[Test]
     public function testFactoryMethodHighSecurity(): void
     {
         $hasher = PepperedPasswordHasher::highSecurity(self::TEST_PEPPER);
@@ -121,6 +131,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertStringContainsString('$argon2id$', $hash);
     }
 
+    #[Test]
     public function testWithCustomBaseHasher(): void
     {
         $baseHasher = DefaultPasswordHasher::bcrypt(10);
@@ -132,6 +143,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertStringStartsWith('$2y$', $hash);
     }
 
+    #[Test]
     public function testEmptyPasswordCanBeHashed(): void
     {
         $hash = $this->hasher->hash('');
@@ -140,6 +152,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($this->hasher->verify('not-empty', $hash));
     }
 
+    #[Test]
     public function testUnicodePasswordSupport(): void
     {
         $unicodePassword = '密码🔐パスワード';
@@ -150,6 +163,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($this->hasher->verify('wrong', $hash));
     }
 
+    #[Test]
     public function testLongPasswordSupport(): void
     {
         $longPassword = str_repeat('a', 1000);
@@ -160,6 +174,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertFalse($this->hasher->verify(str_repeat('a', 999), $hash));
     }
 
+    #[Test]
     public function testPepperMinimumLengthIsEnforced(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -168,6 +183,7 @@ final class PepperedPasswordHasherTest extends TestCase
         new PepperedPasswordHasher('short');
     }
 
+    #[Test]
     public function testPepperExactlyMinimumLengthIsAccepted(): void
     {
         $pepper32Bytes = str_repeat('a', 32);
@@ -178,6 +194,7 @@ final class PepperedPasswordHasherTest extends TestCase
         $this->assertTrue($hasher->verify('test', $hash));
     }
 
+    #[Test]
     public function testPepperOneByteShortOfMinimumIsRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -185,6 +202,7 @@ final class PepperedPasswordHasherTest extends TestCase
         new PepperedPasswordHasher(str_repeat('a', 31));
     }
 
+    #[Test]
     public function testFactoryMethodsEnforcePepperMinimumLength(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -195,6 +213,7 @@ final class PepperedPasswordHasherTest extends TestCase
     /**
      * @throws ReflectionException
      */
+    #[Test]
     public function testDerivedKeyIsExactly32Bytes(): void
     {
         $method = new ReflectionMethod(PepperedPasswordHasher::class, 'applyPepper');

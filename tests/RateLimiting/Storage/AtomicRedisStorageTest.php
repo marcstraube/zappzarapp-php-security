@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting\Storage;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Redis;
 use RedisException;
@@ -89,6 +90,7 @@ final class AtomicRedisStorageTest extends TestCase
         return $this->redis;
     }
 
+    #[Test]
     public function testGetReturnsNullForMissingKey(): void
     {
         $result = $this->storage()->get('nonexistent');
@@ -96,6 +98,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testSetAndGet(): void
     {
         $data = ['tokens' => 100, 'last_refill' => time()];
@@ -106,6 +109,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame($data, $result);
     }
 
+    #[Test]
     public function testDelete(): void
     {
         $this->storage()->set('delete-test', ['value' => 1], 60);
@@ -116,6 +120,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertNull($this->storage()->get('delete-test'));
     }
 
+    #[Test]
     public function testIncrementCreatesNewKey(): void
     {
         $result = $this->storage()->increment('new-counter', 5, 60);
@@ -123,6 +128,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(5, $result);
     }
 
+    #[Test]
     public function testIncrementExistingKey(): void
     {
         $this->storage()->increment('counter', 10, 60);
@@ -131,6 +137,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(15, $result);
     }
 
+    #[Test]
     public function testIncrementIsAtomic(): void
     {
         // This test verifies atomicity by checking that TTL is properly set
@@ -142,6 +149,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertLessThanOrEqual(30, $ttl);
     }
 
+    #[Test]
     public function testAtomicSlidingWindowAllowsWithinLimit(): void
     {
         $result = $this->storage()->atomicSlidingWindow(
@@ -156,6 +164,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(0, $result['retryAfter']);
     }
 
+    #[Test]
     public function testAtomicSlidingWindowDeniesWhenExceeded(): void
     {
         // Consume all allowed requests
@@ -171,6 +180,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertGreaterThan(0, $result['retryAfter']);
     }
 
+    #[Test]
     public function testAtomicSlidingWindowWithHighCost(): void
     {
         $result = $this->storage()->atomicSlidingWindow(
@@ -193,6 +203,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertFalse($result3['allowed']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketAllowsWithTokens(): void
     {
         $result = $this->storage()->atomicTokenBucket(
@@ -207,6 +218,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(9, $result['remaining']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketDeniesWhenEmpty(): void
     {
         // Consume all tokens
@@ -221,6 +233,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertGreaterThan(0, $result['retryAfter']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketWithBurst(): void
     {
         // Bucket size 10, try to consume 8 at once
@@ -230,6 +243,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(2, $result['remaining']);
     }
 
+    #[Test]
     public function testPrefixIsApplied(): void
     {
         $customStorage = new AtomicRedisStorage($this->redis(), 'custom:prefix:');
@@ -243,11 +257,13 @@ final class AtomicRedisStorageTest extends TestCase
         $this->redis()->del('custom:prefix:prefixed-key');
     }
 
+    #[Test]
     public function testImplementsRateLimitStorage(): void
     {
         $this->assertInstanceOf(RateLimitStorage::class, $this->storage());
     }
 
+    #[Test]
     public function testGetReturnsNullForInvalidJson(): void
     {
         // Store invalid JSON directly
@@ -258,6 +274,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testGetReturnsNullForNonArrayJson(): void
     {
         // Store a JSON string that is not an array
@@ -268,6 +285,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
     public function testDeleteNonexistentKey(): void
     {
         // Should not throw
@@ -276,6 +294,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertNull($this->storage()->get('nonexistent-delete-test'));
     }
 
+    #[Test]
     public function testSetWithComplexData(): void
     {
         $data = [
@@ -292,6 +311,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame($data, $result);
     }
 
+    #[Test]
     public function testIncrementMultipleTimes(): void
     {
         $result1 = $this->storage()->increment('multi-increment', 1, 60);
@@ -303,6 +323,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(6, $result3);
     }
 
+    #[Test]
     public function testAtomicSlidingWindowResetAt(): void
     {
         $result = $this->storage()->atomicSlidingWindow(
@@ -317,6 +338,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertLessThanOrEqual($now + 60, $result['resetAt']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketResetAt(): void
     {
         $result = $this->storage()->atomicTokenBucket(
@@ -331,6 +353,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertGreaterThanOrEqual($now, $result['resetAt']);
     }
 
+    #[Test]
     public function testAtomicSlidingWindowWithZeroCost(): void
     {
         $result = $this->storage()->atomicSlidingWindow(
@@ -344,6 +367,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(10, $result['remaining']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketWithZeroCost(): void
     {
         $result = $this->storage()->atomicTokenBucket(
@@ -358,6 +382,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(10, $result['remaining']);
     }
 
+    #[Test]
     public function testDefaultPrefix(): void
     {
         $defaultStorage = new AtomicRedisStorage($this->redis());
@@ -371,6 +396,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->redis()->del('ratelimit:default-prefix-test');
     }
 
+    #[Test]
     public function testAtomicSlidingWindowCostExceedsLimit(): void
     {
         $result = $this->storage()->atomicSlidingWindow(
@@ -384,6 +410,7 @@ final class AtomicRedisStorageTest extends TestCase
         $this->assertSame(0, $result['remaining']);
     }
 
+    #[Test]
     public function testAtomicTokenBucketCostExceedsBucket(): void
     {
         $result = $this->storage()->atomicTokenBucket(

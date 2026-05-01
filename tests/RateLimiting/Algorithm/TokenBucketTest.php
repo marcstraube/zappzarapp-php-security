@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting\Algorithm;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Algorithm\AlgorithmType;
 use Zappzarapp\Security\RateLimiting\Algorithm\RateLimitAlgorithm;
@@ -72,6 +73,7 @@ final class TokenBucketTest extends TestCase
         return new TokenBucket($storage ?? $this->createStorageMock(), $config);
     }
 
+    #[Test]
     public function testImplementsRateLimitAlgorithm(): void
     {
         $algorithm = $this->createAlgorithm();
@@ -79,6 +81,7 @@ final class TokenBucketTest extends TestCase
         $this->assertInstanceOf(RateLimitAlgorithm::class, $algorithm);
     }
 
+    #[Test]
     public function testConsumeAllowsWithinLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -90,6 +93,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeDecrementsRemaining(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -102,6 +106,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(7, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeDeniesWhenBucketEmpty(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3, window: 60);
@@ -117,6 +122,7 @@ final class TokenBucketTest extends TestCase
         $this->assertGreaterThan(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testConsumeWithCost(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -127,6 +133,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeWithHighCostExceedsTokens(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -136,6 +143,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testConsumeWithCostZeroIsAllowed(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -146,6 +154,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(10, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeIsolatesIdentifiers(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3, window: 60);
@@ -161,6 +170,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result2->isAllowed());
     }
 
+    #[Test]
     public function testPeekDoesNotConsumeTokens(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -175,6 +185,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(10, $peek3->remaining);
     }
 
+    #[Test]
     public function testPeekReturnsCurrentState(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -188,6 +199,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(8, $result->remaining);
     }
 
+    #[Test]
     public function testPeekReturnsDeniedWhenBucketEmpty(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3, window: 60);
@@ -202,6 +214,7 @@ final class TokenBucketTest extends TestCase
         $this->assertGreaterThan(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testResetClearsTokenBucketState(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3, window: 60);
@@ -220,6 +233,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(3, $afterReset->remaining);
     }
 
+    #[Test]
     public function testResetOnlyAffectsSpecificIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -237,6 +251,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(2, $result2->remaining);
     }
 
+    #[Test]
     public function testBurstAllowsMoreThanLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5, window: 60, burst: 10);
@@ -251,6 +266,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testBurstDefaultsToLimitWhenZero(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5, burst: 0);
@@ -265,6 +281,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testRefillRateCalculation(): void
     {
         // 60 tokens per 60 seconds = 1 token per second
@@ -276,6 +293,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(59, $result->remaining);
     }
 
+    #[Test]
     public function testRetryAfterCalculation(): void
     {
         $algorithm = $this->createAlgorithm(limit: 1, window: 60);
@@ -288,6 +306,7 @@ final class TokenBucketTest extends TestCase
         $this->assertLessThanOrEqual(60, $result->retryAfter);
     }
 
+    #[Test]
     public function testPrefixIsApplied(): void
     {
         // Use separate storage for each algorithm to truly test prefix isolation
@@ -305,6 +324,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result2->isAllowed());
     }
 
+    #[Test]
     public function testResetAtCalculation(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10, window: 60);
@@ -316,6 +336,7 @@ final class TokenBucketTest extends TestCase
         $this->assertGreaterThanOrEqual($now, $result->resetAt);
     }
 
+    #[Test]
     public function testResetAtWhenBucketIsFull(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10, window: 60);
@@ -326,6 +347,7 @@ final class TokenBucketTest extends TestCase
         $this->assertLessThanOrEqual(time() + 1, $result->resetAt);
     }
 
+    #[Test]
     public function testConsumeWithEmptyIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -335,6 +357,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testConsumeWithSpecialCharactersInIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -360,6 +383,7 @@ final class TokenBucketTest extends TestCase
     }
 
     #[DataProvider('specialIdentifierProvider')]
+    #[Test]
     public function testConsumeWithVariousIdentifiers(string $identifier): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -369,6 +393,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testExactLimitConsumption(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5, window: 60);
@@ -382,6 +407,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testLargeCostValue(): void
     {
         $algorithm = $this->createAlgorithm(limit: 1000);
@@ -395,6 +421,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result2->isDenied());
     }
 
+    #[Test]
     public function testBurstWithHighCost(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5, window: 60, burst: 20);
@@ -405,6 +432,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testBurstExceededWithHighCost(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5, window: 60, burst: 10);
@@ -414,6 +442,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testTokensNeverExceedBucketSize(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10, window: 60, burst: 5);
@@ -424,6 +453,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testPeekRetryAfterWhenEmpty(): void
     {
         // 1 token per second refill rate (60 tokens per 60 seconds)
@@ -439,6 +469,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(1, $result->retryAfter);
     }
 
+    #[Test]
     public function testWithInMemoryStorageDirectly(): void
     {
         // Test basic functionality with actual InMemoryStorage
@@ -451,6 +482,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testResetCalledOnNonExistentIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -462,6 +494,7 @@ final class TokenBucketTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testConsumeReturnsResultWithLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 42);
@@ -471,6 +504,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(42, $result->limit);
     }
 
+    #[Test]
     public function testPeekReturnsResultWithLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 42);
@@ -480,6 +514,7 @@ final class TokenBucketTest extends TestCase
         $this->assertSame(42, $result->limit);
     }
 
+    #[Test]
     public function testMultipleCostsAddUp(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);

@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Policy\Rules;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PolicyRule;
 use Zappzarapp\Security\Password\Policy\Rules\RequireSpecialCharRule;
@@ -20,11 +21,13 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->rule = new RequireSpecialCharRule();
     }
 
+    #[Test]
     public function testImplementsPolicyRuleInterface(): void
     {
         $this->assertInstanceOf(PolicyRule::class, $this->rule);
     }
 
+    #[Test]
     public function testDefaultSpecialChars(): void
     {
         $expected = '!@#$%^&*()_+-=[]{}|;:\'",.<>?/\\`~';
@@ -32,6 +35,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertSame($expected, $this->rule->specialChars());
     }
 
+    #[Test]
     public function testCustomSpecialChars(): void
     {
         $rule = new RequireSpecialCharRule('!@#');
@@ -39,41 +43,49 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertSame('!@#', $rule->specialChars());
     }
 
+    #[Test]
     public function testIsSatisfiedWithSingleSpecialChar(): void
     {
         $this->assertTrue($this->rule->isSatisfied('password!'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithMultipleSpecialChars(): void
     {
         $this->assertTrue($this->rule->isSatisfied('p@ssw!rd#'));
     }
 
+    #[Test]
     public function testIsSatisfiedWithOnlySpecialChars(): void
     {
         $this->assertTrue($this->rule->isSatisfied('!@#$%'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithNoSpecialChars(): void
     {
         $this->assertFalse($this->rule->isSatisfied('password123'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithEmptyString(): void
     {
         $this->assertFalse($this->rule->isSatisfied(''));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithOnlyLetters(): void
     {
         $this->assertFalse($this->rule->isSatisfied('PasswordOnly'));
     }
 
+    #[Test]
     public function testIsNotSatisfiedWithOnlyDigits(): void
     {
         $this->assertFalse($this->rule->isSatisfied('123456'));
     }
 
+    #[Test]
     public function testErrorMessage(): void
     {
         $this->assertSame(
@@ -82,6 +94,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         );
     }
 
+    #[Test]
     public function testAllDefaultSpecialChars(): void
     {
         $specialChars = '!@#$%^&*()_+-=[]{}|;:\'",.<>?/\\`~';
@@ -94,6 +107,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         }
     }
 
+    #[Test]
     public function testCustomSpecialCharsRule(): void
     {
         $rule = new RequireSpecialCharRule('!@#');
@@ -105,6 +119,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertFalse($rule->isSatisfied('password%'));
     }
 
+    #[Test]
     public function testWithWhitespace(): void
     {
         // Space is not in default special chars
@@ -112,6 +127,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertTrue($this->rule->isSatisfied('pass! word'));
     }
 
+    #[Test]
     public function testWithUnicodeCharacters(): void
     {
         // Unicode special characters not in the default list
@@ -119,6 +135,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertTrue($this->rule->isSatisfied('password!'));
     }
 
+    #[Test]
     public function testSpecialCharAtDifferentPositions(): void
     {
         $this->assertTrue($this->rule->isSatisfied('!password'));
@@ -126,6 +143,7 @@ final class RequireSpecialCharRuleTest extends TestCase
         $this->assertTrue($this->rule->isSatisfied('password!'));
     }
 
+    #[Test]
     public function testEmptyCustomSpecialChars(): void
     {
         $rule = new RequireSpecialCharRule('');
@@ -178,6 +196,7 @@ final class RequireSpecialCharRuleTest extends TestCase
     }
 
     #[DataProvider('specialCharProvider')]
+    #[Test]
     public function testIsSatisfiedWithDataProvider(string $password, bool $expected): void
     {
         $this->assertSame($expected, $this->rule->isSatisfied($password));

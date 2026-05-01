@@ -7,6 +7,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting\Storage;
 use Memcached;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Storage\MemcachedStorage;
 use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorage;
@@ -19,6 +20,7 @@ use Zappzarapp\Security\RateLimiting\Storage\RateLimitStorage;
 #[RequiresPhpExtension('memcached')]
 final class MemcachedStorageTest extends TestCase
 {
+    #[Test]
     public function testImplementsInterface(): void
     {
         $memcached = $this->createStub(Memcached::class);
@@ -27,6 +29,7 @@ final class MemcachedStorageTest extends TestCase
         $this->assertInstanceOf(RateLimitStorage::class, $storage);
     }
 
+    #[Test]
     public function testGetReturnsNullWhenKeyNotFound(): void
     {
         $memcached = $this->createStub(Memcached::class);
@@ -37,6 +40,7 @@ final class MemcachedStorageTest extends TestCase
         $this->assertNull($storage->get('nonexistent'));
     }
 
+    #[Test]
     public function testGetReturnsData(): void
     {
         $data      = ['count' => 5, 'window' => 60];
@@ -48,6 +52,7 @@ final class MemcachedStorageTest extends TestCase
         $this->assertSame($data, $storage->get('key'));
     }
 
+    #[Test]
     public function testGetWithPrefix(): void
     {
         $memcached = $this->createMock(Memcached::class);
@@ -60,6 +65,7 @@ final class MemcachedStorageTest extends TestCase
         $storage->get('mykey');
     }
 
+    #[Test]
     public function testSetStoresData(): void
     {
         $data      = ['count' => 10];
@@ -72,6 +78,7 @@ final class MemcachedStorageTest extends TestCase
         $storage->set('key', $data, 60);
     }
 
+    #[Test]
     public function testDeleteRemovesKey(): void
     {
         $memcached = $this->createMock(Memcached::class);
@@ -83,6 +90,7 @@ final class MemcachedStorageTest extends TestCase
         $storage->delete('key');
     }
 
+    #[Test]
     public function testIncrementExistingKey(): void
     {
         $memcached = $this->createMock(Memcached::class);
@@ -97,6 +105,7 @@ final class MemcachedStorageTest extends TestCase
         $this->assertSame(5, $result);
     }
 
+    #[Test]
     public function testIncrementNewKeyWithAdd(): void
     {
         $memcached = $this->createMock(Memcached::class);
@@ -114,6 +123,7 @@ final class MemcachedStorageTest extends TestCase
         $this->assertSame(1, $result);
     }
 
+    #[Test]
     public function testIncrementWithRaceCondition(): void
     {
         $memcached = $this->createMock(Memcached::class);

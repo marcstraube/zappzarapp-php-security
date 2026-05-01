@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Uri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ValueError;
 use Zappzarapp\Security\Sanitization\Uri\UriScheme;
@@ -17,6 +18,7 @@ final class UriSchemeTest extends TestCase
     // Enum Cases and Values
     // =========================================================================
 
+    #[Test]
     public function testAllEnumCasesExist(): void
     {
         $this->assertSame('http', UriScheme::HTTP->value);
@@ -32,6 +34,7 @@ final class UriSchemeTest extends TestCase
         $this->assertSame('file', UriScheme::FILE->value);
     }
 
+    #[Test]
     public function testEnumCaseCount(): void
     {
         $cases = UriScheme::cases();
@@ -44,6 +47,7 @@ final class UriSchemeTest extends TestCase
     // =========================================================================
 
     #[DataProvider('dangerousSchemeProvider')]
+    #[Test]
     public function testIsDangerousReturnsTrueForDangerousSchemes(UriScheme $scheme): void
     {
         $this->assertTrue($scheme->isDangerous());
@@ -60,6 +64,7 @@ final class UriSchemeTest extends TestCase
     }
 
     #[DataProvider('safeSchemesProvider')]
+    #[Test]
     public function testIsDangerousReturnsFalseForSafeSchemes(UriScheme $scheme): void
     {
         $this->assertFalse($scheme->isDangerous());
@@ -85,6 +90,7 @@ final class UriSchemeTest extends TestCase
     // =========================================================================
 
     #[DataProvider('webSafeSchemeProvider')]
+    #[Test]
     public function testIsSafeForWebReturnsTrueForWebSafeSchemes(UriScheme $scheme): void
     {
         $this->assertTrue($scheme->isSafeForWeb());
@@ -102,6 +108,7 @@ final class UriSchemeTest extends TestCase
     }
 
     #[DataProvider('webUnsafeSchemeProvider')]
+    #[Test]
     public function testIsSafeForWebReturnsFalseForUnsafeSchemes(UriScheme $scheme): void
     {
         $this->assertFalse($scheme->isSafeForWeb());
@@ -125,6 +132,7 @@ final class UriSchemeTest extends TestCase
     // Relationship Between isDangerous() and isSafeForWeb()
     // =========================================================================
 
+    #[Test]
     public function testDangerousSchemesAreNotSafeForWeb(): void
     {
         foreach (UriScheme::cases() as $scheme) {
@@ -137,6 +145,7 @@ final class UriSchemeTest extends TestCase
         }
     }
 
+    #[Test]
     public function testWebSafeSchemesAreNotDangerous(): void
     {
         foreach (UriScheme::cases() as $scheme) {
@@ -153,6 +162,7 @@ final class UriSchemeTest extends TestCase
     // tryFrom() - Creating from String Value
     // =========================================================================
 
+    #[Test]
     public function testTryFromReturnsSchemeForValidValue(): void
     {
         $this->assertSame(UriScheme::HTTP, UriScheme::tryFrom('http'));
@@ -160,6 +170,7 @@ final class UriSchemeTest extends TestCase
         $this->assertSame(UriScheme::JAVASCRIPT, UriScheme::tryFrom('javascript'));
     }
 
+    #[Test]
     public function testTryFromReturnsNullForInvalidValue(): void
     {
         $this->assertNull(UriScheme::tryFrom('invalid'));
@@ -171,12 +182,14 @@ final class UriSchemeTest extends TestCase
     // from() - Creating from String Value (throws on invalid)
     // =========================================================================
 
+    #[Test]
     public function testFromReturnsSchemeForValidValue(): void
     {
         $this->assertSame(UriScheme::HTTP, UriScheme::from('http'));
         $this->assertSame(UriScheme::HTTPS, UriScheme::from('https'));
     }
 
+    #[Test]
     public function testFromThrowsForInvalidValue(): void
     {
         $this->expectException(ValueError::class);
@@ -188,6 +201,7 @@ final class UriSchemeTest extends TestCase
     // Security: Classification Correctness
     // =========================================================================
 
+    #[Test]
     public function testJavascriptSchemeIsDangerous(): void
     {
         // javascript: is the most common XSS vector
@@ -195,6 +209,7 @@ final class UriSchemeTest extends TestCase
         $this->assertFalse(UriScheme::JAVASCRIPT->isSafeForWeb());
     }
 
+    #[Test]
     public function testDataSchemeIsDangerous(): void
     {
         // data: can be used for XSS (e.g., data:text/html,<script>...)
@@ -202,6 +217,7 @@ final class UriSchemeTest extends TestCase
         $this->assertFalse(UriScheme::DATA->isSafeForWeb());
     }
 
+    #[Test]
     public function testVbscriptSchemeIsDangerous(): void
     {
         // vbscript: is dangerous in IE
@@ -209,6 +225,7 @@ final class UriSchemeTest extends TestCase
         $this->assertFalse(UriScheme::VBSCRIPT->isSafeForWeb());
     }
 
+    #[Test]
     public function testFileSchemeIsNotWebSafe(): void
     {
         // file: can be used for local file access attacks
@@ -217,6 +234,7 @@ final class UriSchemeTest extends TestCase
         $this->assertFalse(UriScheme::FILE->isDangerous());
     }
 
+    #[Test]
     public function testHttpsIsPreferredScheme(): void
     {
         // HTTPS should be safe for web
@@ -228,6 +246,7 @@ final class UriSchemeTest extends TestCase
     // Complete Coverage: All Cases Tested
     // =========================================================================
 
+    #[Test]
     public function testAllCasesHaveIsDangerousResult(): void
     {
         foreach (UriScheme::cases() as $scheme) {
@@ -236,6 +255,7 @@ final class UriSchemeTest extends TestCase
         }
     }
 
+    #[Test]
     public function testAllCasesHaveIsSafeForWebResult(): void
     {
         foreach (UriScheme::cases() as $scheme) {
@@ -248,6 +268,7 @@ final class UriSchemeTest extends TestCase
     // Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testSchemeValuesAreLowercase(): void
     {
         foreach (UriScheme::cases() as $scheme) {
@@ -259,6 +280,7 @@ final class UriSchemeTest extends TestCase
         }
     }
 
+    #[Test]
     public function testSchemeValuesAreUnique(): void
     {
         $values = array_map(

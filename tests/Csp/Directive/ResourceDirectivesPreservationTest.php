@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
 
@@ -15,6 +16,7 @@ use Zappzarapp\Security\Csp\Directive\ResourceDirectives;
  */
 final class ResourceDirectivesPreservationTest extends TestCase
 {
+    #[Test]
     public function testWithImgPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -40,6 +42,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self'", $modified->manifest);
     }
 
+    #[Test]
     public function testWithFontPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -55,6 +58,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://api.com", $modified->connect);
     }
 
+    #[Test]
     public function testWithConnectPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -72,6 +76,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://media.com", $modified->media);
     }
 
+    #[Test]
     public function testWithMediaPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -87,6 +92,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' blob:", $modified->worker);
     }
 
+    #[Test]
     public function testWithWorkerPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -102,6 +108,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://child.com", $modified->child);
     }
 
+    #[Test]
     public function testWithChildPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -117,6 +124,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://frame.com", $modified->frame);
     }
 
+    #[Test]
     public function testWithFramePreservesOtherValues(): void
     {
         $original = new ResourceDirectives(
@@ -132,6 +140,7 @@ final class ResourceDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://manifest.com", $modified->manifest);
     }
 
+    #[Test]
     public function testWithManifestPreservesOtherValues(): void
     {
         $original = new ResourceDirectives(

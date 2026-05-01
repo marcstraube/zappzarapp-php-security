@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Headers;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Headers\Coep\CoepValue;
@@ -21,6 +22,7 @@ use Zappzarapp\Security\Headers\XFrameOptions\XFrameOptionsValue;
 #[CoversClass(SecurityHeaders::class)]
 final class SecurityHeadersTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $headers = new SecurityHeaders();
@@ -37,6 +39,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($headers->csp);
     }
 
+    #[Test]
     public function testWithHsts(): void
     {
         $headers = new SecurityHeaders();
@@ -49,6 +52,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($headers, $newHeaders);
     }
 
+    #[Test]
     public function testWithoutHsts(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -58,6 +62,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->hsts);
     }
 
+    #[Test]
     public function testWithCoop(): void
     {
         $headers    = new SecurityHeaders();
@@ -67,6 +72,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CoopValue::SAME_ORIGIN, $newHeaders->coop);
     }
 
+    #[Test]
     public function testWithoutCoop(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -76,6 +82,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->coop);
     }
 
+    #[Test]
     public function testWithCoep(): void
     {
         $headers    = new SecurityHeaders();
@@ -85,6 +92,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CoepValue::REQUIRE_CORP, $newHeaders->coep);
     }
 
+    #[Test]
     public function testWithoutCoep(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -94,6 +102,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->coep);
     }
 
+    #[Test]
     public function testWithCorp(): void
     {
         $headers    = new SecurityHeaders();
@@ -103,6 +112,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CorpValue::SAME_ORIGIN, $newHeaders->corp);
     }
 
+    #[Test]
     public function testWithoutCorp(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -112,6 +122,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->corp);
     }
 
+    #[Test]
     public function testWithReferrerPolicy(): void
     {
         $headers    = new SecurityHeaders();
@@ -121,6 +132,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(ReferrerPolicyValue::NO_REFERRER, $newHeaders->referrerPolicy);
     }
 
+    #[Test]
     public function testWithoutReferrerPolicy(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -130,6 +142,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->referrerPolicy);
     }
 
+    #[Test]
     public function testWithXFrameOptions(): void
     {
         $headers    = new SecurityHeaders();
@@ -139,6 +152,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(XFrameOptionsValue::DENY, $newHeaders->xFrameOptions);
     }
 
+    #[Test]
     public function testWithoutXFrameOptions(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -148,6 +162,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->xFrameOptions);
     }
 
+    #[Test]
     public function testWithXContentTypeOptions(): void
     {
         $headers    = new SecurityHeaders();
@@ -157,6 +172,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertFalse($newHeaders->xContentTypeOptions);
     }
 
+    #[Test]
     public function testWithXXssProtection(): void
     {
         $headers    = new SecurityHeaders();
@@ -166,6 +182,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertFalse($newHeaders->xXssProtection);
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $headers = SecurityHeaders::strict();
@@ -183,6 +200,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertFalse($headers->xXssProtection);
     }
 
+    #[Test]
     public function testModerateFactory(): void
     {
         $headers = SecurityHeaders::moderate();
@@ -200,6 +218,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($headers->xXssProtection);
     }
 
+    #[Test]
     public function testLegacyFactory(): void
     {
         $headers = SecurityHeaders::legacy();
@@ -215,6 +234,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($headers->xXssProtection);
     }
 
+    #[Test]
     public function testDevelopmentFactory(): void
     {
         $headers = SecurityHeaders::development();
@@ -230,6 +250,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($headers->xXssProtection);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new SecurityHeaders();
@@ -245,6 +266,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($original->xContentTypeOptions);
     }
 
+    #[Test]
     public function testChainedModifications(): void
     {
         $headers = (new SecurityHeaders())
@@ -267,6 +289,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($headers->xXssProtection);
     }
 
+    #[Test]
     public function testReplaceHstsWithDifferentValue(): void
     {
         $oldHsts = HstsConfig::testing();
@@ -279,6 +302,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($oldHsts, $newHeaders->hsts);
     }
 
+    #[Test]
     public function testReplaceCoopWithDifferentValue(): void
     {
         $headers    = SecurityHeaders::strict()->withCoop(CoopValue::SAME_ORIGIN_ALLOW_POPUPS);
@@ -287,6 +311,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CoopValue::UNSAFE_NONE, $newHeaders->coop);
     }
 
+    #[Test]
     public function testReplaceCoepWithDifferentValue(): void
     {
         // Start with strict which has REQUIRE_CORP, change to CREDENTIALLESS, then back
@@ -299,6 +324,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CoepValue::REQUIRE_CORP, $step2->coep);
     }
 
+    #[Test]
     public function testReplaceCorpWithDifferentValue(): void
     {
         $headers    = SecurityHeaders::strict()->withCorp(CorpValue::SAME_SITE);
@@ -307,6 +333,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(CorpValue::CROSS_ORIGIN, $newHeaders->corp);
     }
 
+    #[Test]
     public function testReplaceReferrerPolicyWithDifferentValue(): void
     {
         $headers    = SecurityHeaders::strict()->withReferrerPolicy(ReferrerPolicyValue::NO_REFERRER);
@@ -315,6 +342,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(ReferrerPolicyValue::SAME_ORIGIN, $newHeaders->referrerPolicy);
     }
 
+    #[Test]
     public function testReplaceXFrameOptionsWithDifferentValue(): void
     {
         // Start with DENY (from strict), change to SAMEORIGIN, then back to DENY
@@ -327,6 +355,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(XFrameOptionsValue::DENY, $step2->xFrameOptions);
     }
 
+    #[Test]
     public function testReplacePermissionsPolicyWithDifferentValue(): void
     {
         $oldPolicy  = PermissionsPolicy::moderate();
@@ -337,6 +366,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame($newPolicy, $newHeaders->permissionsPolicy);
     }
 
+    #[Test]
     public function testReplaceCspWithDifferentValue(): void
     {
         $oldCsp = CspDirectives::strict();
@@ -350,6 +380,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($oldCsp, $result->csp);
     }
 
+    #[Test]
     public function testWithoutCspWhenCspWasSet(): void
     {
         $csp     = CspDirectives::strict();
@@ -360,6 +391,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($result->csp);
     }
 
+    #[Test]
     public function testWithPermissionsPolicy(): void
     {
         $policy     = PermissionsPolicy::strict();
@@ -371,6 +403,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($headers, $newHeaders);
     }
 
+    #[Test]
     public function testWithoutPermissionsPolicy(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -380,6 +413,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNull($newHeaders->permissionsPolicy);
     }
 
+    #[Test]
     public function testWithoutPermissionsPolicyPreservesOtherHeaders(): void
     {
         $headers    = SecurityHeaders::strict();
@@ -396,6 +430,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertFalse($newHeaders->xXssProtection);
     }
 
+    #[Test]
     public function testApiFactory(): void
     {
         $headers = SecurityHeaders::api();
@@ -413,6 +448,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($headers->xXssProtection);
     }
 
+    #[Test]
     public function testStrictPresetIsImmutable(): void
     {
         $strict = SecurityHeaders::strict();
@@ -426,6 +462,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($strict, $modified);
     }
 
+    #[Test]
     public function testModeratePresetIsImmutable(): void
     {
         $moderate = SecurityHeaders::moderate();
@@ -439,6 +476,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($moderate, $modified);
     }
 
+    #[Test]
     public function testApiPresetIsImmutable(): void
     {
         $api = SecurityHeaders::api();
@@ -452,6 +490,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertNotSame($api, $modified);
     }
 
+    #[Test]
     public function testBuilderCanCustomizeStrictPreset(): void
     {
         $customized = SecurityHeaders::strict()
@@ -471,6 +510,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertTrue($customized->xContentTypeOptions);
     }
 
+    #[Test]
     public function testBuilderCanCustomizeModeratePreset(): void
     {
         $customized = SecurityHeaders::moderate()
@@ -488,6 +528,7 @@ final class SecurityHeadersTest extends TestCase
         $this->assertSame(ReferrerPolicyValue::STRICT_ORIGIN_WHEN_CROSS_ORIGIN, $customized->referrerPolicy);
     }
 
+    #[Test]
     public function testBuilderCanCustomizeApiPreset(): void
     {
         $customized = SecurityHeaders::api()

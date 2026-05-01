@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Validation;
 
 use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\Exception\CsrfTokenMismatchException;
@@ -53,6 +54,7 @@ final class ValidatesCsrfTokenTest extends TestCase
 
     // --- Trait: validateCsrfToken() ---
 
+    #[Test]
     public function testTraitValidatesMatchingTokens(): void
     {
         $token = base64_encode(random_bytes(32));
@@ -62,6 +64,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testTraitThrowsOnEmptySubmittedToken(): void
     {
         $expected = base64_encode(random_bytes(32));
@@ -72,6 +75,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate('', $expected);
     }
 
+    #[Test]
     public function testTraitThrowsOnEmptyExpectedToken(): void
     {
         $submitted = base64_encode(random_bytes(32));
@@ -82,6 +86,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate($submitted, '');
     }
 
+    #[Test]
     public function testTraitThrowsOnMismatch(): void
     {
         $expected  = base64_encode(random_bytes(32));
@@ -93,6 +98,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate($submitted, $expected);
     }
 
+    #[Test]
     public function testTraitValidatesTokenFormat(): void
     {
         $expected = base64_encode(random_bytes(32));
@@ -103,6 +109,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate('not!valid!base64!!!', $expected);
     }
 
+    #[Test]
     public function testTraitValidatesTokenEntropy(): void
     {
         $expected = base64_encode(random_bytes(32));
@@ -113,6 +120,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate(base64_encode('short'), $expected);
     }
 
+    #[Test]
     public function testTraitValidatesControlCharacters(): void
     {
         $expected = base64_encode(random_bytes(32));
@@ -124,6 +132,7 @@ final class ValidatesCsrfTokenTest extends TestCase
         $this->validator->validate($badToken, $expected);
     }
 
+    #[Test]
     public function testTraitUsesTimingSafeComparison(): void
     {
         $token = base64_encode(random_bytes(32));

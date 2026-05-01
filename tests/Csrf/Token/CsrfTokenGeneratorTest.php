@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Token;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
@@ -16,6 +17,7 @@ use Zappzarapp\Security\Csrf\Token\CsrfTokenProvider;
 #[UsesClass(CsrfToken::class)]
 final class CsrfTokenGeneratorTest extends TestCase
 {
+    #[Test]
     public function testImplementsCsrfTokenProvider(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -27,6 +29,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsCsrfToken(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -39,6 +42,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetReturnsSameTokenOnMultipleCalls(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -52,6 +56,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGenerateReturnsNewToken(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -65,6 +70,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGenerateReturnsValidBase64(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -77,6 +83,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGenerateUsesMinimumBytes(): void
     {
         $generator = new CsrfTokenGenerator(bytes: 16);
@@ -90,6 +97,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGenerateWithCustomBytes(): void
     {
         $generator = new CsrfTokenGenerator(bytes: 64);
@@ -103,6 +111,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testResetClearsToken(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -117,6 +126,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testSetOverridesToken(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -127,6 +137,7 @@ final class CsrfTokenGeneratorTest extends TestCase
         $this->assertSame($custom->value(), $generator->get()->value());
     }
 
+    #[Test]
     public function testDefaultBytesConstant(): void
     {
         $this->assertSame(32, CsrfTokenGenerator::DEFAULT_BYTES);
@@ -135,6 +146,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testGetAfterSetReturnsSetToken(): void
     {
         $generator = new CsrfTokenGenerator();
@@ -150,6 +162,7 @@ final class CsrfTokenGeneratorTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testDifferentInstancesGenerateDifferentTokens(): void
     {
         $generator1 = new CsrfTokenGenerator();

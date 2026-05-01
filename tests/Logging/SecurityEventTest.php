@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Logging;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Logging\SecurityEvent;
 use Zappzarapp\Security\Logging\SecurityEventType;
@@ -15,6 +16,7 @@ use Zappzarapp\Security\Logging\SecurityEventType;
 #[CoversClass(SecurityEvent::class)]
 final class SecurityEventTest extends TestCase
 {
+    #[Test]
     public function testConstructorSetsDefaults(): void
     {
         $event = new SecurityEvent(SecurityEventType::CSRF_VALIDATION_FAILURE);
@@ -25,6 +27,7 @@ final class SecurityEventTest extends TestCase
         $this->assertInstanceOf(DateTimeImmutable::class, $event->timestamp);
     }
 
+    #[Test]
     public function testConstructorWithCustomValues(): void
     {
         $timestamp     = new DateTimeImmutable('2024-01-15 10:30:00');
@@ -44,6 +47,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame($timestamp, $event->timestamp);
     }
 
+    #[Test]
     public function testWithContextMergesContext(): void
     {
         $event = new SecurityEvent(
@@ -59,6 +63,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame($event->timestamp, $newEvent->timestamp);
     }
 
+    #[Test]
     public function testWithCorrelationId(): void
     {
         $event            = new SecurityEvent(SecurityEventType::CSRF_VALIDATION_FAILURE);
@@ -73,6 +78,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame($event->timestamp, $newEvent->timestamp);
     }
 
+    #[Test]
     public function testSeverityDelegatestoType(): void
     {
         $event = new SecurityEvent(SecurityEventType::PASSWORD_COMPROMISED);
@@ -80,6 +86,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('critical', $event->severity());
     }
 
+    #[Test]
     public function testMessageDelegatesToType(): void
     {
         $event = new SecurityEvent(SecurityEventType::RATE_LIMIT_EXCEEDED);
@@ -87,6 +94,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('Rate limit has been exceeded', $event->message());
     }
 
+    #[Test]
     public function testToArrayReturnsCorrectStructure(): void
     {
         $timestamp = new DateTimeImmutable('2024-01-15 10:30:00');
@@ -107,6 +115,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(['path' => '/etc/passwd'], $array['context']);
     }
 
+    #[Test]
     public function testToJsonReturnsValidJson(): void
     {
         $event = new SecurityEvent(
@@ -123,6 +132,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('json-test-id', $decoded['correlation_id']);
     }
 
+    #[Test]
     public function testToJsonUsesUnescapedSlashes(): void
     {
         // This test verifies JSON_UNESCAPED_SLASHES is used (kills BitwiseOr mutant)
@@ -139,6 +149,7 @@ final class SecurityEventTest extends TestCase
         $this->assertStringNotContainsString('\\/etc\\/passwd', $json);
     }
 
+    #[Test]
     public function testToJsonWithUrlPath(): void
     {
         // Another test to ensure slashes are unescaped
@@ -154,6 +165,7 @@ final class SecurityEventTest extends TestCase
         $this->assertStringContainsString('https://example.com/api/v1/users', $json);
     }
 
+    #[Test]
     public function testToStringReturnsFormattedMessage(): void
     {
         $timestamp = new DateTimeImmutable('2024-01-15 10:30:00');
@@ -171,6 +183,7 @@ final class SecurityEventTest extends TestCase
         $this->assertStringContainsString('string-test-id', $string);
     }
 
+    #[Test]
     public function testCsrfFailureFactory(): void
     {
         $event = SecurityEvent::csrfFailure(['ip' => '10.0.0.1']);
@@ -179,6 +192,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(['ip' => '10.0.0.1'], $event->context);
     }
 
+    #[Test]
     public function testRateLimitExceededFactory(): void
     {
         $event = SecurityEvent::rateLimitExceeded('user:456', 100, 60, ['endpoint' => '/api/users']);
@@ -190,6 +204,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('/api/users', $event->context['endpoint']);
     }
 
+    #[Test]
     public function testPathTraversalFactory(): void
     {
         $event = SecurityEvent::pathTraversal('../../../etc/passwd', 'traversal_sequence', ['ip' => '10.0.0.1']);
@@ -200,6 +215,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('10.0.0.1', $event->context['ip']);
     }
 
+    #[Test]
     public function testPasswordCompromisedFactory(): void
     {
         $event = SecurityEvent::passwordCompromised(1234, ['user_id' => 42]);
@@ -209,6 +225,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(42, $event->context['user_id']);
     }
 
+    #[Test]
     public function testCorrelationIdIsUniquePerInstance(): void
     {
         $event1 = new SecurityEvent(SecurityEventType::CSRF_VALIDATION_FAILURE);
@@ -217,6 +234,7 @@ final class SecurityEventTest extends TestCase
         $this->assertNotSame($event1->correlationId, $event2->correlationId);
     }
 
+    #[Test]
     public function testCorrelationIdFormat(): void
     {
         $event = new SecurityEvent(SecurityEventType::CSRF_VALIDATION_FAILURE);
@@ -225,6 +243,7 @@ final class SecurityEventTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $event->correlationId);
     }
 
+    #[Test]
     public function testCsrfTokenMissingFactory(): void
     {
         $event = SecurityEvent::csrfTokenMissing(['ip' => '10.0.0.1']);
@@ -233,6 +252,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(['ip' => '10.0.0.1'], $event->context);
     }
 
+    #[Test]
     public function testSessionFixationAttemptFactory(): void
     {
         $event = SecurityEvent::sessionFixationAttempt('external_session_id', ['ip' => '10.0.0.1']);
@@ -242,6 +262,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('10.0.0.1', $event->context['ip']);
     }
 
+    #[Test]
     public function testRateLimitWarningFactory(): void
     {
         $event = SecurityEvent::rateLimitWarning('user:123', 80, 100, ['endpoint' => '/api']);
@@ -253,6 +274,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('/api', $event->context['endpoint']);
     }
 
+    #[Test]
     public function testXssBlockedFactory(): void
     {
         $maliciousInput = '<script>alert("xss")</script>';
@@ -264,6 +286,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('comment', $event->context['field']);
     }
 
+    #[Test]
     public function testXssBlockedTruncatesLongInput(): void
     {
         $longInput = str_repeat('x', 300);
@@ -272,6 +295,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(200, mb_strlen($event->context['input']));
     }
 
+    #[Test]
     public function testUnsafeUriBlockedFactory(): void
     {
         $event = SecurityEvent::unsafeUriBlocked('javascript:alert(1)', 'javascript_scheme', ['field' => 'url']);
@@ -282,6 +306,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('url', $event->context['field']);
     }
 
+    #[Test]
     public function testHeaderInjectionAttemptFactory(): void
     {
         $event = SecurityEvent::headerInjectionAttempt('Location', 'crlf_detected', ['ip' => '10.0.0.1']);
@@ -292,6 +317,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('10.0.0.1', $event->context['ip']);
     }
 
+    #[Test]
     public function testPasswordPolicyViolationFactory(): void
     {
         $violations = ['too_short', 'no_uppercase'];
@@ -302,6 +328,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(42, $event->context['user_id']);
     }
 
+    #[Test]
     public function testPasswordWeakFactory(): void
     {
         $event = SecurityEvent::passwordWeak('weak', 25.5, ['user_id' => 42]);
@@ -312,6 +339,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame(42, $event->context['user_id']);
     }
 
+    #[Test]
     public function testCookieTamperingFactory(): void
     {
         $event = SecurityEvent::cookieTampering('session_id', 'signature_mismatch', ['ip' => '10.0.0.1']);
@@ -322,6 +350,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('10.0.0.1', $event->context['ip']);
     }
 
+    #[Test]
     public function testCookieValidationFailureFactory(): void
     {
         $event = SecurityEvent::cookieValidationFailure('auth', 'expired', ['ip' => '10.0.0.1']);
@@ -332,6 +361,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('10.0.0.1', $event->context['ip']);
     }
 
+    #[Test]
     public function testSriHashMismatchFactory(): void
     {
         $event = SecurityEvent::sriHashMismatch(
@@ -348,6 +378,7 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('/checkout', $event->context['page']);
     }
 
+    #[Test]
     public function testSriFetchFailureFactory(): void
     {
         $event = SecurityEvent::sriFetchFailure(

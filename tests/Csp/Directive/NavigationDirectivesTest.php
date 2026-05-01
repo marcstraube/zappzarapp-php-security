@@ -6,12 +6,14 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\NavigationDirectives;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
 
 final class NavigationDirectivesTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $navigation = new NavigationDirectives();
@@ -21,6 +23,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'self'", $navigation->formAction);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $navigation = new NavigationDirectives(
@@ -34,6 +37,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'self' https://submit.example.com", $navigation->formAction);
     }
 
+    #[Test]
     public function testWithFrameAncestorsReturnsNewInstance(): void
     {
         $original = new NavigationDirectives();
@@ -44,6 +48,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'none'", $modified->frameAncestors);
     }
 
+    #[Test]
     public function testWithBaseUriReturnsNewInstance(): void
     {
         $original = new NavigationDirectives();
@@ -54,6 +59,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'none'", $modified->baseUri);
     }
 
+    #[Test]
     public function testWithFormActionReturnsNewInstance(): void
     {
         $original = new NavigationDirectives();
@@ -64,6 +70,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'self' https://submit.example.com", $modified->formAction);
     }
 
+    #[Test]
     public function testFluentApiChaining(): void
     {
         $navigation = (new NavigationDirectives())
@@ -77,6 +84,7 @@ final class NavigationDirectivesTest extends TestCase
     }
 
     // Validation Tests
+    #[Test]
     public function testValidationThrowsForSemicolonInFrameAncestors(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -85,6 +93,7 @@ final class NavigationDirectivesTest extends TestCase
         new NavigationDirectives(frameAncestors: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForNewlineInFrameAncestors(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -93,6 +102,7 @@ final class NavigationDirectivesTest extends TestCase
         new NavigationDirectives(frameAncestors: "'self'\nevil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInBaseUri(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -101,6 +111,7 @@ final class NavigationDirectivesTest extends TestCase
         new NavigationDirectives(baseUri: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForSemicolonInFormAction(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -109,6 +120,7 @@ final class NavigationDirectivesTest extends TestCase
         new NavigationDirectives(formAction: "'self'; evil");
     }
 
+    #[Test]
     public function testValidationThrowsForCarriageReturnInFormAction(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);
@@ -118,6 +130,7 @@ final class NavigationDirectivesTest extends TestCase
     }
 
     // Preservation Tests (kills ?? swap mutations)
+    #[Test]
     public function testWithFrameAncestorsPreservesOtherValues(): void
     {
         $original = new NavigationDirectives(
@@ -133,6 +146,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'self' https://form.com", $modified->formAction);
     }
 
+    #[Test]
     public function testWithBaseUriPreservesOtherValues(): void
     {
         $original = new NavigationDirectives(
@@ -148,6 +162,7 @@ final class NavigationDirectivesTest extends TestCase
         $this->assertSame("'self' https://form.com", $modified->formAction);
     }
 
+    #[Test]
     public function testWithFormActionPreservesOtherValues(): void
     {
         $original = new NavigationDirectives(

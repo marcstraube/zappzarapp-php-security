@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Password\Exception\WeakPasswordException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Password\Exception\WeakPasswordException;
 #[CoversClass(WeakPasswordException::class)]
 final class WeakPasswordExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = WeakPasswordException::commonPassword();
@@ -19,6 +21,7 @@ final class WeakPasswordExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testLowEntropyFactoryMethod(): void
     {
         $exception = WeakPasswordException::lowEntropy(25.5, 60.0);
@@ -29,6 +32,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLowEntropyWithWholeNumbers(): void
     {
         $exception = WeakPasswordException::lowEntropy(30.0, 50.0);
@@ -39,6 +43,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLowEntropyWithZeroEntropy(): void
     {
         $exception = WeakPasswordException::lowEntropy(0.0, 60.0);
@@ -49,6 +54,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testLowEntropyWithPrecision(): void
     {
         $exception = WeakPasswordException::lowEntropy(28.123456, 60.789012);
@@ -57,6 +63,7 @@ final class WeakPasswordExceptionTest extends TestCase
         $this->assertStringContainsString('60.8', $exception->getMessage());
     }
 
+    #[Test]
     public function testCommonPasswordFactoryMethod(): void
     {
         $exception = WeakPasswordException::commonPassword();
@@ -67,6 +74,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPatternDetectedFactoryMethod(): void
     {
         $exception = WeakPasswordException::patternDetected('sequential numbers');
@@ -77,6 +85,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPatternDetectedWithDifferentPatterns(): void
     {
         $patterns = [
@@ -93,6 +102,7 @@ final class WeakPasswordExceptionTest extends TestCase
         }
     }
 
+    #[Test]
     public function testPatternDetectedWithEmptyPattern(): void
     {
         $exception = WeakPasswordException::patternDetected('');
@@ -103,6 +113,7 @@ final class WeakPasswordExceptionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPatternDetectedWithSpecialCharacters(): void
     {
         $exception = WeakPasswordException::patternDetected('abc123!@#');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\SecurityPolicy;
@@ -16,6 +17,7 @@ use Zappzarapp\Security\Csp\SecurityPolicy;
  */
 final class CspDirectivesPreservationTest extends TestCase
 {
+    #[Test]
     public function testWithMethodsPreserveOtherValues(): void
     {
         $original = new CspDirectives(
@@ -34,6 +36,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame(SecurityPolicy::UNSAFE_EVAL, $modified->securityPolicy);
     }
 
+    #[Test]
     public function testWithScriptSrcOverridesExistingValue(): void
     {
         $original = new CspDirectives(scriptSrc: "'self' https://old.com");
@@ -42,6 +45,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://new.com", $modified->scriptSrc);
     }
 
+    #[Test]
     public function testWithStyleSrcOverridesExistingValue(): void
     {
         $original = new CspDirectives(styleSrc: "'self' https://old.com");
@@ -50,6 +54,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame("'self' https://new.com", $modified->styleSrc);
     }
 
+    #[Test]
     public function testWithWebSocketOverridesExistingValue(): void
     {
         $original = new CspDirectives(websocketHost: 'old.example.com:443');
@@ -58,6 +63,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame('new.example.com:443', $modified->websocketHost);
     }
 
+    #[Test]
     public function testWithScriptSrcPreservesOtherValues(): void
     {
         $original = new CspDirectives(
@@ -75,6 +81,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame('ws.example.com:443', $modified->websocketHost);
     }
 
+    #[Test]
     public function testWithStyleSrcPreservesOtherValues(): void
     {
         $original = new CspDirectives(
@@ -92,6 +99,7 @@ final class CspDirectivesPreservationTest extends TestCase
         $this->assertSame('ws.example.com:443', $modified->websocketHost);
     }
 
+    #[Test]
     public function testWithWebSocketPreservesOtherValues(): void
     {
         $original = new CspDirectives(

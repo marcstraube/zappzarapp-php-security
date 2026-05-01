@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sri\Exception;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Sri\Exception\HashMismatchException;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Sri\Exception\HashMismatchException;
 #[CoversClass(HashMismatchException::class)]
 final class HashMismatchExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsRuntimeException(): void
     {
         $exception = HashMismatchException::mismatch('expected', 'actual');
@@ -19,6 +21,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertInstanceOf(RuntimeException::class, $exception);
     }
 
+    #[Test]
     public function testConstructor(): void
     {
         $expected  = 'sha384-expectedhash123456';
@@ -30,6 +33,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($actual, $exception->actual());
     }
 
+    #[Test]
     public function testMismatchFactoryMethod(): void
     {
         $expected  = 'sha384-abc123def456';
@@ -41,6 +45,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($actual, $exception->actual());
     }
 
+    #[Test]
     public function testExpectedReturnsCorrectValue(): void
     {
         $expected  = 'sha384-qwertyuiopasdfghjkl';
@@ -49,6 +54,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($expected, $exception->expected());
     }
 
+    #[Test]
     public function testActualReturnsCorrectValue(): void
     {
         $actual    = 'sha512-zxcvbnm1234567890';
@@ -57,6 +63,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($actual, $exception->actual());
     }
 
+    #[Test]
     public function testWithValidSriHashes(): void
     {
         // Real-looking SRI hashes
@@ -69,6 +76,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($actual, $exception->actual());
     }
 
+    #[Test]
     public function testWithMultipleHashes(): void
     {
         $expected = 'sha384-hash1 sha512-hash2';
@@ -80,6 +88,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame($actual, $exception->actual());
     }
 
+    #[Test]
     public function testWithEmptyHashes(): void
     {
         $exception = HashMismatchException::mismatch('', '');
@@ -88,6 +97,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame('', $exception->actual());
     }
 
+    #[Test]
     public function testMessageIsConsistent(): void
     {
         $exception1 = new HashMismatchException('hash1', 'hash2');
@@ -97,6 +107,7 @@ final class HashMismatchExceptionTest extends TestCase
         $this->assertSame('Resource hash does not match expected value', $exception1->getMessage());
     }
 
+    #[Test]
     public function testImmutabilityOfExpectedAndActual(): void
     {
         $exception = HashMismatchException::mismatch('expected', 'actual');

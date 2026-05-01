@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Storage;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Csrf\Storage\CsrfStorageInterface;
@@ -41,6 +42,7 @@ final class SessionCsrfStorageTest extends TestCase
         session_start();
     }
 
+    #[Test]
     public function testImplementsCsrfStorageInterface(): void
     {
         /** @noinspection PhpConditionAlreadyCheckedInspection Test verifies interface implementation */
@@ -49,6 +51,7 @@ final class SessionCsrfStorageTest extends TestCase
 
     // --- Session Not Started Errors ---
 
+    #[Test]
     public function testStoreThrowsWhenSessionNotStarted(): void
     {
         $this->expectException(RuntimeException::class);
@@ -57,6 +60,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->storage->store('key', 'token');
     }
 
+    #[Test]
     public function testRetrieveThrowsWhenSessionNotStarted(): void
     {
         $this->expectException(RuntimeException::class);
@@ -65,6 +69,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->storage->retrieve('key');
     }
 
+    #[Test]
     public function testRemoveThrowsWhenSessionNotStarted(): void
     {
         $this->expectException(RuntimeException::class);
@@ -73,6 +78,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->storage->remove('key');
     }
 
+    #[Test]
     public function testHasThrowsWhenSessionNotStarted(): void
     {
         $this->expectException(RuntimeException::class);
@@ -81,6 +87,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->storage->has('key');
     }
 
+    #[Test]
     public function testClearThrowsWhenSessionNotStarted(): void
     {
         $this->expectException(RuntimeException::class);
@@ -91,6 +98,7 @@ final class SessionCsrfStorageTest extends TestCase
 
     // --- With Active Session ---
 
+    #[Test]
     public function testStoreAndRetrieve(): void
     {
         $this->startTestSession();
@@ -100,6 +108,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertSame('token1', $this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testRetrieveReturnsNullForMissingKey(): void
     {
         $this->startTestSession();
@@ -107,6 +116,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertNull($this->storage->retrieve('nonexistent'));
     }
 
+    #[Test]
     public function testHasReturnsTrue(): void
     {
         $this->startTestSession();
@@ -116,6 +126,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertTrue($this->storage->has('key1'));
     }
 
+    #[Test]
     public function testHasReturnsFalse(): void
     {
         $this->startTestSession();
@@ -123,6 +134,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('nonexistent'));
     }
 
+    #[Test]
     public function testRemove(): void
     {
         $this->startTestSession();
@@ -134,6 +146,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('key1'));
     }
 
+    #[Test]
     public function testRemoveNonexistentKey(): void
     {
         $this->startTestSession();
@@ -143,6 +156,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('nonexistent'));
     }
 
+    #[Test]
     public function testClear(): void
     {
         $this->startTestSession();
@@ -156,6 +170,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertNull($this->storage->retrieve('key2'));
     }
 
+    #[Test]
     public function testMultipleKeys(): void
     {
         $this->startTestSession();
@@ -169,6 +184,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertSame('token3', $this->storage->retrieve('key3'));
     }
 
+    #[Test]
     public function testOverwriteExistingKey(): void
     {
         $this->startTestSession();
@@ -179,6 +195,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertSame('token2', $this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testCustomSessionKey(): void
     {
         $this->startTestSession();
@@ -192,6 +209,7 @@ final class SessionCsrfStorageTest extends TestCase
 
     // --- Token Expiration ---
 
+    #[Test]
     public function testTokenExpiresAfterTtl(): void
     {
         $this->startTestSession();
@@ -209,6 +227,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertNull($this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testTokenDoesNotExpireWithNullTtl(): void
     {
         $this->startTestSession();
@@ -220,6 +239,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertSame('token1', $this->storage->retrieve('key1'));
     }
 
+    #[Test]
     public function testExpiredTokenIsRemovedFromStorage(): void
     {
         $this->startTestSession();
@@ -235,6 +255,7 @@ final class SessionCsrfStorageTest extends TestCase
         $this->assertFalse($this->storage->has('key1'));
     }
 
+    #[Test]
     public function testHasReturnsFalseForExpiredToken(): void
     {
         $this->startTestSession();

@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Hashing;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Hashing\HashAlgorithm;
 use Zappzarapp\Security\Password\Hashing\HashConfig;
@@ -14,6 +15,7 @@ use Zappzarapp\Security\Password\Hashing\HashConfig;
 #[CoversClass(HashConfig::class)]
 final class HashConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultConstructorValues(): void
     {
         $config = new HashConfig();
@@ -25,6 +27,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(HashConfig::DEFAULT_BCRYPT_COST, $config->bcryptCost);
     }
 
+    #[Test]
     public function testCustomConstructorValues(): void
     {
         $config = new HashConfig(
@@ -42,6 +45,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $config->bcryptCost);
     }
 
+    #[Test]
     public function testToOptionsForArgon2id(): void
     {
         $config  = new HashConfig(HashAlgorithm::ARGON2ID, 65536, 4, 2);
@@ -54,6 +58,7 @@ final class HashConfigTest extends TestCase
         ], $options);
     }
 
+    #[Test]
     public function testToOptionsForArgon2i(): void
     {
         $config  = new HashConfig(HashAlgorithm::ARGON2I, 65536, 4, 2);
@@ -66,6 +71,7 @@ final class HashConfigTest extends TestCase
         ], $options);
     }
 
+    #[Test]
     public function testToOptionsForBcrypt(): void
     {
         $config  = new HashConfig(HashAlgorithm::BCRYPT, bcryptCost: 12);
@@ -76,6 +82,7 @@ final class HashConfigTest extends TestCase
         ], $options);
     }
 
+    #[Test]
     public function testWithAlgorithmReturnsNewInstance(): void
     {
         $original = new HashConfig(HashAlgorithm::ARGON2ID);
@@ -86,6 +93,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(HashAlgorithm::BCRYPT, $modified->algorithm);
     }
 
+    #[Test]
     public function testWithAlgorithmPreservesOtherValues(): void
     {
         $original = new HashConfig(HashAlgorithm::ARGON2ID, 131072, 8, 4, 14);
@@ -97,6 +105,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $modified->bcryptCost);
     }
 
+    #[Test]
     public function testWithMemoryCostReturnsNewInstance(): void
     {
         $original = new HashConfig();
@@ -107,6 +116,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(131072, $modified->memoryCost);
     }
 
+    #[Test]
     public function testWithMemoryCostPreservesOtherValues(): void
     {
         $original = new HashConfig(HashAlgorithm::ARGON2I, 65536, 8, 4, 14);
@@ -118,6 +128,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $modified->bcryptCost);
     }
 
+    #[Test]
     public function testWithTimeCostReturnsNewInstance(): void
     {
         $original = new HashConfig();
@@ -128,6 +139,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(8, $modified->timeCost);
     }
 
+    #[Test]
     public function testWithTimeCostPreservesOtherValues(): void
     {
         $original = new HashConfig(HashAlgorithm::ARGON2I, 131072, 4, 4, 14);
@@ -139,6 +151,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $modified->bcryptCost);
     }
 
+    #[Test]
     public function testWithBcryptCostReturnsNewInstance(): void
     {
         $original = new HashConfig();
@@ -149,6 +162,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $modified->bcryptCost);
     }
 
+    #[Test]
     public function testWithBcryptCostPreservesOtherValues(): void
     {
         $original = new HashConfig(HashAlgorithm::BCRYPT, 131072, 8, 4, 12);
@@ -160,6 +174,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(4, $modified->threads);
     }
 
+    #[Test]
     public function testArgon2idStaticFactory(): void
     {
         $config = HashConfig::argon2id();
@@ -170,6 +185,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(HashConfig::DEFAULT_ARGON2_THREADS, $config->threads);
     }
 
+    #[Test]
     public function testBcryptStaticFactoryWithDefaultCost(): void
     {
         $config = HashConfig::bcrypt();
@@ -178,6 +194,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(HashConfig::DEFAULT_BCRYPT_COST, $config->bcryptCost);
     }
 
+    #[Test]
     public function testBcryptStaticFactoryWithCustomCost(): void
     {
         $config = HashConfig::bcrypt(14);
@@ -186,6 +203,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(14, $config->bcryptCost);
     }
 
+    #[Test]
     public function testHighSecurityStaticFactory(): void
     {
         $config = HashConfig::highSecurity();
@@ -196,6 +214,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(2, $config->threads);
     }
 
+    #[Test]
     public function testDefaultConstants(): void
     {
         $this->assertSame(65536, HashConfig::DEFAULT_ARGON2_MEMORY);
@@ -204,6 +223,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(12, HashConfig::DEFAULT_BCRYPT_COST);
     }
 
+    #[Test]
     public function testChainedWithMethods(): void
     {
         $config = (new HashConfig())
@@ -218,6 +238,7 @@ final class HashConfigTest extends TestCase
         $this->assertSame(15, $config->bcryptCost);
     }
 
+    #[Test]
     public function testImmutabilityOnChainedCalls(): void
     {
         $original = new HashConfig();

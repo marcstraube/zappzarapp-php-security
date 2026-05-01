@@ -7,12 +7,14 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\CsrfConfig;
 
 #[CoversClass(CsrfConfig::class)]
 final class CsrfConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $config = new CsrfConfig();
@@ -25,6 +27,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertFalse($config->singleUse);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $config = new CsrfConfig(
@@ -44,6 +47,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertTrue($config->singleUse);
     }
 
+    #[Test]
     public function testWithFieldName(): void
     {
         $config    = new CsrfConfig();
@@ -54,6 +58,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithHeaderName(): void
     {
         $config    = new CsrfConfig();
@@ -63,6 +68,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertSame('X-Token', $newConfig->headerName);
     }
 
+    #[Test]
     public function testWithCookieName(): void
     {
         $config    = new CsrfConfig();
@@ -72,6 +78,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertSame('token', $newConfig->cookieName);
     }
 
+    #[Test]
     public function testWithTtl(): void
     {
         $config    = new CsrfConfig();
@@ -81,6 +88,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertSame(1800, $newConfig->ttl);
     }
 
+    #[Test]
     public function testWithRotateOnValidation(): void
     {
         $config    = new CsrfConfig();
@@ -90,6 +98,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertTrue($newConfig->rotateOnValidation);
     }
 
+    #[Test]
     public function testWithoutRotateOnValidation(): void
     {
         $config    = new CsrfConfig(rotateOnValidation: true);
@@ -99,6 +108,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertFalse($newConfig->rotateOnValidation);
     }
 
+    #[Test]
     public function testWithSingleUse(): void
     {
         $config    = new CsrfConfig();
@@ -108,6 +118,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertTrue($newConfig->singleUse);
     }
 
+    #[Test]
     public function testWithoutSingleUse(): void
     {
         $config    = new CsrfConfig(singleUse: true);
@@ -117,6 +128,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertFalse($newConfig->singleUse);
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $config = CsrfConfig::strict();
@@ -125,6 +137,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertTrue($config->singleUse);
     }
 
+    #[Test]
     public function testDefaultFactory(): void
     {
         $config = CsrfConfig::default();
@@ -134,6 +147,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertFalse($config->rotateOnValidation);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new CsrfConfig();
@@ -153,6 +167,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertFalse($original->singleUse);
     }
 
+    #[Test]
     public function testChainedModifications(): void
     {
         $config = (new CsrfConfig())
@@ -167,6 +182,7 @@ final class CsrfConfigTest extends TestCase
         $this->assertTrue($config->rotateOnValidation);
     }
 
+    #[Test]
     public function testConstants(): void
     {
         $this->assertSame(7200, CsrfConfig::DEFAULT_TTL);

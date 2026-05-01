@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -20,6 +21,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildStrictCspWithDefaults(): void
     {
         $csp = HeaderBuilder::build(new CspDirectives());
@@ -33,6 +35,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildStrictCspContainsNonce(): void
     {
         $generator = new NonceGenerator();
@@ -45,6 +48,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildStrictCspWithCustomImgSrc(): void
     {
         $directives = (new CspDirectives())->withImgSrc("'self' https://cdn.example.com");
@@ -56,6 +60,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildStrictCspWithWebSocket(): void
     {
         $directives = (new CspDirectives())->withWebSocket('api.example.com:443');
@@ -69,6 +74,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildLenientCspWithDefaults(): void
     {
         $csp = HeaderBuilder::build(new CspDirectives(securityPolicy: SecurityPolicy::LENIENT));
@@ -80,6 +86,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildLenientCspWithCustomWebSocketHost(): void
     {
         $csp = HeaderBuilder::build(new CspDirectives(
@@ -95,6 +102,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildWithNullNonce(): void
     {
         $csp = HeaderBuilder::build(new CspDirectives(), new NullNonce());
@@ -106,6 +114,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildWithDefaultNonceProvider(): void
     {
         $generator = new NonceGenerator();
@@ -119,6 +128,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testFluentApiWithMultipleCustomizations(): void
     {
         $directives = (new CspDirectives())
@@ -136,6 +146,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomScriptSrcAutoInjectsNonce(): void
     {
         $generator  = new NonceGenerator();
@@ -150,6 +161,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomScriptSrcWithExistingNonceDoesNotDuplicate(): void
     {
         $generator  = new NonceGenerator();
@@ -166,16 +178,19 @@ final class HeaderBuilderTest extends TestCase
     }
 
     // Header Name Tests
+    #[Test]
     public function testGetHeaderNameReturnsEnforcementHeader(): void
     {
         $this->assertSame('Content-Security-Policy', HeaderBuilder::getHeaderName());
     }
 
+    #[Test]
     public function testGetReportOnlyHeaderNameReturnsReportOnlyHeader(): void
     {
         $this->assertSame('Content-Security-Policy-Report-Only', HeaderBuilder::getReportOnlyHeaderName());
     }
 
+    #[Test]
     public function testHeaderConstants(): void
     {
         $this->assertSame('Content-Security-Policy', HeaderBuilder::HEADER_CSP);
@@ -186,6 +201,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildHeaderReturnsCompleteHeaderString(): void
     {
         $header = HeaderBuilder::buildHeader(new CspDirectives());
@@ -197,6 +213,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildReportOnlyHeader(): void
     {
         $header = HeaderBuilder::buildReportOnlyHeader(new CspDirectives());
@@ -208,6 +225,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildHeaderWithNonceProvider(): void
     {
         $header = HeaderBuilder::buildHeader(new CspDirectives(), new NullNonce());
@@ -219,6 +237,7 @@ final class HeaderBuilderTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testBuildReportOnlyHeaderWithNonceProvider(): void
     {
         $header = HeaderBuilder::buildReportOnlyHeader(new CspDirectives(), new NullNonce());

@@ -7,12 +7,14 @@ namespace Zappzarapp\Security\Tests\RateLimiting;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\RateLimitResult;
 
 #[CoversClass(RateLimitResult::class)]
 final class RateLimitResultTest extends TestCase
 {
+    #[Test]
     public function testAllowedFactory(): void
     {
         $result = RateLimitResult::allowed(100, 50, time() + 60);
@@ -23,6 +25,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testDeniedFactory(): void
     {
         $now    = time();
@@ -34,6 +37,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame(60, $result->retryAfter);
     }
 
+    #[Test]
     public function testIsAllowedReturnsTrue(): void
     {
         $result = RateLimitResult::allowed(100, 50, time() + 60);
@@ -41,6 +45,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testIsAllowedReturnsFalse(): void
     {
         $result = RateLimitResult::denied(100, time() + 60, 60);
@@ -48,6 +53,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertFalse($result->isAllowed());
     }
 
+    #[Test]
     public function testIsDeniedReturnsTrue(): void
     {
         $result = RateLimitResult::denied(100, time() + 60, 60);
@@ -55,6 +61,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testIsDeniedReturnsFalse(): void
     {
         $result = RateLimitResult::allowed(100, 50, time() + 60);
@@ -62,6 +69,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertFalse($result->isDenied());
     }
 
+    #[Test]
     public function testToHeaders(): void
     {
         $resetAt = time() + 60;
@@ -75,6 +83,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertArrayNotHasKey('Retry-After', $headers);
     }
 
+    #[Test]
     public function testToHeadersWithRetryAfter(): void
     {
         $result = RateLimitResult::denied(100, time() + 60, 60);
@@ -86,6 +95,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame('60', $headers['Retry-After']);
     }
 
+    #[Test]
     public function testRemainingIsNeverNegative(): void
     {
         $result = RateLimitResult::allowed(100, -5, time() + 60);
@@ -93,6 +103,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame(-5, $result->remaining);
     }
 
+    #[Test]
     public function testToHeadersRemainingNeverNegativeInHeader(): void
     {
         $result = RateLimitResult::allowed(100, -5, time() + 60);
@@ -104,6 +115,7 @@ final class RateLimitResultTest extends TestCase
 
     #[RunInSeparateProcess]
     #[RequiresPhpExtension('xdebug')]
+    #[Test]
     public function testApplyHeaders(): void
     {
         $resetAt = time() + 60;
@@ -119,6 +131,7 @@ final class RateLimitResultTest extends TestCase
 
     #[RunInSeparateProcess]
     #[RequiresPhpExtension('xdebug')]
+    #[Test]
     public function testApplyHeadersWithDeniedResult(): void
     {
         $result = RateLimitResult::denied(100, time() + 60, 60);
@@ -133,6 +146,7 @@ final class RateLimitResultTest extends TestCase
 
     #[RunInSeparateProcess]
     #[RequiresPhpExtension('xdebug')]
+    #[Test]
     public function testApplyHeadersWithReplaceTrue(): void
     {
         $result1 = RateLimitResult::allowed(100, 50, time() + 60);
@@ -149,6 +163,7 @@ final class RateLimitResultTest extends TestCase
 
     #[RunInSeparateProcess]
     #[RequiresPhpExtension('xdebug')]
+    #[Test]
     public function testApplyHeadersWithReplaceFalse(): void
     {
         $result1 = RateLimitResult::allowed(100, 50, time() + 60);
@@ -163,6 +178,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertContains('X-RateLimit-Limit: 200', $headers);
     }
 
+    #[Test]
     public function testConstructorWithAllParameters(): void
     {
         $result = new RateLimitResult(
@@ -180,6 +196,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testConstructorDefaultRetryAfter(): void
     {
         $result = new RateLimitResult(
@@ -192,6 +209,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertSame(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testApplyHeadersCallsHeaderFunction(): void
     {
         // Test that applyHeaders iterates through toHeaders() properly
@@ -207,6 +225,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertArrayHasKey('X-RateLimit-Reset', $headers);
     }
 
+    #[Test]
     public function testApplyHeadersWithDeniedResultAddsRetryAfter(): void
     {
         $result = RateLimitResult::denied(100, time() + 60, 60);
@@ -217,6 +236,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertArrayHasKey('Retry-After', $headers);
     }
 
+    #[Test]
     public function testApplyHeadersInCliDoesNotThrow(): void
     {
         // In CLI mode, headers_sent() may return true, but applyHeaders should still work
@@ -230,6 +250,7 @@ final class RateLimitResultTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testApplyHeadersWithReplaceParameter(): void
     {
         $result = RateLimitResult::allowed(100, 50, time() + 60);

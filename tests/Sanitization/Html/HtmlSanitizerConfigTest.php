@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sanitization\Html;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Html\AllowedAttributes;
 use Zappzarapp\Security\Sanitization\Html\AllowedElements;
@@ -19,6 +20,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Constructor and Default Values
     // =========================================================================
 
+    #[Test]
     public function testDefaultConstructorValues(): void
     {
         $config = new HtmlSanitizerConfig();
@@ -29,6 +31,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertTrue($config->balanceTags);
     }
 
+    #[Test]
     public function testConstructorWithCustomValues(): void
     {
         $elements   = AllowedElements::full();
@@ -51,6 +54,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Factory Method: basic()
     // =========================================================================
 
+    #[Test]
     public function testBasicConfigUsesBasicElements(): void
     {
         $config = HtmlSanitizerConfig::basic();
@@ -63,6 +67,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($config->elements->isAllowed('a'));
     }
 
+    #[Test]
     public function testBasicConfigUsesMinimalAttributes(): void
     {
         $config = HtmlSanitizerConfig::basic();
@@ -78,6 +83,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Factory Method: standard()
     // =========================================================================
 
+    #[Test]
     public function testStandardConfigUsesStandardElements(): void
     {
         $config = HtmlSanitizerConfig::standard();
@@ -91,6 +97,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($config->elements->isAllowed('img'));
     }
 
+    #[Test]
     public function testStandardConfigUsesStandardAttributes(): void
     {
         $config = HtmlSanitizerConfig::standard();
@@ -107,6 +114,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Factory Method: rich()
     // =========================================================================
 
+    #[Test]
     public function testRichConfigUsesRichElements(): void
     {
         $config = HtmlSanitizerConfig::rich();
@@ -120,6 +128,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($config->elements->isAllowed('audio'));
     }
 
+    #[Test]
     public function testRichConfigUsesStandardAttributes(): void
     {
         $config = HtmlSanitizerConfig::rich();
@@ -135,6 +144,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Factory Method: stripAll()
     // =========================================================================
 
+    #[Test]
     public function testStripAllConfigUsesNoElements(): void
     {
         $config = HtmlSanitizerConfig::stripAll();
@@ -147,6 +157,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($config->elements->isAllowed('script'));
     }
 
+    #[Test]
     public function testStripAllConfigUsesMinimalAttributes(): void
     {
         $config = HtmlSanitizerConfig::stripAll();
@@ -161,6 +172,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // withElements() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithElementsReturnsNewInstance(): void
     {
         $original = new HtmlSanitizerConfig();
@@ -169,6 +181,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithElementsDoesNotModifyOriginal(): void
     {
         $original   = new HtmlSanitizerConfig();
@@ -179,6 +192,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertSame($originalEl, $original->elements);
     }
 
+    #[Test]
     public function testWithElementsPreservesOtherProperties(): void
     {
         $attributes = AllowedAttributes::standard();
@@ -195,6 +209,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($modified->balanceTags);
     }
 
+    #[Test]
     public function testWithElementsSetsNewElements(): void
     {
         $original    = HtmlSanitizerConfig::basic();
@@ -210,6 +225,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // withAttributes() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithAttributesReturnsNewInstance(): void
     {
         $original = new HtmlSanitizerConfig();
@@ -218,6 +234,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithAttributesDoesNotModifyOriginal(): void
     {
         $original     = new HtmlSanitizerConfig();
@@ -228,6 +245,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertSame($originalAttr, $original->attributes);
     }
 
+    #[Test]
     public function testWithAttributesPreservesOtherProperties(): void
     {
         $elements = AllowedElements::full();
@@ -244,6 +262,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($modified->balanceTags);
     }
 
+    #[Test]
     public function testWithAttributesSetsNewAttributes(): void
     {
         $original      = HtmlSanitizerConfig::basic();
@@ -259,6 +278,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Chaining with* Methods
     // =========================================================================
 
+    #[Test]
     public function testWithMethodsCanBeChained(): void
     {
         $config = (new HtmlSanitizerConfig())
@@ -273,6 +293,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Readonly Properties
     // =========================================================================
 
+    #[Test]
     public function testPropertiesArePublicReadonly(): void
     {
         $config = new HtmlSanitizerConfig();
@@ -288,6 +309,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Factory Methods Create New Instances
     // =========================================================================
 
+    #[Test]
     public function testFactoryMethodsCreateNewInstances(): void
     {
         $basic1 = HtmlSanitizerConfig::basic();
@@ -305,6 +327,7 @@ final class HtmlSanitizerConfigTest extends TestCase
     // Security Configurations
     // =========================================================================
 
+    #[Test]
     public function testStripAllIsSecureDefault(): void
     {
         $config = HtmlSanitizerConfig::stripAll();
@@ -317,6 +340,7 @@ final class HtmlSanitizerConfigTest extends TestCase
         $this->assertFalse($config->elements->isAllowed('embed'));
     }
 
+    #[Test]
     public function testAllConfigsBlockDangerousAttributes(): void
     {
         $configs = [

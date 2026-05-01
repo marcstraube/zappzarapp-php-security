@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Headers\PermissionsPolicy;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Exception\InvalidHeaderValueException;
 use Zappzarapp\Security\Headers\PermissionsPolicy\PermissionDirective;
@@ -16,6 +17,7 @@ final class PermissionDirectiveTest extends TestCase
 {
     // ========== Constructor Tests ==========
 
+    #[Test]
     public function testConstructorWithEmptyAllowlist(): void
     {
         $directive = new PermissionDirective(PermissionFeature::CAMERA, []);
@@ -25,6 +27,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertTrue($directive->isBlocked());
     }
 
+    #[Test]
     public function testConstructorWithSelfKeyword(): void
     {
         $directive = new PermissionDirective(PermissionFeature::GEOLOCATION, ['self']);
@@ -33,6 +36,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertFalse($directive->isBlocked());
     }
 
+    #[Test]
     public function testConstructorWithWildcard(): void
     {
         $directive = new PermissionDirective(PermissionFeature::FULLSCREEN, ['*']);
@@ -41,6 +45,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertTrue($directive->allowsAll());
     }
 
+    #[Test]
     public function testConstructorWithValidOrigin(): void
     {
         $directive = new PermissionDirective(
@@ -51,6 +56,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame(['https://example.com'], $directive->allowlist());
     }
 
+    #[Test]
     public function testConstructorWithMultipleOrigins(): void
     {
         $directive = new PermissionDirective(
@@ -61,6 +67,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertCount(3, $directive->allowlist());
     }
 
+    #[Test]
     public function testConstructorWithOriginContainingPort(): void
     {
         $directive = new PermissionDirective(
@@ -73,6 +80,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Static Factory Tests ==========
 
+    #[Test]
     public function testBlockedFactory(): void
     {
         $directive = PermissionDirective::blocked(PermissionFeature::CAMERA);
@@ -83,6 +91,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertFalse($directive->allowsAll());
     }
 
+    #[Test]
     public function testSelfFactory(): void
     {
         $directive = PermissionDirective::self(PermissionFeature::GEOLOCATION);
@@ -93,6 +102,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertFalse($directive->allowsAll());
     }
 
+    #[Test]
     public function testAllFactory(): void
     {
         $directive = PermissionDirective::all(PermissionFeature::FULLSCREEN);
@@ -103,6 +113,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertTrue($directive->allowsAll());
     }
 
+    #[Test]
     public function testOriginsFactory(): void
     {
         $origins   = ['https://example.com', 'https://trusted.org'];
@@ -112,6 +123,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame($origins, $directive->allowlist());
     }
 
+    #[Test]
     public function testOriginsFactoryWithMixedValues(): void
     {
         $directive = PermissionDirective::origins(
@@ -124,6 +136,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== withOrigin Tests ==========
 
+    #[Test]
     public function testWithOriginAddsToAllowlist(): void
     {
         $original = PermissionDirective::self(PermissionFeature::CAMERA);
@@ -135,6 +148,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithOriginReturnsNewInstance(): void
     {
         $original = PermissionDirective::blocked(PermissionFeature::GEOLOCATION);
@@ -147,6 +161,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== build() Tests ==========
 
+    #[Test]
     public function testBuildBlockedDirective(): void
     {
         $directive = PermissionDirective::blocked(PermissionFeature::CAMERA);
@@ -154,6 +169,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame('camera=()', $directive->build());
     }
 
+    #[Test]
     public function testBuildSelfDirective(): void
     {
         $directive = PermissionDirective::self(PermissionFeature::GEOLOCATION);
@@ -161,6 +177,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame('geolocation=(self)', $directive->build());
     }
 
+    #[Test]
     public function testBuildAllDirective(): void
     {
         $directive = PermissionDirective::all(PermissionFeature::FULLSCREEN);
@@ -168,6 +185,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame('fullscreen=(*)', $directive->build());
     }
 
+    #[Test]
     public function testBuildWithSingleOrigin(): void
     {
         $directive = PermissionDirective::origins(
@@ -178,6 +196,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame('camera=("https://example.com")', $directive->build());
     }
 
+    #[Test]
     public function testBuildWithMultipleOrigins(): void
     {
         $directive = PermissionDirective::origins(
@@ -191,6 +210,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testBuildWithSelfAndOrigins(): void
     {
         $directive = PermissionDirective::origins(
@@ -201,6 +221,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame('camera=(self "https://example.com")', $directive->build());
     }
 
+    #[Test]
     public function testBuildWithWildcardAndOrigins(): void
     {
         // Unusual but valid: * with origins
@@ -213,6 +234,7 @@ final class PermissionDirectiveTest extends TestCase
     }
 
     #[DataProvider('allFeaturesProvider')]
+    #[Test]
     public function testBuildUsesCorrectDirectiveName(PermissionFeature $feature): void
     {
         $directive = PermissionDirective::blocked($feature);
@@ -232,6 +254,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Validation Tests - Header Injection Prevention ==========
 
+    #[Test]
     public function testRejectsNewlineInOrigin(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -243,6 +266,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsCarriageReturnInOrigin(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -254,6 +278,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsCrLfInOrigin(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -266,6 +291,7 @@ final class PermissionDirectiveTest extends TestCase
     }
 
     #[DataProvider('headerInjectionAttemptsProvider')]
+    #[Test]
     public function testRejectsHeaderInjectionAttempts(string $maliciousOrigin): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -301,6 +327,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Validation Tests - Invalid Origins ==========
 
+    #[Test]
     public function testRejectsOriginWithPath(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -312,6 +339,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsOriginWithQuery(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -323,6 +351,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsOriginWithFragment(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -334,6 +363,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsOriginWithoutScheme(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -345,6 +375,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsOriginWithoutHost(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -356,6 +387,7 @@ final class PermissionDirectiveTest extends TestCase
         );
     }
 
+    #[Test]
     public function testRejectsInvalidOriginFormat(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -368,6 +400,7 @@ final class PermissionDirectiveTest extends TestCase
     }
 
     #[DataProvider('invalidOriginsProvider')]
+    #[Test]
     public function testRejectsInvalidOrigins(string $invalidOrigin): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -424,6 +457,7 @@ final class PermissionDirectiveTest extends TestCase
     // ========== Valid Origins Tests ==========
 
     #[DataProvider('validOriginsProvider')]
+    #[Test]
     public function testAcceptsValidOrigins(string $validOrigin): void
     {
         $directive = new PermissionDirective(PermissionFeature::CAMERA, [$validOrigin]);
@@ -475,6 +509,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Reserved Keywords Tests ==========
 
+    #[Test]
     public function testSelfKeywordNotValidatedAsOrigin(): void
     {
         $directive = new PermissionDirective(PermissionFeature::CAMERA, ['self']);
@@ -482,6 +517,7 @@ final class PermissionDirectiveTest extends TestCase
         $this->assertSame(['self'], $directive->allowlist());
     }
 
+    #[Test]
     public function testWildcardNotValidatedAsOrigin(): void
     {
         $directive = new PermissionDirective(PermissionFeature::CAMERA, ['*']);
@@ -491,6 +527,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== withOrigin Validation Tests ==========
 
+    #[Test]
     public function testWithOriginValidatesOrigin(): void
     {
         $directive = PermissionDirective::self(PermissionFeature::CAMERA);
@@ -500,6 +537,7 @@ final class PermissionDirectiveTest extends TestCase
         $directive->withOrigin("https://evil.com\nX-Injected: malicious");
     }
 
+    #[Test]
     public function testWithOriginRejectsInvalidOriginFormat(): void
     {
         $directive = PermissionDirective::self(PermissionFeature::CAMERA);
@@ -511,6 +549,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Immutability Tests ==========
 
+    #[Test]
     public function testDirectiveIsImmutable(): void
     {
         $original = PermissionDirective::self(PermissionFeature::CAMERA);
@@ -525,6 +564,7 @@ final class PermissionDirectiveTest extends TestCase
 
     // ========== Edge Cases ==========
 
+    #[Test]
     public function testEmptyOriginIsRejected(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -532,6 +572,7 @@ final class PermissionDirectiveTest extends TestCase
         new PermissionDirective(PermissionFeature::CAMERA, ['']);
     }
 
+    #[Test]
     public function testOriginsFactoryWithEmptyArrayCreatesBlockedDirective(): void
     {
         $directive = PermissionDirective::origins(PermissionFeature::CAMERA, []);

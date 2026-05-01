@@ -7,12 +7,14 @@ namespace Zappzarapp\Security\Tests\Cookie\Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Cookie\Exception\InvalidCookieValueException;
 
 #[CoversClass(InvalidCookieValueException::class)]
 final class InvalidCookieValueExceptionTest extends TestCase
 {
+    #[Test]
     public function testExtendsInvalidArgumentException(): void
     {
         $exception = InvalidCookieValueException::invalidCharacter('test', ';');
@@ -20,6 +22,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertInstanceOf(InvalidArgumentException::class, $exception);
     }
 
+    #[Test]
     public function testInvalidCharacter(): void
     {
         $exception = InvalidCookieValueException::invalidCharacter('value;test', ';');
@@ -28,6 +31,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString(';', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterSemicolonShowsDescription(): void
     {
         $exception = InvalidCookieValueException::invalidCharacter('value;test', ';');
@@ -35,6 +39,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('semicolon', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterCommaShowsDescription(): void
     {
         $exception = InvalidCookieValueException::invalidCharacter('value,test', ',');
@@ -42,6 +47,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('comma', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterOtherCharShowsCharItself(): void
     {
         $exception = InvalidCookieValueException::invalidCharacter('value"test', '"');
@@ -49,6 +55,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('"', $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterTruncatesLongValue(): void
     {
         $longValue = str_repeat('a', 100);
@@ -59,6 +66,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString(substr($longValue, 0, 50), $exception->getMessage());
     }
 
+    #[Test]
     public function testInvalidCharacterShortValueNotTruncated(): void
     {
         $shortValue = 'short;value';
@@ -68,6 +76,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringNotContainsString('...', $exception->getMessage());
     }
 
+    #[Test]
     public function testTooLong(): void
     {
         $exception = InvalidCookieValueException::tooLong(5000, 4096);
@@ -78,6 +87,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('bytes', $exception->getMessage());
     }
 
+    #[Test]
     public function testTooLongWithExactBoundary(): void
     {
         $exception = InvalidCookieValueException::tooLong(4097, 4096);
@@ -86,6 +96,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('4096', $exception->getMessage());
     }
 
+    #[Test]
     public function testTooLongWithLargeValues(): void
     {
         $exception = InvalidCookieValueException::tooLong(1000000, 4096);
@@ -110,6 +121,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
     }
 
     #[DataProvider('invalidCharacterProvider')]
+    #[Test]
     public function testInvalidCharacterWithVariousChars(string $value, string $char): void
     {
         $exception = InvalidCookieValueException::invalidCharacter($value, $char);
@@ -118,6 +130,7 @@ final class InvalidCookieValueExceptionTest extends TestCase
         $this->assertStringContainsString('invalid character', $exception->getMessage());
     }
 
+    #[Test]
     public function testAllFactoryMethodsReturnSameClass(): void
     {
         $invalid = InvalidCookieValueException::invalidCharacter('test', ';');

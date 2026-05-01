@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -30,6 +31,7 @@ use Zappzarapp\Security\Sri\SriHashGenerator;
 #[UsesClass(CrossOrigin::class)]
 final class SriHashGeneratorTest extends TestCase
 {
+    #[Test]
     public function testHashWithDefaultAlgorithm(): void
     {
         $generator = new SriHashGenerator();
@@ -41,6 +43,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith('sha384-', $integrity->value());
     }
 
+    #[Test]
     public function testHashWithCustomDefaultAlgorithm(): void
     {
         $generator = new SriHashGenerator(HashAlgorithm::SHA512);
@@ -51,6 +54,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testHashWithExplicitAlgorithm(): void
     {
         $generator = new SriHashGenerator();
@@ -76,6 +80,7 @@ final class SriHashGeneratorTest extends TestCase
      * @param non-empty-string $expectedPrefix
      */
     #[DataProvider('algorithmPrefixProvider')]
+    #[Test]
     public function testHashGeneratesCorrectPrefix(HashAlgorithm $algorithm, string $expectedPrefix): void
     {
         $generator = new SriHashGenerator();
@@ -84,6 +89,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith($expectedPrefix, $integrity->value());
     }
 
+    #[Test]
     public function testHashFileReadsAndHashes(): void
     {
         $generator = new SriHashGenerator();
@@ -101,6 +107,7 @@ final class SriHashGeneratorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testHashFileWithExplicitAlgorithm(): void
     {
         $generator = new SriHashGenerator();
@@ -117,6 +124,7 @@ final class SriHashGeneratorTest extends TestCase
         }
     }
 
+    #[Test]
     public function testHashFileThrowsOnNonexistentFile(): void
     {
         $generator = new SriHashGenerator();
@@ -127,6 +135,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->hashFile('/nonexistent/path/to/file.js');
     }
 
+    #[Test]
     public function testHashFileThrowsOnUnreadableFile(): void
     {
         $generator = new SriHashGenerator();
@@ -136,6 +145,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->hashFile('/root/protected_file_that_does_not_exist.js');
     }
 
+    #[Test]
     public function testHashUrlWithMockedFetcher(): void
     {
         $expectedContent = 'alert("fetched");';
@@ -152,6 +162,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertSame($expectedIntegrity->value(), $integrity->value());
     }
 
+    #[Test]
     public function testHashUrlWithExplicitAlgorithm(): void
     {
         $expectedContent = 'var x = 1;';
@@ -167,6 +178,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testHashUrlThrowsWhenFetcherIsNull(): void
     {
         $generator = new SriHashGenerator(HashAlgorithm::SHA384, null);
@@ -177,6 +189,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->hashUrl('https://example.com/script.js');
     }
 
+    #[Test]
     public function testHashUrlThrowsOnFetchFailure(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -190,6 +203,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->hashUrl('https://cdn.example.com/lib.js');
     }
 
+    #[Test]
     public function testHashMultipleWithEmptyArrayUsesDefault(): void
     {
         $generator = new SriHashGenerator(HashAlgorithm::SHA384);
@@ -201,6 +215,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith('sha384-', $integrity->value());
     }
 
+    #[Test]
     public function testHashMultipleWithSingleAlgorithm(): void
     {
         $generator = new SriHashGenerator();
@@ -212,6 +227,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringStartsWith('sha512-', $integrity->value());
     }
 
+    #[Test]
     public function testHashMultipleWithMultipleAlgorithms(): void
     {
         $generator = new SriHashGenerator();
@@ -230,6 +246,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('sha512-', $value);
     }
 
+    #[Test]
     public function testVerifyWithMatchingContent(): void
     {
         $generator = new SriHashGenerator();
@@ -243,6 +260,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertTrue(true); // Reached here means verification passed
     }
 
+    #[Test]
     public function testVerifyWithStringIntegrity(): void
     {
         $generator = new SriHashGenerator();
@@ -256,6 +274,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testVerifyThrowsOnMismatch(): void
     {
         $generator  = new SriHashGenerator();
@@ -267,6 +286,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->verify('modified content', $integrity);
     }
 
+    #[Test]
     public function testVerifyThrowsOnMismatchWithStringIntegrity(): void
     {
         $generator  = new SriHashGenerator();
@@ -278,6 +298,7 @@ final class SriHashGeneratorTest extends TestCase
         $generator->verify('modified content', $integrity->value());
     }
 
+    #[Test]
     public function testIsValidReturnsTrueForMatchingContent(): void
     {
         $generator = new SriHashGenerator();
@@ -287,6 +308,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertTrue($generator->isValid($content, $integrity));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForMismatchedContent(): void
     {
         $generator = new SriHashGenerator();
@@ -296,6 +318,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertFalse($generator->isValid('different content', $integrity));
     }
 
+    #[Test]
     public function testIsValidAcceptsStringIntegrity(): void
     {
         $generator = new SriHashGenerator();
@@ -306,6 +329,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertFalse($generator->isValid('other', $integrity->value()));
     }
 
+    #[Test]
     public function testScriptTagGeneration(): void
     {
         $generator = new SriHashGenerator();
@@ -320,6 +344,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('</script>', $tag);
     }
 
+    #[Test]
     public function testScriptTagWithStringIntegrity(): void
     {
         $generator = new SriHashGenerator();
@@ -331,6 +356,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('integrity="sha384-', $tag);
     }
 
+    #[Test]
     public function testScriptTagWithUseCredentials(): void
     {
         $generator = new SriHashGenerator();
@@ -341,6 +367,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('crossorigin="use-credentials"', $tag);
     }
 
+    #[Test]
     public function testScriptTagWithNoCrossOrigin(): void
     {
         $generator = new SriHashGenerator();
@@ -351,6 +378,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringNotContainsString('crossorigin', $tag);
     }
 
+    #[Test]
     public function testScriptTagEscapesSpecialCharacters(): void
     {
         $generator = new SriHashGenerator();
@@ -361,6 +389,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('&amp;', $tag);
     }
 
+    #[Test]
     public function testLinkTagGeneration(): void
     {
         $generator = new SriHashGenerator();
@@ -376,6 +405,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringNotContainsString('</link>', $tag);
     }
 
+    #[Test]
     public function testLinkTagWithStringIntegrity(): void
     {
         $generator = new SriHashGenerator();
@@ -387,6 +417,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('integrity="sha384-', $tag);
     }
 
+    #[Test]
     public function testLinkTagWithUseCredentials(): void
     {
         $generator = new SriHashGenerator();
@@ -397,6 +428,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('crossorigin="use-credentials"', $tag);
     }
 
+    #[Test]
     public function testLinkTagWithNoCrossOrigin(): void
     {
         $generator = new SriHashGenerator();
@@ -407,6 +439,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringNotContainsString('crossorigin', $tag);
     }
 
+    #[Test]
     public function testLinkTagEscapesSpecialCharacters(): void
     {
         $generator = new SriHashGenerator();
@@ -417,6 +450,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertStringContainsString('&amp;', $tag);
     }
 
+    #[Test]
     public function testHashGeneratesValidBase64(): void
     {
         $generator = new SriHashGenerator();
@@ -434,6 +468,7 @@ final class SriHashGeneratorTest extends TestCase
         $this->assertSame(48, strlen($decoded)); // SHA384 = 48 bytes
     }
 
+    #[Test]
     public function testDeterministicHashing(): void
     {
         $generator = new SriHashGenerator();

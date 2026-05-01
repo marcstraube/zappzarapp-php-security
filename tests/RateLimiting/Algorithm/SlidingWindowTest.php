@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\RateLimiting\Algorithm;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\Algorithm\AlgorithmType;
 use Zappzarapp\Security\RateLimiting\Algorithm\RateLimitAlgorithm;
@@ -71,6 +72,7 @@ final class SlidingWindowTest extends TestCase
         return new SlidingWindow($storage ?? $this->createStorageMock(), $config);
     }
 
+    #[Test]
     public function testImplementsRateLimitAlgorithm(): void
     {
         $algorithm = $this->createAlgorithm();
@@ -78,6 +80,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertInstanceOf(RateLimitAlgorithm::class, $algorithm);
     }
 
+    #[Test]
     public function testConsumeAllowsWithinLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -89,6 +92,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeDecrementsRemaining(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -101,6 +105,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(7, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeDeniesWhenLimitExceeded(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -116,6 +121,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertGreaterThan(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testConsumeWithCost(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -126,6 +132,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(5, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeWithHighCostExceedsLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -135,6 +142,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testConsumeWithCostZeroIsAllowed(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -145,6 +153,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(10, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeIsolatesIdentifiers(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -160,6 +169,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result2->isAllowed());
     }
 
+    #[Test]
     public function testPeekDoesNotConsumeQuota(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -174,6 +184,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(10, $peek3->remaining);
     }
 
+    #[Test]
     public function testPeekReturnsCurrentState(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -187,6 +198,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(8, $result->remaining);
     }
 
+    #[Test]
     public function testPeekReturnsDeniedWhenLimitExceeded(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -201,6 +213,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertGreaterThan(0, $result->retryAfter);
     }
 
+    #[Test]
     public function testResetClearsRateLimitState(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -219,6 +232,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(3, $afterReset->remaining);
     }
 
+    #[Test]
     public function testResetOnlyAffectsSpecificIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 3);
@@ -236,6 +250,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(2, $result2->remaining);
     }
 
+    #[Test]
     public function testWindowCalculation(): void
     {
         $algorithm = $this->createAlgorithm(limit: 100, window: 60);
@@ -248,6 +263,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertLessThanOrEqual($now + 60, $result->resetAt);
     }
 
+    #[Test]
     public function testRetryAfterCalculation(): void
     {
         $algorithm = $this->createAlgorithm(limit: 1, window: 60);
@@ -260,6 +276,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertLessThanOrEqual(60, $result->retryAfter);
     }
 
+    #[Test]
     public function testPrefixIsApplied(): void
     {
         // Use separate storage for each algorithm to truly test prefix isolation
@@ -277,6 +294,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result2->isAllowed());
     }
 
+    #[Test]
     public function testRemainingNeverNegative(): void
     {
         $algorithm = $this->createAlgorithm(limit: 2);
@@ -289,6 +307,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertGreaterThanOrEqual(0, $result->remaining);
     }
 
+    #[Test]
     public function testConsumeWithEmptyIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -298,6 +317,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testConsumeWithSpecialCharactersInIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -323,6 +343,7 @@ final class SlidingWindowTest extends TestCase
     }
 
     #[DataProvider('specialIdentifierProvider')]
+    #[Test]
     public function testConsumeWithVariousIdentifiers(string $identifier): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -332,6 +353,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result->isAllowed());
     }
 
+    #[Test]
     public function testWindowBoundaryHandling(): void
     {
         // Test that weighted previous window is considered
@@ -348,6 +370,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(2, $result->remaining);
     }
 
+    #[Test]
     public function testExactLimitConsumption(): void
     {
         $algorithm = $this->createAlgorithm(limit: 5);
@@ -361,6 +384,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result->isDenied());
     }
 
+    #[Test]
     public function testLargeCostValue(): void
     {
         $algorithm = $this->createAlgorithm(limit: 1000);
@@ -374,6 +398,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertTrue($result2->isDenied());
     }
 
+    #[Test]
     public function testConsumeReturnsResultWithLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 42);
@@ -383,6 +408,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(42, $result->limit);
     }
 
+    #[Test]
     public function testPeekReturnsResultWithLimit(): void
     {
         $algorithm = $this->createAlgorithm(limit: 42);
@@ -392,6 +418,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(42, $result->limit);
     }
 
+    #[Test]
     public function testMultipleCostsAddUp(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);
@@ -404,6 +431,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(1, $result->remaining);
     }
 
+    #[Test]
     public function testWithInMemoryStorageDirectly(): void
     {
         // Test basic functionality with actual InMemoryStorage
@@ -418,6 +446,7 @@ final class SlidingWindowTest extends TestCase
         $this->assertSame(9, $result->remaining);
     }
 
+    #[Test]
     public function testResetCalledOnNonExistentIdentifier(): void
     {
         $algorithm = $this->createAlgorithm(limit: 10);

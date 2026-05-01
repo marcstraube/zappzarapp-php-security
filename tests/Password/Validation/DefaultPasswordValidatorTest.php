@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Validation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Policy\PasswordPolicy;
 use Zappzarapp\Security\Password\Policy\Rules\MinLengthRule;
@@ -20,6 +21,7 @@ use Zappzarapp\Security\Password\Validation\ValidationResult;
 #[CoversClass(DefaultPasswordValidator::class)]
 final class DefaultPasswordValidatorTest extends TestCase
 {
+    #[Test]
     public function testImplementsPasswordValidatorInterface(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -27,6 +29,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertInstanceOf(PasswordValidator::class, $validator);
     }
 
+    #[Test]
     public function testDefaultConstructor(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -35,6 +38,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertInstanceOf(ValidationResult::class, $result);
     }
 
+    #[Test]
     public function testValidateReturnsValidResultForValidPassword(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -46,6 +50,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertIsFloat($result->entropy);
     }
 
+    #[Test]
     public function testValidateWithPolicyViolation(): void
     {
         $policy    = (new PasswordPolicy())->withRule(new MinLengthRule(20));
@@ -57,6 +62,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertStringContainsString('at least 20 characters', $result->violations[0]);
     }
 
+    #[Test]
     public function testValidateWithMinimumStrengthRequirement(): void
     {
         $validator = new DefaultPasswordValidator(
@@ -71,6 +77,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertNotEmpty($result->violations);
     }
 
+    #[Test]
     public function testValidateWithStrengthRequirementMet(): void
     {
         $validator = new DefaultPasswordValidator(
@@ -85,6 +92,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertTrue($result->isValid);
     }
 
+    #[Test]
     public function testValidateWithPwnedChecker(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -105,6 +113,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertSame(12345, $result->pwnedCount);
     }
 
+    #[Test]
     public function testValidateWithPwnedCheckerNotFound(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -122,6 +131,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertSame(0, $result->pwnedCount);
     }
 
+    #[Test]
     public function testValidateSetsStrengthAndEntropy(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -132,6 +142,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertGreaterThan(0, $result->entropy);
     }
 
+    #[Test]
     public function testValidateWithMultipleViolations(): void
     {
         $policy    = PasswordPolicy::strict();
@@ -148,6 +159,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertGreaterThan(1, count($result->violations));
     }
 
+    #[Test]
     public function testValidateReturnsCorrectPwnedCountWhenNotChecked(): void
     {
         $validator = new DefaultPasswordValidator(
@@ -160,6 +172,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertNull($result->pwnedCount);
     }
 
+    #[Test]
     public function testNistStaticFactory(): void
     {
         $validator = DefaultPasswordValidator::nist();
@@ -168,6 +181,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertTrue($result->isValid);
     }
 
+    #[Test]
     public function testNistStaticFactoryRejectsTooShort(): void
     {
         $validator = DefaultPasswordValidator::nist();
@@ -176,6 +190,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertFalse($result->isValid);
     }
 
+    #[Test]
     public function testStrictStaticFactoryWithoutPwnedChecker(): void
     {
         $validator = DefaultPasswordValidator::strict();
@@ -187,6 +202,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertInstanceOf(ValidationResult::class, $result);
     }
 
+    #[Test]
     public function testStrictStaticFactoryWithPwnedChecker(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -201,6 +217,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertNotNull($result->pwnedCount);
     }
 
+    #[Test]
     public function testWithPwnedCheckStaticFactory(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -211,6 +228,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertInstanceOf(DefaultPasswordValidator::class, $validator);
     }
 
+    #[Test]
     public function testWithPwnedCheckStaticFactoryWithCustomPolicy(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -222,6 +240,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertInstanceOf(DefaultPasswordValidator::class, $validator);
     }
 
+    #[Test]
     public function testValidateWithEmptyPassword(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -232,6 +251,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertSame(StrengthLevel::VERY_WEAK, $result->strength);
     }
 
+    #[Test]
     public function testValidateWithUnicodePassword(): void
     {
         $validator = new DefaultPasswordValidator();
@@ -241,6 +261,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertIsFloat($result->entropy);
     }
 
+    #[Test]
     public function testValidateWithVeryLongPassword(): void
     {
         $policy    = PasswordPolicy::nist();
@@ -253,6 +274,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertFalse($result->isValid);
     }
 
+    #[Test]
     public function testStrengthViolationMessageFormat(): void
     {
         $validator = new DefaultPasswordValidator(
@@ -275,6 +297,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertTrue($hasStrengthIssue, 'Should contain strength violation message');
     }
 
+    #[Test]
     public function testPwnedViolationMessageFormatSingular(): void
     {
         $client = $this->createStub(HttpClientInterface::class);
@@ -293,6 +316,7 @@ final class DefaultPasswordValidatorTest extends TestCase
         $this->assertStringNotContainsString('breaches', $result->violations[0]);
     }
 
+    #[Test]
     public function testPwnedViolationMessageFormatPlural(): void
     {
         $client = $this->createStub(HttpClientInterface::class);

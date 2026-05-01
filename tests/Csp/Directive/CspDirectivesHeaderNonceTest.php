@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -19,6 +20,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testAutoInjectsNonceInScriptSrc(): void
     {
         $generator = new NonceGenerator();
@@ -31,6 +33,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testAutoInjectsStrictDynamicInScriptSrc(): void
     {
         $generator = new NonceGenerator();
@@ -43,6 +46,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testAutoInjectsNonceInStyleSrc(): void
     {
         $generator = new NonceGenerator();
@@ -52,6 +56,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
         $this->assertStringContainsString(sprintf("style-src 'self' 'nonce-%s'", $nonce), $header);
     }
 
+    #[Test]
     public function testSkipsNonceInjectionWithEmptyNonce(): void
     {
         $header = (new CspDirectives())->toHeaderValue('');
@@ -60,6 +65,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
         $this->assertStringContainsString("script-src 'self'", $header);
     }
 
+    #[Test]
     public function testCustomScriptSrcWithEmptyNonceReturnsUnmodified(): void
     {
         $customScriptSrc = "'self' https://cdn.example.com";
@@ -71,6 +77,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
         $this->assertStringNotContainsString("'nonce-'", $header);
     }
 
+    #[Test]
     public function testCustomStyleSrcWithEmptyNonceReturnsUnmodified(): void
     {
         $customStyleSrc = "'self' https://fonts.example.com";
@@ -85,6 +92,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testAutoInjectsNonceInCustomScriptSrc(): void
     {
         $generator  = new NonceGenerator();
@@ -99,6 +107,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testDoesNotDuplicateNonceInCustomScriptSrc(): void
     {
         $generator  = new NonceGenerator();
@@ -116,6 +125,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomScriptSrcWithNonceGetsPrependedNonce(): void
     {
         $generator       = new NonceGenerator();
@@ -137,6 +147,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomStyleSrcWithNonceGetsPrependedNonce(): void
     {
         $generator      = new NonceGenerator();
@@ -158,6 +169,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomScriptSrcWithExistingNonceNotModified(): void
     {
         $generator       = new NonceGenerator();
@@ -180,6 +192,7 @@ final class CspDirectivesHeaderNonceTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testCustomStyleSrcWithExistingNonceNotModified(): void
     {
         $generator      = new NonceGenerator();

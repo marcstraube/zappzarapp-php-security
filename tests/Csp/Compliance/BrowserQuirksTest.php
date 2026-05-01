@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\NavigationDirectives;
@@ -24,6 +25,7 @@ final class BrowserQuirksTest extends TestCase
     // Safari: data: URL Handling
     // =========================================================================
 
+    #[Test]
     public function testDataUrlInImgSrcForSafariCompatibility(): void
     {
         // Safari requires explicit 'data:' for base64-encoded images
@@ -39,6 +41,7 @@ final class BrowserQuirksTest extends TestCase
     // Firefox: frame-ancestors vs X-Frame-Options
     // =========================================================================
 
+    #[Test]
     public function testFrameAncestorsIncluded(): void
     {
         // Firefox prefers frame-ancestors over X-Frame-Options
@@ -50,6 +53,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringContainsString('frame-ancestors', $header);
     }
 
+    #[Test]
     public function testFrameAncestorsDefaultsToSelf(): void
     {
         // Default is 'self' to prevent clickjacking
@@ -64,6 +68,7 @@ final class BrowserQuirksTest extends TestCase
     // Chrome: strict-dynamic Behavior
     // =========================================================================
 
+    #[Test]
     public function testStrictDynamicWithNonceForChrome(): void
     {
         // Chrome requires nonce for strict-dynamic to work
@@ -76,6 +81,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringContainsString("'strict-dynamic'", $header);
     }
 
+    #[Test]
     public function testStrictDynamicIgnoresHostAllowlist(): void
     {
         // When strict-dynamic is present, host-based allowlists are ignored
@@ -93,6 +99,7 @@ final class BrowserQuirksTest extends TestCase
     // Edge Legacy: base-uri Requirement
     // =========================================================================
 
+    #[Test]
     public function testBaseUriIncludedForEdgeLegacy(): void
     {
         // Older Edge required base-uri to prevent base tag injection
@@ -103,6 +110,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringContainsString('base-uri', $header);
     }
 
+    #[Test]
     public function testBaseUriDefaultsToSelf(): void
     {
         // Default to 'self' to prevent base tag injection attacks
@@ -117,6 +125,7 @@ final class BrowserQuirksTest extends TestCase
     // WebSocket Connection Handling
     // =========================================================================
 
+    #[Test]
     public function testWebSocketRequiresBothWssAndHttps(): void
     {
         // Some browsers require both wss: and https: for WebSocket
@@ -129,6 +138,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringContainsString('https://localhost:5173', $header);
     }
 
+    #[Test]
     public function testWebSocketHostInConnectSrc(): void
     {
         // WebSocket hosts must be in connect-src
@@ -143,6 +153,7 @@ final class BrowserQuirksTest extends TestCase
     // Empty Directive Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testEmptyResourceDoesNotCreateEmptyDirective(): void
     {
         // Empty directives should not appear in the header
@@ -163,6 +174,7 @@ final class BrowserQuirksTest extends TestCase
     // Nonce Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testEmptyNonceOmitsNonceFromHeader(): void
     {
         // When nonce is empty, don't include it in the header
@@ -173,6 +185,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringNotContainsString("'nonce-'", $header);
     }
 
+    #[Test]
     public function testEmptyNonceOmitsStrictDynamic(): void
     {
         // strict-dynamic requires a nonce to function
@@ -187,6 +200,7 @@ final class BrowserQuirksTest extends TestCase
     // object-src Security
     // =========================================================================
 
+    #[Test]
     public function testObjectSrcAlwaysNoneForFlashProtection(): void
     {
         // Flash and other plugins are security risks
@@ -202,6 +216,7 @@ final class BrowserQuirksTest extends TestCase
     // Form Action Security
     // =========================================================================
 
+    #[Test]
     public function testFormActionDefaultsToSelf(): void
     {
         // form-action prevents form submissions to external sites
@@ -212,6 +227,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertMatchesRegularExpression("/form-action 'self'/", $header);
     }
 
+    #[Test]
     public function testFormActionCanBeCustomized(): void
     {
         // Allow form submissions to specific domains
@@ -229,6 +245,7 @@ final class BrowserQuirksTest extends TestCase
     // HTTPS Upgrade
     // =========================================================================
 
+    #[Test]
     public function testUpgradeInsecureRequestsDefaultsToTrue(): void
     {
         // upgrade-insecure-requests should be enabled by default
@@ -239,6 +256,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringContainsString('upgrade-insecure-requests', $header);
     }
 
+    #[Test]
     public function testUpgradeInsecureRequestsCanBeDisabled(): void
     {
         // Can be disabled for mixed-content testing
@@ -253,6 +271,7 @@ final class BrowserQuirksTest extends TestCase
     // Style-src in Lenient Mode
     // =========================================================================
 
+    #[Test]
     public function testLenientModeUsesUnsafeInlineForStyles(): void
     {
         // LENIENT mode allows inline styles for development
@@ -267,6 +286,7 @@ final class BrowserQuirksTest extends TestCase
     // Case Sensitivity
     // =========================================================================
 
+    #[Test]
     public function testDirectiveNamesAreLowerCase(): void
     {
         // Directive names must be lowercase
@@ -280,6 +300,7 @@ final class BrowserQuirksTest extends TestCase
         $this->assertStringNotContainsString('Script-src', $header);
     }
 
+    #[Test]
     public function testKeywordsAreLowerCase(): void
     {
         // CSP keywords must be lowercase

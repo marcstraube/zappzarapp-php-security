@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Token;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\Token\CsrfToken;
 use Zappzarapp\Security\Csrf\Token\CsrfTokenProvider;
@@ -17,6 +18,7 @@ final class NullCsrfTokenTest extends TestCase
 {
     // Note: Tests run in PHPUnit, so NullCsrfToken automatically detects test environment
 
+    #[Test]
     public function testImplementsCsrfTokenProvider(): void
     {
         $provider = new NullCsrfToken();
@@ -25,6 +27,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertInstanceOf(CsrfTokenProvider::class, $provider);
     }
 
+    #[Test]
     public function testGetReturnsCsrfToken(): void
     {
         $provider = new NullCsrfToken();
@@ -34,6 +37,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertInstanceOf(CsrfToken::class, $token);
     }
 
+    #[Test]
     public function testGetReturnsSameTokenEveryTime(): void
     {
         $provider = new NullCsrfToken();
@@ -46,6 +50,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertSame($token2->value(), $token3->value());
     }
 
+    #[Test]
     public function testDefaultTokenMeetsMinimumRequirements(): void
     {
         $provider = new NullCsrfToken();
@@ -55,6 +60,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertGreaterThanOrEqual(CsrfToken::MIN_BYTES, strlen($bytes));
     }
 
+    #[Test]
     public function testCustomTokenIsUsed(): void
     {
         $customValue = base64_encode(random_bytes(32));
@@ -64,6 +70,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertSame($customValue, $token->value());
     }
 
+    #[Test]
     public function testResetDoesNotChangeToken(): void
     {
         $provider = new NullCsrfToken();
@@ -76,6 +83,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertSame($token1->value(), $token2->value());
     }
 
+    #[Test]
     public function testResetIsNoOp(): void
     {
         $provider = new NullCsrfToken();
@@ -88,6 +96,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testTokenValidationPassesForNullToken(): void
     {
         $provider = new NullCsrfToken();
@@ -100,6 +109,7 @@ final class NullCsrfTokenTest extends TestCase
 
     // --- Environment Detection ---
 
+    #[Test]
     public function testAllowsInstantiationInTestEnvironment(): void
     {
         // PHPUnit is running, so this should work without explicit allowProduction
@@ -109,6 +119,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertInstanceOf(NullCsrfToken::class, $provider);
     }
 
+    #[Test]
     public function testAllowProductionBypassesEnvironmentCheck(): void
     {
         // Explicit allowProduction flag should work regardless of environment
@@ -118,6 +129,7 @@ final class NullCsrfTokenTest extends TestCase
         $this->assertInstanceOf(NullCsrfToken::class, $provider);
     }
 
+    #[Test]
     public function testCustomTokenWithAllowProduction(): void
     {
         $customValue = base64_encode(random_bytes(32));

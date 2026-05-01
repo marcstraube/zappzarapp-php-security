@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Headers\Hsts;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Exception\InvalidHeaderValueException;
 use Zappzarapp\Security\Headers\Hsts\HstsConfig;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Headers\Hsts\HstsConfig;
 #[CoversClass(HstsConfig::class)]
 final class HstsConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $config = new HstsConfig();
@@ -21,6 +23,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($config->preload);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         // For preload=true, max-age must be >= 31536000
@@ -35,6 +38,7 @@ final class HstsConfigTest extends TestCase
         $this->assertTrue($config->preload);
     }
 
+    #[Test]
     public function testPreloadRequiresIncludeSubDomains(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -47,6 +51,7 @@ final class HstsConfigTest extends TestCase
         );
     }
 
+    #[Test]
     public function testPreloadRequiresMinMaxAge(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -59,6 +64,7 @@ final class HstsConfigTest extends TestCase
         );
     }
 
+    #[Test]
     public function testNegativeMaxAgeThrows(): void
     {
         $this->expectException(InvalidHeaderValueException::class);
@@ -67,6 +73,7 @@ final class HstsConfigTest extends TestCase
         new HstsConfig(maxAge: -1);
     }
 
+    #[Test]
     public function testZeroMaxAgeAllowed(): void
     {
         $config = new HstsConfig(maxAge: 0, includeSubDomains: false);
@@ -74,6 +81,7 @@ final class HstsConfigTest extends TestCase
         $this->assertSame(0, $config->maxAge);
     }
 
+    #[Test]
     public function testWithMaxAge(): void
     {
         $config    = new HstsConfig();
@@ -84,6 +92,7 @@ final class HstsConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithMaxAgeNegativeThrows(): void
     {
         $config = new HstsConfig();
@@ -93,6 +102,7 @@ final class HstsConfigTest extends TestCase
         $config->withMaxAge(-1);
     }
 
+    #[Test]
     public function testWithIncludeSubDomains(): void
     {
         $config    = new HstsConfig(includeSubDomains: false);
@@ -102,6 +112,7 @@ final class HstsConfigTest extends TestCase
         $this->assertTrue($newConfig->includeSubDomains);
     }
 
+    #[Test]
     public function testWithoutIncludeSubDomains(): void
     {
         $config    = new HstsConfig();
@@ -111,6 +122,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($newConfig->includeSubDomains);
     }
 
+    #[Test]
     public function testWithPreload(): void
     {
         $config    = new HstsConfig();
@@ -120,6 +132,7 @@ final class HstsConfigTest extends TestCase
         $this->assertTrue($newConfig->preload);
     }
 
+    #[Test]
     public function testWithoutPreload(): void
     {
         $config    = HstsConfig::preload();
@@ -129,6 +142,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($newConfig->preload);
     }
 
+    #[Test]
     public function testHeaderValueBasic(): void
     {
         $config = new HstsConfig(
@@ -140,6 +154,7 @@ final class HstsConfigTest extends TestCase
         $this->assertSame('max-age=31536000', $config->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueWithIncludeSubDomains(): void
     {
         $config = new HstsConfig(
@@ -151,6 +166,7 @@ final class HstsConfigTest extends TestCase
         $this->assertSame('max-age=31536000; includeSubDomains', $config->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueWithPreload(): void
     {
         $config = new HstsConfig(
@@ -162,6 +178,7 @@ final class HstsConfigTest extends TestCase
         $this->assertSame('max-age=31536000; includeSubDomains; preload', $config->headerValue());
     }
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $config = HstsConfig::strict();
@@ -171,6 +188,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($config->preload);
     }
 
+    #[Test]
     public function testPreloadFactory(): void
     {
         $config = HstsConfig::preload();
@@ -180,6 +198,7 @@ final class HstsConfigTest extends TestCase
         $this->assertTrue($config->preload);
     }
 
+    #[Test]
     public function testTestingFactory(): void
     {
         $config = HstsConfig::testing();
@@ -189,6 +208,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($config->preload);
     }
 
+    #[Test]
     public function testDisabledFactory(): void
     {
         $config = HstsConfig::disabled();
@@ -198,6 +218,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($config->preload);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new HstsConfig();
@@ -211,6 +232,7 @@ final class HstsConfigTest extends TestCase
         $this->assertFalse($original->preload);
     }
 
+    #[Test]
     public function testConstants(): void
     {
         $this->assertSame(31536000, HstsConfig::PRELOAD_MIN_MAX_AGE);

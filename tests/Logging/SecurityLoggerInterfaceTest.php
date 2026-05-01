@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Logging;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Stringable;
 use Zappzarapp\Security\Logging\SecurityLoggerInterface;
@@ -19,6 +20,7 @@ use Zappzarapp\Security\Logging\SecurityLoggerInterface;
 #[CoversNothing]
 final class SecurityLoggerInterfaceTest extends TestCase
 {
+    #[Test]
     public function testInterfaceDefinesWarningMethod(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -29,6 +31,7 @@ final class SecurityLoggerInterfaceTest extends TestCase
         $logger->warning('Test warning', ['key' => 'value']);
     }
 
+    #[Test]
     public function testInterfaceDefinesAlertMethod(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -39,6 +42,7 @@ final class SecurityLoggerInterfaceTest extends TestCase
         $logger->alert('Test alert', ['key' => 'value']);
     }
 
+    #[Test]
     public function testWarningWithStringableMessage(): void
     {
         $stringable = new class implements Stringable {
@@ -57,6 +61,7 @@ final class SecurityLoggerInterfaceTest extends TestCase
         $logger->warning($stringable, []);
     }
 
+    #[Test]
     public function testAlertWithStringableMessage(): void
     {
         $stringable = new class implements Stringable {
@@ -75,6 +80,7 @@ final class SecurityLoggerInterfaceTest extends TestCase
         $logger->alert($stringable, []);
     }
 
+    #[Test]
     public function testInterfaceDefinesCriticalMethod(): void
     {
         $logger = $this->createMock(SecurityLoggerInterface::class);
@@ -85,6 +91,7 @@ final class SecurityLoggerInterfaceTest extends TestCase
         $logger->critical('Test critical', ['key' => 'value']);
     }
 
+    #[Test]
     public function testCriticalWithStringableMessage(): void
     {
         $stringable = new class implements Stringable {

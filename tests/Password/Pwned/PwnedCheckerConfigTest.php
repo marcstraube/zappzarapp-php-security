@@ -9,12 +9,14 @@ namespace Zappzarapp\Security\Tests\Password\Pwned;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Pwned\PwnedCheckerConfig;
 
 #[CoversClass(PwnedCheckerConfig::class)]
 final class PwnedCheckerConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultConfig(): void
     {
         $config = new PwnedCheckerConfig();
@@ -26,11 +28,13 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($config->failClosed); // Default is now fail-closed for security
     }
 
+    #[Test]
     public function testFailClosedConstant(): void
     {
         $this->assertSame(PHP_INT_MAX, PwnedCheckerConfig::FAIL_CLOSED_COUNT);
     }
 
+    #[Test]
     public function testWithFailClosed(): void
     {
         // Start with fail-open to test withFailClosed()
@@ -42,6 +46,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithoutFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed();
@@ -52,6 +57,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertNotSame($config, $newConfig);
     }
 
+    #[Test]
     public function testWithFailClosedPreservesOtherSettings(): void
     {
         $config = new PwnedCheckerConfig(
@@ -71,6 +77,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($newConfig->failClosed);
     }
 
+    #[Test]
     public function testWithApiUrlPreservesFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed();
@@ -79,6 +86,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($newConfig->failClosed);
     }
 
+    #[Test]
     public function testWithMinOccurrencesPreservesFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed();
@@ -87,6 +95,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($newConfig->failClosed);
     }
 
+    #[Test]
     public function testWithTimeoutPreservesFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed();
@@ -95,6 +104,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($newConfig->failClosed);
     }
 
+    #[Test]
     public function testWithThrowOnErrorPreservesFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed();
@@ -103,6 +113,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertTrue($newConfig->failClosed);
     }
 
+    #[Test]
     public function testWithoutThrowOnErrorPreservesFailClosed(): void
     {
         $config    = (new PwnedCheckerConfig())->withFailClosed()->withThrowOnError();
@@ -112,6 +123,7 @@ final class PwnedCheckerConfigTest extends TestCase
     }
 
     #[DataProvider('invalidUrlSchemeProvider')]
+    #[Test]
     public function testConstructorRejectsNonHttpsUrls(string $invalidUrl): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -134,6 +146,7 @@ final class PwnedCheckerConfigTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testWithApiUrlRejectsNonHttpsUrls(): void
     {
         $config = new PwnedCheckerConfig();
@@ -144,6 +157,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $config->withApiUrl('http://insecure.example.com/');
     }
 
+    #[Test]
     public function testWithApiUrlAcceptsHttpsUrls(): void
     {
         $config    = new PwnedCheckerConfig();
@@ -152,6 +166,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertSame('https://custom.api.com/range/', $newConfig->apiUrl);
     }
 
+    #[Test]
     public function testErrorMessageIncludesActualScheme(): void
     {
         try {
@@ -164,6 +179,7 @@ final class PwnedCheckerConfigTest extends TestCase
         }
     }
 
+    #[Test]
     public function testErrorMessageShowsNullForNoScheme(): void
     {
         try {
@@ -175,6 +191,7 @@ final class PwnedCheckerConfigTest extends TestCase
         }
     }
 
+    #[Test]
     public function testErrorMessageHasCorrectFormat(): void
     {
         try {
@@ -188,6 +205,7 @@ final class PwnedCheckerConfigTest extends TestCase
         }
     }
 
+    #[Test]
     public function testProductionFactoryReturnsFailClosedConfig(): void
     {
         $config = PwnedCheckerConfig::production();
@@ -199,6 +217,7 @@ final class PwnedCheckerConfigTest extends TestCase
         $this->assertSame(5, $config->timeout);
     }
 
+    #[Test]
     public function testDevelopmentFactoryReturnsFailOpenConfig(): void
     {
         $config = PwnedCheckerConfig::development();

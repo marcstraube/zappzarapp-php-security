@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Sanitization\Html;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Html\AllowedAttributes;
 
@@ -18,6 +19,7 @@ final class AllowedAttributesTest extends TestCase
     // Constructor and Default Configuration
     // =========================================================================
 
+    #[Test]
     public function testDefaultConstructorAllowsGlobalSafeAttributes(): void
     {
         $config = new AllowedAttributes();
@@ -29,6 +31,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('div', 'dir'));
     }
 
+    #[Test]
     public function testDefaultConstructorHasNoElementSpecificAttributes(): void
     {
         $config = new AllowedAttributes();
@@ -42,6 +45,7 @@ final class AllowedAttributesTest extends TestCase
     // Factory Method: standard()
     // =========================================================================
 
+    #[Test]
     public function testStandardConfigAllowsCommonElements(): void
     {
         $config = AllowedAttributes::standard();
@@ -60,6 +64,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('img', 'loading'));
     }
 
+    #[Test]
     public function testStandardConfigAllowsMediaElements(): void
     {
         $config = AllowedAttributes::standard();
@@ -84,6 +89,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('track', 'kind'));
     }
 
+    #[Test]
     public function testStandardConfigAllowsCitationElements(): void
     {
         $config = AllowedAttributes::standard();
@@ -96,6 +102,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('ins', 'datetime'));
     }
 
+    #[Test]
     public function testStandardConfigAllowsTableElements(): void
     {
         $config = AllowedAttributes::standard();
@@ -107,6 +114,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('th', 'scope'));
     }
 
+    #[Test]
     public function testStandardConfigAllowsAreaElement(): void
     {
         $config = AllowedAttributes::standard();
@@ -123,6 +131,7 @@ final class AllowedAttributesTest extends TestCase
     // Factory Method: minimal()
     // =========================================================================
 
+    #[Test]
     public function testMinimalConfigOnlyAllowsIdAndClass(): void
     {
         $config = AllowedAttributes::minimal();
@@ -134,6 +143,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertFalse($config->isAllowed('div', 'dir'));
     }
 
+    #[Test]
     public function testMinimalConfigDoesNotAllowElementSpecificAttributes(): void
     {
         $config = AllowedAttributes::minimal();
@@ -147,6 +157,7 @@ final class AllowedAttributesTest extends TestCase
     // forElement() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testForElementReturnsNewInstance(): void
     {
         $original = new AllowedAttributes();
@@ -155,6 +166,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testForElementDoesNotModifyOriginal(): void
     {
         $original = new AllowedAttributes();
@@ -164,6 +176,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertFalse($original->isAllowed('a', 'href'));
     }
 
+    #[Test]
     public function testForElementAddsAttributes(): void
     {
         $config = (new AllowedAttributes())
@@ -173,6 +186,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('custom', 'data-id'));
     }
 
+    #[Test]
     public function testForElementNormalizesElementNameToLowercase(): void
     {
         $config = (new AllowedAttributes())
@@ -182,6 +196,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('CUSTOM', 'data-value'));
     }
 
+    #[Test]
     public function testForElementOverwritesPreviousAttributes(): void
     {
         $config = (new AllowedAttributes())
@@ -199,6 +214,7 @@ final class AllowedAttributesTest extends TestCase
     // =========================================================================
 
     #[DataProvider('dangerousAttributeProvider')]
+    #[Test]
     public function testDangerousAttributesAreAlwaysBlocked(string $attribute): void
     {
         // Even with standard config, dangerous attributes should be blocked
@@ -239,6 +255,7 @@ final class AllowedAttributesTest extends TestCase
         yield 'xlink:href' => ['xlink:href'];
     }
 
+    #[Test]
     public function testAnyOnPrefixedAttributeIsBlocked(): void
     {
         $config = AllowedAttributes::standard();
@@ -250,6 +267,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertFalse($config->isAllowed('div', 'onanimationend'));
     }
 
+    #[Test]
     public function testDangerousAttributesBlockedEvenIfExplicitlyAdded(): void
     {
         // Try to add dangerous attributes via forElement
@@ -266,6 +284,7 @@ final class AllowedAttributesTest extends TestCase
     // isAllowed() - Case Normalization
     // =========================================================================
 
+    #[Test]
     public function testIsAllowedNormalizesElementName(): void
     {
         $config = AllowedAttributes::standard();
@@ -276,6 +295,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('img', 'src'));
     }
 
+    #[Test]
     public function testIsAllowedNormalizesAttributeName(): void
     {
         $config = AllowedAttributes::standard();
@@ -286,6 +306,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('img', 'Src'));
     }
 
+    #[Test]
     public function testDangerousAttributesCaseInsensitive(): void
     {
         $config = AllowedAttributes::standard();
@@ -300,6 +321,7 @@ final class AllowedAttributesTest extends TestCase
     // isAllowed() - Attribute Check Priority
     // =========================================================================
 
+    #[Test]
     public function testGlobalAttributesAllowedOnAnyElement(): void
     {
         $config = new AllowedAttributes();
@@ -310,6 +332,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('unknown', 'title'));
     }
 
+    #[Test]
     public function testElementSpecificAttributesOnlyOnThatElement(): void
     {
         $config = AllowedAttributes::standard();
@@ -327,6 +350,7 @@ final class AllowedAttributesTest extends TestCase
     // forElementList() - Get All Allowed Attributes
     // =========================================================================
 
+    #[Test]
     public function testForElementListReturnsGlobalAndElementAttributes(): void
     {
         $config = AllowedAttributes::standard();
@@ -346,6 +370,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertContains('rel', $anchorAttrs);
     }
 
+    #[Test]
     public function testForElementListNormalizesElementName(): void
     {
         $config = AllowedAttributes::standard();
@@ -356,6 +381,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertSame($lowerAttrs, $upperAttrs);
     }
 
+    #[Test]
     public function testForElementListReturnsOnlyGlobalForUnknownElement(): void
     {
         $config = new AllowedAttributes();
@@ -375,6 +401,7 @@ final class AllowedAttributesTest extends TestCase
     // Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testEmptyAttributeNameIsNotAllowed(): void
     {
         $config = AllowedAttributes::standard();
@@ -382,6 +409,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertFalse($config->isAllowed('div', ''));
     }
 
+    #[Test]
     public function testEmptyElementNameStillChecksGlobalAttributes(): void
     {
         $config = new AllowedAttributes();
@@ -391,6 +419,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertTrue($config->isAllowed('', 'class'));
     }
 
+    #[Test]
     public function testForElementWithEmptyAttributeList(): void
     {
         $config = (new AllowedAttributes())
@@ -402,6 +431,7 @@ final class AllowedAttributesTest extends TestCase
         $this->assertFalse($config->isAllowed('custom', 'href'));
     }
 
+    #[Test]
     public function testChainedForElementCalls(): void
     {
         $config = (new AllowedAttributes())

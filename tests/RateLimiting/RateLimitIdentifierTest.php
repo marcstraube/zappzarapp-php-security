@@ -6,12 +6,14 @@ namespace Zappzarapp\Security\Tests\RateLimiting;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\RateLimiting\RateLimitIdentifier;
 
 #[CoversClass(RateLimitIdentifier::class)]
 final class RateLimitIdentifierTest extends TestCase
 {
+    #[Test]
     public function testFromIp(): void
     {
         $identifier = RateLimitIdentifier::fromIp('192.168.1.1');
@@ -19,6 +21,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:192.168.1.1', $identifier->value());
     }
 
+    #[Test]
     public function testFromIpWithIpv6(): void
     {
         $identifier = RateLimitIdentifier::fromIp('2001:db8::1');
@@ -26,6 +29,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:2001:db8::1', $identifier->value());
     }
 
+    #[Test]
     public function testFromUserIdWithInt(): void
     {
         $identifier = RateLimitIdentifier::fromUserId(123);
@@ -33,6 +37,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('user:123', $identifier->value());
     }
 
+    #[Test]
     public function testFromUserIdWithString(): void
     {
         $identifier = RateLimitIdentifier::fromUserId('user-abc-123');
@@ -40,6 +45,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('user:user-abc-123', $identifier->value());
     }
 
+    #[Test]
     public function testFromApiKey(): void
     {
         $identifier = RateLimitIdentifier::fromApiKey('secret-api-key');
@@ -49,6 +55,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('api:' . $expectedHash, $identifier->value());
     }
 
+    #[Test]
     public function testFromApiKeyHashesSameKeySameWay(): void
     {
         $identifier1 = RateLimitIdentifier::fromApiKey('my-key');
@@ -57,6 +64,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame($identifier1->value(), $identifier2->value());
     }
 
+    #[Test]
     public function testFromApiKeyHashesDifferentKeysDifferently(): void
     {
         $identifier1 = RateLimitIdentifier::fromApiKey('key-1');
@@ -65,6 +73,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertNotSame($identifier1->value(), $identifier2->value());
     }
 
+    #[Test]
     public function testCustom(): void
     {
         $identifier = RateLimitIdentifier::custom('custom_type', 'custom_value');
@@ -72,6 +81,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('custom_type:custom_value', $identifier->value());
     }
 
+    #[Test]
     public function testCustomWithEmptyType(): void
     {
         $identifier = RateLimitIdentifier::custom('', 'value');
@@ -79,6 +89,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame(':value', $identifier->value());
     }
 
+    #[Test]
     public function testCustomWithEmptyValue(): void
     {
         $identifier = RateLimitIdentifier::custom('type', '');
@@ -86,6 +97,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type:', $identifier->value());
     }
 
+    #[Test]
     public function testComposite(): void
     {
         $identifiers = [
@@ -98,6 +110,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:192.168.1.1|user:123', $composite->value());
     }
 
+    #[Test]
     public function testCompositeWithSingleIdentifier(): void
     {
         $identifiers = [
@@ -109,6 +122,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:192.168.1.1', $composite->value());
     }
 
+    #[Test]
     public function testCompositeWithEmptyArray(): void
     {
         $composite = RateLimitIdentifier::composite([]);
@@ -116,6 +130,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('', $composite->value());
     }
 
+    #[Test]
     public function testCompositeWithMultipleIdentifiers(): void
     {
         $identifiers = [
@@ -129,6 +144,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:10.0.0.1|user:admin|endpoint:/api/users', $composite->value());
     }
 
+    #[Test]
     public function testFromRequestWithIpOnly(): void
     {
         $identifier = RateLimitIdentifier::fromRequest('192.168.1.1');
@@ -136,6 +152,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:192.168.1.1', $identifier->value());
     }
 
+    #[Test]
     public function testFromRequestWithIpAndUserId(): void
     {
         $identifier = RateLimitIdentifier::fromRequest('192.168.1.1', 123);
@@ -143,6 +160,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:192.168.1.1|user:123', $identifier->value());
     }
 
+    #[Test]
     public function testFromRequestWithIpAndStringUserId(): void
     {
         $identifier = RateLimitIdentifier::fromRequest('10.0.0.1', 'user-uuid');
@@ -150,6 +168,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:10.0.0.1|user:user-uuid', $identifier->value());
     }
 
+    #[Test]
     public function testFromRequestWithNullIpUsesUnknown(): void
     {
         // Unset REMOTE_ADDR if set
@@ -168,6 +187,7 @@ final class RateLimitIdentifierTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFromRequestUsesRemoteAddr(): void
     {
         $originalRemoteAddr           = $_SERVER['REMOTE_ADDR'] ?? null;
@@ -186,6 +206,7 @@ final class RateLimitIdentifierTest extends TestCase
         }
     }
 
+    #[Test]
     public function testFromRequestWithNullIpAndNullUserId(): void
     {
         $originalRemoteAddr = $_SERVER['REMOTE_ADDR'] ?? null;
@@ -202,6 +223,7 @@ final class RateLimitIdentifierTest extends TestCase
         }
     }
 
+    #[Test]
     public function testValueIsImmutable(): void
     {
         $identifier = RateLimitIdentifier::fromIp('192.168.1.1');
@@ -227,6 +249,7 @@ final class RateLimitIdentifierTest extends TestCase
     }
 
     #[DataProvider('specialCharacterIpProvider')]
+    #[Test]
     public function testFromIpWithSpecialFormats(string $ip, string $expected): void
     {
         $identifier = RateLimitIdentifier::fromIp($ip);
@@ -234,6 +257,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame($expected, $identifier->value());
     }
 
+    #[Test]
     public function testFromIpWithEmptyString(): void
     {
         $identifier = RateLimitIdentifier::fromIp('');
@@ -241,6 +265,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('ip:', $identifier->value());
     }
 
+    #[Test]
     public function testFromUserIdWithZero(): void
     {
         $identifier = RateLimitIdentifier::fromUserId(0);
@@ -248,6 +273,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('user:0', $identifier->value());
     }
 
+    #[Test]
     public function testFromUserIdWithNegative(): void
     {
         $identifier = RateLimitIdentifier::fromUserId(-1);
@@ -255,6 +281,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('user:-1', $identifier->value());
     }
 
+    #[Test]
     public function testFromApiKeyWithEmptyString(): void
     {
         $identifier = RateLimitIdentifier::fromApiKey('');
@@ -263,6 +290,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('api:' . $expectedHash, $identifier->value());
     }
 
+    #[Test]
     public function testCompositeOfComposites(): void
     {
         $inner1 = RateLimitIdentifier::composite([
@@ -284,6 +312,7 @@ final class RateLimitIdentifierTest extends TestCase
     // Escaping Tests (kill str_replace mutations)
     // =========================================================================
 
+    #[Test]
     public function testCustomEscapesColonInType(): void
     {
         // Colon is the TYPE_DELIMITER, must be escaped
@@ -292,6 +321,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type\\:with\\:colons:value', $identifier->value());
     }
 
+    #[Test]
     public function testCustomEscapesColonInValue(): void
     {
         $identifier = RateLimitIdentifier::custom('type', 'value:with:colons');
@@ -299,6 +329,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type:value\\:with\\:colons', $identifier->value());
     }
 
+    #[Test]
     public function testCustomEscapesPipeInType(): void
     {
         // Pipe is the COMPOSITE_DELIMITER, must be escaped
@@ -307,6 +338,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type\\|with\\|pipes:value', $identifier->value());
     }
 
+    #[Test]
     public function testCustomEscapesPipeInValue(): void
     {
         $identifier = RateLimitIdentifier::custom('type', 'value|with|pipes');
@@ -314,6 +346,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type:value\\|with\\|pipes', $identifier->value());
     }
 
+    #[Test]
     public function testCustomEscapesBackslashFirst(): void
     {
         // Backslash must be escaped BEFORE other delimiters to prevent double-escaping
@@ -322,6 +355,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type:back\\\\slash', $identifier->value());
     }
 
+    #[Test]
     public function testCustomEscapesBackslashBeforeColon(): void
     {
         // Test that backslash followed by colon is handled correctly
@@ -339,6 +373,7 @@ final class RateLimitIdentifierTest extends TestCase
         $this->assertSame('type:a\\\\\\:b', $identifier->value());
     }
 
+    #[Test]
     public function testCustomWithAllSpecialCharacters(): void
     {
         // Test combination of all special characters

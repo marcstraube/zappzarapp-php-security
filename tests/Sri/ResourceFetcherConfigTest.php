@@ -7,12 +7,14 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sri\ResourceFetcherConfig;
 
 #[CoversClass(ResourceFetcherConfig::class)]
 final class ResourceFetcherConfigTest extends TestCase
 {
+    #[Test]
     public function testDefaultValues(): void
     {
         $config = new ResourceFetcherConfig();
@@ -24,6 +26,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame('Zappzarapp-Security-SRI/1.0', $config->userAgent);
     }
 
+    #[Test]
     public function testCustomValues(): void
     {
         $config = new ResourceFetcherConfig(
@@ -41,6 +44,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame('Custom-Agent/2.0', $config->userAgent);
     }
 
+    #[Test]
     public function testWithTimeout(): void
     {
         $config    = new ResourceFetcherConfig();
@@ -59,6 +63,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame($config->userAgent, $newConfig->userAgent);
     }
 
+    #[Test]
     public function testWithMaxSize(): void
     {
         $config    = new ResourceFetcherConfig();
@@ -77,6 +82,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame($config->userAgent, $newConfig->userAgent);
     }
 
+    #[Test]
     public function testWithoutRedirects(): void
     {
         $config    = new ResourceFetcherConfig();
@@ -96,6 +102,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame($config->userAgent, $newConfig->userAgent);
     }
 
+    #[Test]
     public function testImmutability(): void
     {
         $original = new ResourceFetcherConfig();
@@ -111,6 +118,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame(5, $original->maxRedirects);
     }
 
+    #[Test]
     public function testChainedMutators(): void
     {
         $config = (new ResourceFetcherConfig())
@@ -124,6 +132,7 @@ final class ResourceFetcherConfigTest extends TestCase
         $this->assertSame(0, $config->maxRedirects);
     }
 
+    #[Test]
     public function testReadonlyProperties(): void
     {
         $config = new ResourceFetcherConfig();

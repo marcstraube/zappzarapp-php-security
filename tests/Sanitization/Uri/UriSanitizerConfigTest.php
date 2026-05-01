@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Sanitization\Uri;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Sanitization\Uri\UriSanitizerConfig;
 
@@ -17,6 +18,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Constructor and Default Values
     // =========================================================================
 
+    #[Test]
     public function testDefaultConstructorValues(): void
     {
         $config = new UriSanitizerConfig();
@@ -31,6 +33,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($config->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testConstructorWithCustomValues(): void
     {
         $config = new UriSanitizerConfig(
@@ -58,6 +61,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Factory Method: strict()
     // =========================================================================
 
+    #[Test]
     public function testStrictConfigValues(): void
     {
         $config = UriSanitizerConfig::strict();
@@ -71,6 +75,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testStrictConfigOnlyAllowsHttps(): void
     {
         $config = UriSanitizerConfig::strict();
@@ -84,6 +89,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Factory Method: web()
     // =========================================================================
 
+    #[Test]
     public function testWebConfigValues(): void
     {
         $config = UriSanitizerConfig::web();
@@ -97,6 +103,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testWebConfigAllowsCommonSchemes(): void
     {
         $config = UriSanitizerConfig::web();
@@ -111,6 +118,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withAllowedSchemes() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithAllowedSchemesReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig();
@@ -119,6 +127,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithAllowedSchemesDoesNotModifyOriginal(): void
     {
         $original        = new UriSanitizerConfig();
@@ -129,6 +138,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertSame($originalSchemes, $original->allowedSchemes);
     }
 
+    #[Test]
     public function testWithAllowedSchemesPreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -155,6 +165,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withBlockedSchemes() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithBlockedSchemesReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig();
@@ -163,6 +174,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithBlockedSchemesDoesNotModifyOriginal(): void
     {
         $original        = new UriSanitizerConfig();
@@ -173,6 +185,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertSame($originalSchemes, $original->blockedSchemes);
     }
 
+    #[Test]
     public function testWithBlockedSchemesPreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -193,6 +206,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withAllowedHosts() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithAllowedHostsReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig();
@@ -201,6 +215,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithAllowedHostsDoesNotModifyOriginal(): void
     {
         $original      = new UriSanitizerConfig();
@@ -211,6 +226,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertSame($originalHosts, $original->allowedHosts);
     }
 
+    #[Test]
     public function testWithAllowedHostsPreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -235,6 +251,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withRelative() / withoutRelative() - Immutability
     // =========================================================================
 
+    #[Test]
     public function testWithRelativeReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(allowRelative: false);
@@ -243,6 +260,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithRelativeEnablesRelativeUris(): void
     {
         $original = new UriSanitizerConfig(allowRelative: false);
@@ -252,6 +270,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($modified->allowRelative);
     }
 
+    #[Test]
     public function testWithoutRelativeReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(allowRelative: true);
@@ -260,6 +279,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithoutRelativeDisablesRelativeUris(): void
     {
         $original = new UriSanitizerConfig(allowRelative: true);
@@ -269,6 +289,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($modified->allowRelative);
     }
 
+    #[Test]
     public function testWithRelativePreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -292,6 +313,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withMixedScriptIdnBlocking() / withoutMixedScriptIdnBlocking()
     // =========================================================================
 
+    #[Test]
     public function testWithMixedScriptIdnBlockingReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(blockMixedScriptIdn: false);
@@ -300,6 +322,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithMixedScriptIdnBlockingEnablesBlocking(): void
     {
         $original = new UriSanitizerConfig(blockMixedScriptIdn: false);
@@ -309,6 +332,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($modified->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testWithoutMixedScriptIdnBlockingReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(blockMixedScriptIdn: true);
@@ -317,6 +341,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithoutMixedScriptIdnBlockingDisablesBlocking(): void
     {
         $original = new UriSanitizerConfig(blockMixedScriptIdn: true);
@@ -326,6 +351,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($modified->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testWithMixedScriptIdnBlockingPreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -349,6 +375,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Chaining with* Methods
     // =========================================================================
 
+    #[Test]
     public function testWithMethodsCanBeChained(): void
     {
         $config = (new UriSanitizerConfig())
@@ -369,6 +396,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Security: XSS Prevention via Scheme Blocking
     // =========================================================================
 
+    #[Test]
     public function testDefaultBlocksDangerousSchemes(): void
     {
         $config = new UriSanitizerConfig();
@@ -378,6 +406,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertContains('data', $config->blockedSchemes);
     }
 
+    #[Test]
     public function testStrictBlocksFileScheme(): void
     {
         $config = UriSanitizerConfig::strict();
@@ -385,6 +414,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertContains('file', $config->blockedSchemes);
     }
 
+    #[Test]
     public function testWebConfigBlocksDangerousSchemes(): void
     {
         $config = UriSanitizerConfig::web();
@@ -398,6 +428,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Security: Homograph Attack Prevention
     // =========================================================================
 
+    #[Test]
     public function testDefaultEnablesMixedScriptIdnBlocking(): void
     {
         $config = new UriSanitizerConfig();
@@ -405,6 +436,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testStrictEnablesMixedScriptIdnBlocking(): void
     {
         $config = UriSanitizerConfig::strict();
@@ -412,6 +444,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockMixedScriptIdn);
     }
 
+    #[Test]
     public function testWebEnablesMixedScriptIdnBlocking(): void
     {
         $config = UriSanitizerConfig::web();
@@ -423,6 +456,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Factory Methods Create New Instances
     // =========================================================================
 
+    #[Test]
     public function testFactoryMethodsCreateNewInstances(): void
     {
         $strict1 = UriSanitizerConfig::strict();
@@ -440,6 +474,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Readonly Properties
     // =========================================================================
 
+    #[Test]
     public function testPropertiesArePublicReadonly(): void
     {
         $config = new UriSanitizerConfig();
@@ -457,6 +492,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Edge Cases
     // =========================================================================
 
+    #[Test]
     public function testWithAllowedSchemesEmptyArray(): void
     {
         $config = (new UriSanitizerConfig())->withAllowedSchemes([]);
@@ -464,6 +500,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertSame([], $config->allowedSchemes);
     }
 
+    #[Test]
     public function testWithBlockedSchemesEmptyArray(): void
     {
         $config = (new UriSanitizerConfig())->withBlockedSchemes([]);
@@ -471,6 +508,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertSame([], $config->blockedSchemes);
     }
 
+    #[Test]
     public function testWithAllowedHostsEmptyArray(): void
     {
         $config = (new UriSanitizerConfig())->withAllowedHosts([]);
@@ -482,6 +520,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Factory Method: serverSide()
     // =========================================================================
 
+    #[Test]
     public function testServerSideConfigValues(): void
     {
         $config = UriSanitizerConfig::serverSide();
@@ -496,6 +535,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testServerSideConfigBlocksFileScheme(): void
     {
         $config = UriSanitizerConfig::serverSide();
@@ -505,6 +545,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertContains('gopher', $config->blockedSchemes);
     }
 
+    #[Test]
     public function testServerSideConfigEnablesSsrfProtection(): void
     {
         $config = UriSanitizerConfig::serverSide();
@@ -512,6 +553,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($config->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testServerSideConfigDisallowsRelativeUrls(): void
     {
         $config = UriSanitizerConfig::serverSide();
@@ -523,6 +565,7 @@ final class UriSanitizerConfigTest extends TestCase
     // withPrivateNetworkBlocking() / withoutPrivateNetworkBlocking()
     // =========================================================================
 
+    #[Test]
     public function testWithPrivateNetworkBlockingReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(blockPrivateNetworks: false);
@@ -531,6 +574,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithPrivateNetworkBlockingEnablesBlocking(): void
     {
         $original = new UriSanitizerConfig(blockPrivateNetworks: false);
@@ -540,6 +584,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertTrue($modified->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testWithoutPrivateNetworkBlockingReturnsNewInstance(): void
     {
         $original = new UriSanitizerConfig(blockPrivateNetworks: true);
@@ -548,6 +593,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertNotSame($original, $modified);
     }
 
+    #[Test]
     public function testWithoutPrivateNetworkBlockingDisablesBlocking(): void
     {
         $original = new UriSanitizerConfig(blockPrivateNetworks: true);
@@ -557,6 +603,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($modified->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testWithPrivateNetworkBlockingPreservesOtherProperties(): void
     {
         $original = new UriSanitizerConfig(
@@ -582,6 +629,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Chaining with* Methods (including new private network methods)
     // =========================================================================
 
+    #[Test]
     public function testWithMethodsCanBeChainedWithPrivateNetworkBlocking(): void
     {
         $config = (new UriSanitizerConfig())
@@ -604,6 +652,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Security: SSRF Prevention
     // =========================================================================
 
+    #[Test]
     public function testDefaultDoesNotEnableSsrfProtection(): void
     {
         $config = new UriSanitizerConfig();
@@ -611,6 +660,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($config->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testWebConfigDoesNotEnableSsrfProtection(): void
     {
         $config = UriSanitizerConfig::web();
@@ -618,6 +668,7 @@ final class UriSanitizerConfigTest extends TestCase
         $this->assertFalse($config->blockPrivateNetworks);
     }
 
+    #[Test]
     public function testStrictConfigDoesNotEnableSsrfProtection(): void
     {
         $config = UriSanitizerConfig::strict();
@@ -629,6 +680,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Readonly Properties (including new property)
     // =========================================================================
 
+    #[Test]
     public function testBlockPrivateNetworksPropertyIsPublicReadonly(): void
     {
         $config = new UriSanitizerConfig();
@@ -640,6 +692,7 @@ final class UriSanitizerConfigTest extends TestCase
     // Factory Methods Create New Instances (including serverSide)
     // =========================================================================
 
+    #[Test]
     public function testServerSideFactoryCreatesNewInstances(): void
     {
         $serverSide1 = UriSanitizerConfig::serverSide();

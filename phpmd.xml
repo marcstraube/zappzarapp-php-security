@@ -68,7 +68,7 @@
     <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
         <properties>
             <!-- Test classes with comprehensive coverage can be long -->
-            <property name="minimum" value="1100"/>
+            <property name="minimum" value="1200"/>
         </properties>
     </rule>
     <!-- Increased limits for security library patterns -->

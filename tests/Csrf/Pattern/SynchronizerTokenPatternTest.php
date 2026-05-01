@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf\Pattern;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csrf\CsrfConfig;
 use Zappzarapp\Security\Csrf\Exception\CsrfTokenMismatchException;
@@ -29,6 +30,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Token Generation and Storage ---
 
+    #[Test]
     public function testGetTokenReturnsCsrfToken(): void
     {
         $token = $this->pattern->getToken();
@@ -37,6 +39,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertInstanceOf(CsrfToken::class, $token);
     }
 
+    #[Test]
     public function testGetTokenStoresTokenInStorage(): void
     {
         $token = $this->pattern->getToken();
@@ -45,6 +48,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertSame($token->value(), $this->storage->retrieve('_csrf'));
     }
 
+    #[Test]
     public function testGetTokenReturnsSameTokenOnSubsequentCalls(): void
     {
         $token1 = $this->pattern->getToken();
@@ -53,6 +57,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertSame($token1->value(), $token2->value());
     }
 
+    #[Test]
     public function testGetTokenHasMinimumEntropy(): void
     {
         $token = $this->pattern->getToken();
@@ -63,6 +68,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Field Generation ---
 
+    #[Test]
     public function testFieldGeneratesHiddenInput(): void
     {
         $field = $this->pattern->field();
@@ -71,6 +77,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertStringContainsString('name="_csrf_token"', $field);
     }
 
+    #[Test]
     public function testFieldContainsToken(): void
     {
         $token = $this->pattern->getToken();
@@ -79,6 +86,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertStringContainsString('value="' . $token->value() . '"', $field);
     }
 
+    #[Test]
     public function testFieldUsesCustomFieldName(): void
     {
         $config  = new CsrfConfig(fieldName: 'custom_csrf');
@@ -89,6 +97,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertStringContainsString('name="custom_csrf"', $field);
     }
 
+    #[Test]
     public function testFieldEscapesHtmlCharacters(): void
     {
         $config  = new CsrfConfig(fieldName: '<script>');
@@ -102,6 +111,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Validation Success ---
 
+    #[Test]
     public function testValidateSucceedsWithCorrectToken(): void
     {
         $token = $this->pattern->getToken();
@@ -113,6 +123,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Validation Failures ---
 
+    #[Test]
     public function testValidateThrowsOnEmptyToken(): void
     {
         $this->pattern->getToken();
@@ -123,6 +134,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->pattern->validate('');
     }
 
+    #[Test]
     public function testValidateThrowsOnMismatchedToken(): void
     {
         $this->pattern->getToken();
@@ -134,6 +146,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->pattern->validate($wrongToken);
     }
 
+    #[Test]
     public function testValidateThrowsWhenNoStoredToken(): void
     {
         $this->expectException(CsrfTokenMismatchException::class);
@@ -142,6 +155,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->pattern->validate(base64_encode(random_bytes(32)));
     }
 
+    #[Test]
     public function testValidateThrowsOnInvalidBase64(): void
     {
         $this->pattern->getToken();
@@ -152,6 +166,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->pattern->validate('not!valid!base64!!!');
     }
 
+    #[Test]
     public function testValidateThrowsOnInsufficientEntropy(): void
     {
         $this->pattern->getToken();
@@ -164,6 +179,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Single-Use Tokens ---
 
+    #[Test]
     public function testValidateConsumesTokenWhenSingleUse(): void
     {
         $config  = new CsrfConfig(singleUse: true);
@@ -175,6 +191,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertFalse($pattern->isValid($token->value()));
     }
 
+    #[Test]
     public function testValidateDoesNotConsumeTokenByDefault(): void
     {
         $token = $this->pattern->getToken();
@@ -187,6 +204,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Token Rotation ---
 
+    #[Test]
     public function testValidateRotatesTokenWhenConfigured(): void
     {
         $config  = new CsrfConfig(rotateOnValidation: true);
@@ -199,6 +217,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertFalse($pattern->isValid($token->value()));
     }
 
+    #[Test]
     public function testValidateDoesNotRotateByDefault(): void
     {
         $token = $this->pattern->getToken();
@@ -210,6 +229,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- isValid Method ---
 
+    #[Test]
     public function testIsValidReturnsTrueForValidToken(): void
     {
         $token = $this->pattern->getToken();
@@ -217,6 +237,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertTrue($this->pattern->isValid($token->value()));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForInvalidToken(): void
     {
         $this->pattern->getToken();
@@ -224,6 +245,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForEmptyToken(): void
     {
         $this->pattern->getToken();
@@ -231,11 +253,13 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid(''));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseWhenNoStoredToken(): void
     {
         $this->assertFalse($this->pattern->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidDoesNotConsumeToken(): void
     {
         $token = $this->pattern->getToken();
@@ -249,6 +273,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Regenerate ---
 
+    #[Test]
     public function testRegenerateCreatesNewToken(): void
     {
         $oldToken = $this->pattern->getToken();
@@ -257,6 +282,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertNotSame($oldToken->value(), $newToken->value());
     }
 
+    #[Test]
     public function testRegenerateInvalidatesOldToken(): void
     {
         $oldToken = $this->pattern->getToken();
@@ -265,6 +291,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertFalse($this->pattern->isValid($oldToken->value()));
     }
 
+    #[Test]
     public function testRegenerateStoresNewToken(): void
     {
         $this->pattern->getToken();
@@ -275,6 +302,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Clear ---
 
+    #[Test]
     public function testClearRemovesToken(): void
     {
         $token = $this->pattern->getToken();
@@ -287,6 +315,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Config Accessors ---
 
+    #[Test]
     public function testFieldNameReturnsConfigValue(): void
     {
         $config  = new CsrfConfig(fieldName: 'my_csrf');
@@ -295,6 +324,7 @@ final class SynchronizerTokenPatternTest extends TestCase
         $this->assertSame('my_csrf', $pattern->fieldName());
     }
 
+    #[Test]
     public function testHeaderNameReturnsConfigValue(): void
     {
         $config  = new CsrfConfig(headerName: 'X-My-CSRF');
@@ -305,6 +335,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- TTL Configuration ---
 
+    #[Test]
     public function testTokenStoredWithTtl(): void
     {
         $config  = new CsrfConfig(ttl: 3600);
@@ -318,6 +349,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Timing Attack Resistance ---
 
+    #[Test]
     public function testValidationUsesConstantTimeComparison(): void
     {
         $token = $this->pattern->getToken();
@@ -341,6 +373,7 @@ final class SynchronizerTokenPatternTest extends TestCase
 
     // --- Replay Attack Prevention ---
 
+    #[Test]
     public function testSingleUseTokenPreventsReplay(): void
     {
         $config  = new CsrfConfig(singleUse: true);

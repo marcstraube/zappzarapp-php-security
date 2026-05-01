@@ -8,6 +8,7 @@ namespace Zappzarapp\Security\Tests\Headers\PermissionsPolicy;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\PermissionsPolicy\PermissionDirective;
 use Zappzarapp\Security\Headers\PermissionsPolicy\PermissionFeature;
@@ -18,6 +19,7 @@ final class PermissionsPolicyTest extends TestCase
 {
     // ========== Constructor Tests ==========
 
+    #[Test]
     public function testConstructorWithEmptyDirectives(): void
     {
         $policy = new PermissionsPolicy();
@@ -26,6 +28,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame('', $policy->headerValue());
     }
 
+    #[Test]
     public function testConstructorWithDirectives(): void
     {
         $directive = PermissionDirective::blocked(PermissionFeature::CAMERA);
@@ -37,6 +40,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== withDirective Tests ==========
 
+    #[Test]
     public function testWithDirectiveAddsDirective(): void
     {
         $policy    = new PermissionsPolicy();
@@ -49,6 +53,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertNotSame($policy, $newPolicy);
     }
 
+    #[Test]
     public function testWithDirectiveReplacesExisting(): void
     {
         $blocked  = PermissionDirective::blocked(PermissionFeature::CAMERA);
@@ -63,6 +68,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== withBlocked Tests ==========
 
+    #[Test]
     public function testWithBlocked(): void
     {
         $policy    = new PermissionsPolicy();
@@ -76,6 +82,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== withSelf Tests ==========
 
+    #[Test]
     public function testWithSelf(): void
     {
         $policy    = new PermissionsPolicy();
@@ -89,6 +96,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== withAll Tests ==========
 
+    #[Test]
     public function testWithAll(): void
     {
         $policy    = new PermissionsPolicy();
@@ -101,6 +109,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== withOrigins Tests ==========
 
+    #[Test]
     public function testWithOrigins(): void
     {
         $origins   = ['https://example.com', 'https://trusted.org'];
@@ -112,6 +121,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame($origins, $directive->allowlist());
     }
 
+    #[Test]
     public function testWithOriginsWithEmptyArray(): void
     {
         $policy    = new PermissionsPolicy();
@@ -124,6 +134,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== directive() Tests ==========
 
+    #[Test]
     public function testDirectiveReturnsNullForMissingFeature(): void
     {
         $policy = new PermissionsPolicy();
@@ -131,6 +142,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertNull($policy->directive(PermissionFeature::CAMERA));
     }
 
+    #[Test]
     public function testDirectiveReturnsExistingDirective(): void
     {
         $directive = PermissionDirective::blocked(PermissionFeature::CAMERA);
@@ -141,6 +153,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== isBlocked() Tests ==========
 
+    #[Test]
     public function testIsBlockedReturnsTrueForBlockedFeature(): void
     {
         $policy = (new PermissionsPolicy())->withBlocked(PermissionFeature::CAMERA);
@@ -148,6 +161,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertTrue($policy->isBlocked(PermissionFeature::CAMERA));
     }
 
+    #[Test]
     public function testIsBlockedReturnsFalseForAllowedFeature(): void
     {
         $policy = (new PermissionsPolicy())->withSelf(PermissionFeature::CAMERA);
@@ -155,6 +169,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertFalse($policy->isBlocked(PermissionFeature::CAMERA));
     }
 
+    #[Test]
     public function testIsBlockedReturnsFalseForMissingFeature(): void
     {
         $policy = new PermissionsPolicy();
@@ -164,6 +179,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== headerValue() Tests ==========
 
+    #[Test]
     public function testHeaderValueEmptyPolicy(): void
     {
         $policy = new PermissionsPolicy();
@@ -171,6 +187,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame('', $policy->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueSingleDirective(): void
     {
         $policy = (new PermissionsPolicy())->withBlocked(PermissionFeature::CAMERA);
@@ -178,6 +195,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame('camera=()', $policy->headerValue());
     }
 
+    #[Test]
     public function testHeaderValueMultipleDirectives(): void
     {
         $policy = (new PermissionsPolicy())
@@ -193,6 +211,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertStringContainsString(', ', $headerValue);
     }
 
+    #[Test]
     public function testHeaderValuePreservesDirectiveOrder(): void
     {
         $policy = (new PermissionsPolicy())
@@ -211,6 +230,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== Static Factory Tests ==========
 
+    #[Test]
     public function testStrictFactory(): void
     {
         $policy = PermissionsPolicy::strict();
@@ -236,6 +256,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame(['self'], $pip->allowlist());
     }
 
+    #[Test]
     public function testStrictFactoryHeaderValue(): void
     {
         $policy      = PermissionsPolicy::strict();
@@ -251,6 +272,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertStringContainsString('picture-in-picture=(self)', $headerValue);
     }
 
+    #[Test]
     public function testModerateFactory(): void
     {
         $policy = PermissionsPolicy::moderate();
@@ -277,6 +299,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertSame(['self'], $clipboardWrite->allowlist());
     }
 
+    #[Test]
     public function testEmptyFactory(): void
     {
         $policy = PermissionsPolicy::empty();
@@ -287,6 +310,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== Immutability Tests ==========
 
+    #[Test]
     public function testPolicyIsImmutable(): void
     {
         $original = new PermissionsPolicy();
@@ -298,6 +322,7 @@ final class PermissionsPolicyTest extends TestCase
         $this->assertCount(1, $modified->directives());
     }
 
+    #[Test]
     public function testChainedModificationsPreserveImmutability(): void
     {
         $step1 = (new PermissionsPolicy())->withBlocked(PermissionFeature::CAMERA);
@@ -311,6 +336,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== Directive Replacement Tests ==========
 
+    #[Test]
     public function testReplacingDirectiveUpdatesPolicy(): void
     {
         $policy = (new PermissionsPolicy())
@@ -325,6 +351,7 @@ final class PermissionsPolicyTest extends TestCase
 
     // ========== Complex Scenario Tests ==========
 
+    #[Test]
     public function testComplexPolicyConfiguration(): void
     {
         $policy = (new PermissionsPolicy())
@@ -344,6 +371,7 @@ final class PermissionsPolicyTest extends TestCase
     }
 
     #[DataProvider('directiveCountProvider')]
+    #[Test]
     public function testDirectiveCountAfterOperations(int $expectedCount, callable $operations): void
     {
         /** @var PermissionsPolicy $policy */

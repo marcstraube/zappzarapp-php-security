@@ -6,6 +6,7 @@ namespace Zappzarapp\Security\Tests\Password\Strength;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Strength\EntropyCalculator;
 use Zappzarapp\Security\Password\Strength\StrengthLevel;
@@ -20,6 +21,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->calculator = new EntropyCalculator();
     }
 
+    #[Test]
     public function testEmptyPasswordReturnsZeroEntropy(): void
     {
         $entropy = $this->calculator->calculate('');
@@ -27,6 +29,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertSame(0.0, $entropy);
     }
 
+    #[Test]
     public function testLowercaseOnlyPassword(): void
     {
         $entropy = $this->calculator->calculate('abcdef');
@@ -35,6 +38,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertLessThan(50, $entropy);
     }
 
+    #[Test]
     public function testMixedCasePassword(): void
     {
         $entropy = $this->calculator->calculate('AbCdEf');
@@ -42,6 +46,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan(0, $entropy);
     }
 
+    #[Test]
     public function testAlphanumericPassword(): void
     {
         $entropy = $this->calculator->calculate('Abc123');
@@ -49,6 +54,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan(0, $entropy);
     }
 
+    #[Test]
     public function testPasswordWithSpecialChars(): void
     {
         $entropy = $this->calculator->calculate('Abc123!@#');
@@ -56,6 +62,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan(30, $entropy);
     }
 
+    #[Test]
     public function testPasswordWithSpace(): void
     {
         $entropy = $this->calculator->calculate('hello world');
@@ -63,6 +70,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan(0, $entropy);
     }
 
+    #[Test]
     public function testPasswordWithUnicode(): void
     {
         $entropy = $this->calculator->calculate('пароль');
@@ -70,6 +78,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan(0, $entropy);
     }
 
+    #[Test]
     public function testLongerPasswordHasMoreEntropy(): void
     {
         $shortEntropy = $this->calculator->calculate('abc');
@@ -78,6 +87,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertGreaterThan($shortEntropy, $longEntropy);
     }
 
+    #[Test]
     public function testStrengthLevelVeryWeak(): void
     {
         $level = $this->calculator->strengthLevel('abc');
@@ -85,6 +95,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertSame(StrengthLevel::VERY_WEAK, $level);
     }
 
+    #[Test]
     public function testStrengthLevelWeak(): void
     {
         $level = $this->calculator->strengthLevel('abcdefg');
@@ -92,6 +103,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertSame(StrengthLevel::WEAK, $level);
     }
 
+    #[Test]
     public function testStrengthLevelFair(): void
     {
         $level = $this->calculator->strengthLevel('Abcd1234');
@@ -99,6 +111,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertSame(StrengthLevel::FAIR, $level);
     }
 
+    #[Test]
     public function testStrengthLevelStrong(): void
     {
         // 11 chars with mixed charset (~72 bits entropy) = STRONG (60-79 bits)
@@ -107,6 +120,7 @@ final class EntropyCalculatorTest extends TestCase
         $this->assertSame(StrengthLevel::STRONG, $level);
     }
 
+    #[Test]
     public function testStrengthLevelVeryStrong(): void
     {
         $level = $this->calculator->strengthLevel('Abcd1234!@#$XyZmnop1234567890ABCDEF');
@@ -131,6 +145,7 @@ final class EntropyCalculatorTest extends TestCase
     }
 
     #[DataProvider('strengthLevelProvider')]
+    #[Test]
     public function testStrengthLevels(string $password, StrengthLevel $expected): void
     {
         $level = $this->calculator->strengthLevel($password);

@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
@@ -17,6 +18,7 @@ use Zappzarapp\Security\Csp\SecurityPolicy;
  */
 final class CspDirectivesHeaderPolicyTest extends TestCase
 {
+    #[Test]
     public function testStrictPolicyDisallowsUnsafeDirectives(): void
     {
         $header = (new CspDirectives())->toHeaderValue('test-nonce');
@@ -28,6 +30,7 @@ final class CspDirectivesHeaderPolicyTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testLenientPolicyAllowsUnsafeDirectives(): void
     {
         $generator = new NonceGenerator();
@@ -38,6 +41,7 @@ final class CspDirectivesHeaderPolicyTest extends TestCase
         $this->assertStringContainsString("'unsafe-inline'", $header);
     }
 
+    #[Test]
     public function testUnsafeEvalPolicyAllowsOnlyEval(): void
     {
         $directives = (new CspDirectives())->withSecurityPolicy(SecurityPolicy::UNSAFE_EVAL);
@@ -47,6 +51,7 @@ final class CspDirectivesHeaderPolicyTest extends TestCase
         $this->assertStringNotContainsString("'unsafe-inline'", $header);
     }
 
+    #[Test]
     public function testUnsafeInlinePolicyAllowsOnlyInline(): void
     {
         $directives = (new CspDirectives())->withSecurityPolicy(SecurityPolicy::UNSAFE_INLINE);

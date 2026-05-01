@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Csp\Directive;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
@@ -13,6 +14,7 @@ use Zappzarapp\Security\Csp\Exception\InvalidDirectiveValueException;
  */
 final class CspDirectivesIpv6ValidationTest extends TestCase
 {
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIpv6Localhost(): void
     {
         $directives = new CspDirectives(websocketHost: '[::1]:8080');
@@ -20,6 +22,7 @@ final class CspDirectivesIpv6ValidationTest extends TestCase
         $this->assertSame('[::1]:8080', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIpv6Full(): void
     {
         $directives = new CspDirectives(websocketHost: '[2001:db8::1]:443');
@@ -27,6 +30,7 @@ final class CspDirectivesIpv6ValidationTest extends TestCase
         $this->assertSame('[2001:db8::1]:443', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIpv6AllZeros(): void
     {
         $directives = new CspDirectives(websocketHost: '[::]:9000');
@@ -34,6 +38,7 @@ final class CspDirectivesIpv6ValidationTest extends TestCase
         $this->assertSame('[::]:9000', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIpv4MappedIpv6(): void
     {
         $directives = new CspDirectives(websocketHost: '[::ffff:192.168.1.1]:8080');
@@ -41,6 +46,7 @@ final class CspDirectivesIpv6ValidationTest extends TestCase
         $this->assertSame('[::ffff:192.168.1.1]:8080', $directives->websocketHost);
     }
 
+    #[Test]
     public function testAcceptsValidWebSocketHostWithIpv4MappedIpv6Localhost(): void
     {
         $directives = new CspDirectives(websocketHost: '[::ffff:127.0.0.1]:5173');
@@ -48,6 +54,7 @@ final class CspDirectivesIpv6ValidationTest extends TestCase
         $this->assertSame('[::ffff:127.0.0.1]:5173', $directives->websocketHost);
     }
 
+    #[Test]
     public function testThrowsForIpv6WithoutBrackets(): void
     {
         $this->expectException(InvalidDirectiveValueException::class);

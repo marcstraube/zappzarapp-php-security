@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csp\Compliance;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Csp\Directive\CspDirectives;
 use Zappzarapp\Security\Csp\Directive\NavigationDirectives;
@@ -26,6 +27,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // Fetch Directives (W3C CSP3 Section 6.1)
     // =========================================================================
 
+    #[Test]
     public function testDefaultSrcDirective(): void
     {
         $directives = new CspDirectives(defaultSrc: "'self'");
@@ -35,6 +37,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('default-src', $header);
     }
 
+    #[Test]
     public function testScriptSrcDirective(): void
     {
         $directives = new CspDirectives(scriptSrc: "'self'");
@@ -44,6 +47,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('script-src', $header);
     }
 
+    #[Test]
     public function testStyleSrcDirective(): void
     {
         $directives = new CspDirectives(styleSrc: "'self'");
@@ -53,6 +57,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('style-src', $header);
     }
 
+    #[Test]
     public function testImgSrcDirective(): void
     {
         $resources  = new ResourceDirectives(img: "'self'");
@@ -63,6 +68,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('img-src', $header);
     }
 
+    #[Test]
     public function testFontSrcDirective(): void
     {
         $resources  = new ResourceDirectives(font: "'self'");
@@ -73,6 +79,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('font-src', $header);
     }
 
+    #[Test]
     public function testConnectSrcDirective(): void
     {
         $resources  = new ResourceDirectives(connect: "'self'");
@@ -83,6 +90,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('connect-src', $header);
     }
 
+    #[Test]
     public function testMediaSrcDirective(): void
     {
         $resources  = new ResourceDirectives(media: "'self'");
@@ -93,6 +101,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('media-src', $header);
     }
 
+    #[Test]
     public function testObjectSrcDirective(): void
     {
         $directives = new CspDirectives();
@@ -103,6 +112,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString("object-src 'none'", $header);
     }
 
+    #[Test]
     public function testFrameSrcDirective(): void
     {
         $resources  = new ResourceDirectives(frame: "'self'");
@@ -113,6 +123,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('frame-src', $header);
     }
 
+    #[Test]
     public function testChildSrcDirective(): void
     {
         $resources  = new ResourceDirectives(child: "'self'");
@@ -123,6 +134,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('child-src', $header);
     }
 
+    #[Test]
     public function testWorkerSrcDirective(): void
     {
         $resources  = new ResourceDirectives(worker: "'self'");
@@ -133,6 +145,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('worker-src', $header);
     }
 
+    #[Test]
     public function testManifestSrcDirective(): void
     {
         $resources  = new ResourceDirectives(manifest: "'self'");
@@ -147,6 +160,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // Document Directives (W3C CSP3 Section 6.2)
     // =========================================================================
 
+    #[Test]
     public function testBaseUriDirective(): void
     {
         $navigation = new NavigationDirectives(baseUri: "'self'");
@@ -161,6 +175,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // Navigation Directives (W3C CSP3 Section 6.3)
     // =========================================================================
 
+    #[Test]
     public function testFormActionDirective(): void
     {
         $navigation = new NavigationDirectives(formAction: "'self'");
@@ -171,6 +186,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('form-action', $header);
     }
 
+    #[Test]
     public function testFrameAncestorsDirective(): void
     {
         $navigation = new NavigationDirectives(frameAncestors: "'self'");
@@ -185,6 +201,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // Reporting Directives (W3C CSP3 Section 6.4)
     // =========================================================================
 
+    #[Test]
     public function testReportUriDirective(): void
     {
         $reporting  = new ReportingConfig(uri: '/csp-violations');
@@ -195,6 +212,7 @@ final class W3cDirectiveNamesTest extends TestCase
         $this->assertStringContainsString('report-uri', $header);
     }
 
+    #[Test]
     public function testReportToDirective(): void
     {
         $reporting  = new ReportingConfig(endpoint: 'csp-endpoint');
@@ -209,6 +227,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // Security Directives
     // =========================================================================
 
+    #[Test]
     public function testUpgradeInsecureRequestsDirective(): void
     {
         $reporting  = new ReportingConfig(upgradeInsecure: true);
@@ -224,6 +243,7 @@ final class W3cDirectiveNamesTest extends TestCase
     // =========================================================================
 
     #[DataProvider('directiveNameProvider')]
+    #[Test]
     public function testDirectiveNamesAreLowerCaseWithHyphens(string $directiveName): void
     {
         // CSP directive names must be lowercase ASCII with hyphens

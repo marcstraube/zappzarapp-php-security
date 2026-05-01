@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Headers\Builder;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Headers\Builder\SecurityHeadersBuilder;
 use Zappzarapp\Security\Headers\Hsts\HstsConfig;
@@ -22,6 +23,7 @@ use Zappzarapp\Security\Headers\SecurityHeaders;
 #[CoversClass(SecurityHeadersBuilder::class)]
 final class SecurityHeadersBuilderApplyTest extends TestCase
 {
+    #[Test]
     public function testBuildReturnsHeadersForApply(): void
     {
         $headers = (new SecurityHeaders())
@@ -36,6 +38,7 @@ final class SecurityHeadersBuilderApplyTest extends TestCase
         $this->assertArrayHasKey('Strict-Transport-Security', $built);
     }
 
+    #[Test]
     public function testBuildFormatsValuesCorrectly(): void
     {
         $headers = SecurityHeaders::strict();
@@ -51,6 +54,7 @@ final class SecurityHeadersBuilderApplyTest extends TestCase
         }
     }
 
+    #[Test]
     public function testBuildWithMinimalHeadersReturnsEmpty(): void
     {
         $headers = (new SecurityHeaders())
@@ -64,6 +68,7 @@ final class SecurityHeadersBuilderApplyTest extends TestCase
         $this->assertEmpty($built);
     }
 
+    #[Test]
     public function testApplyDoesNotThrowInCli(): void
     {
         $headers = new SecurityHeaders();

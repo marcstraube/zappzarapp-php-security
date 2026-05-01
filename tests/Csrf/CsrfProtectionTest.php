@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Csrf;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Zappzarapp\Security\Csrf\CsrfConfig;
@@ -36,6 +37,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Factory Methods ---
 
+    #[Test]
     public function testSynchronizerFactoryCreatesInstance(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -44,6 +46,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertInstanceOf(CsrfProtection::class, $csrf);
     }
 
+    #[Test]
     public function testSynchronizerFactoryWithCustomConfig(): void
     {
         $config = new CsrfConfig(fieldName: 'custom_token');
@@ -52,6 +55,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertSame('custom_token', $csrf->fieldName());
     }
 
+    #[Test]
     public function testDoubleSubmitFactoryCreatesInstance(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -60,6 +64,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertInstanceOf(CsrfProtection::class, $csrf);
     }
 
+    #[Test]
     public function testDoubleSubmitFactoryWithCustomConfig(): void
     {
         $config = new CsrfConfig(headerName: 'X-Custom-CSRF');
@@ -70,6 +75,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Token Generation ---
 
+    #[Test]
     public function testTokenReturnsCsrfTokenForSynchronizer(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -80,6 +86,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertSame(44, strlen($token->value())); // 32 bytes base64 = 44 chars
     }
 
+    #[Test]
     public function testTokenReturnsSameTokenOnSubsequentCalls(): void
     {
         $csrf   = CsrfProtection::synchronizer($this->storage);
@@ -89,6 +96,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertSame($token1->value(), $token2->value());
     }
 
+    #[Test]
     public function testTokenReturnsCsrfTokenForDoubleSubmit(): void
     {
         $csrf  = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -98,6 +106,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertInstanceOf(CsrfToken::class, $token);
     }
 
+    #[Test]
     public function testTokenGeneratesNewTokenEachTimeForDoubleSubmit(): void
     {
         $csrf   = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -109,6 +118,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Field Generation ---
 
+    #[Test]
     public function testFieldGeneratesHiddenInput(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -119,6 +129,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertStringContainsString('value="', $field);
     }
 
+    #[Test]
     public function testFieldThrowsWithoutStorage(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -131,6 +142,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Synchronizer Token Validation ---
 
+    #[Test]
     public function testValidateSucceedsWithCorrectToken(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -141,6 +153,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertTrue(true); // No exception means success
     }
 
+    #[Test]
     public function testValidateThrowsWithMismatchedToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -154,6 +167,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validate($wrongToken);
     }
 
+    #[Test]
     public function testValidateThrowsWithEmptyToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -165,6 +179,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validate('');
     }
 
+    #[Test]
     public function testValidateThrowsWithInvalidFormat(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -176,6 +191,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validate('not!valid!base64!!!');
     }
 
+    #[Test]
     public function testValidateThrowsWhenNoStoredToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -186,6 +202,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validate(base64_encode(random_bytes(32)));
     }
 
+    #[Test]
     public function testValidateThrowsWithoutStorage(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -198,6 +215,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Double Submit Validation ---
 
+    #[Test]
     public function testValidateDoubleSubmitSucceeds(): void
     {
         $csrf        = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -209,6 +227,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertTrue(true);
     }
 
+    #[Test]
     public function testValidateDoubleSubmitThrowsOnMismatch(): void
     {
         $csrf        = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -222,6 +241,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validateDoubleSubmit($cookieToken->value(), $signedOther);
     }
 
+    #[Test]
     public function testValidateDoubleSubmitThrowsOnEmptySubmittedToken(): void
     {
         $csrf        = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -233,6 +253,7 @@ final class CsrfProtectionTest extends TestCase
         $csrf->validateDoubleSubmit($cookieToken, '');
     }
 
+    #[Test]
     public function testValidateDoubleSubmitThrowsOnEmptyCookieToken(): void
     {
         $csrf        = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -246,6 +267,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- IsValid Methods ---
 
+    #[Test]
     public function testIsValidReturnsTrueForValidToken(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -254,6 +276,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertTrue($csrf->isValid($token->value()));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForInvalidToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -262,6 +285,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseForEmptyToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -270,6 +294,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->isValid(''));
     }
 
+    #[Test]
     public function testIsValidReturnsFalseWhenNoStoredToken(): void
     {
         $csrf = CsrfProtection::synchronizer($this->storage);
@@ -277,6 +302,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->isValid(base64_encode(random_bytes(32))));
     }
 
+    #[Test]
     public function testIsValidDoubleSubmitReturnsTrue(): void
     {
         $csrf        = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -286,6 +312,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertTrue($csrf->isValidDoubleSubmit($token->value(), $signedToken));
     }
 
+    #[Test]
     public function testIsValidDoubleSubmitReturnsFalseOnMismatch(): void
     {
         $csrf    = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -298,6 +325,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Regenerate ---
 
+    #[Test]
     public function testRegenerateCreatesNewToken(): void
     {
         $csrf      = CsrfProtection::synchronizer($this->storage);
@@ -307,6 +335,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertNotSame($oldToken->value(), $newToken->value());
     }
 
+    #[Test]
     public function testRegenerateInvalidatesOldToken(): void
     {
         $csrf     = CsrfProtection::synchronizer($this->storage);
@@ -316,6 +345,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->isValid($oldToken->value()));
     }
 
+    #[Test]
     public function testRegenerateThrowsWithoutStorage(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -328,6 +358,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Clear ---
 
+    #[Test]
     public function testClearRemovesToken(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -338,6 +369,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->isValid($token->value()));
     }
 
+    #[Test]
     public function testClearThrowsWithoutStorage(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -350,6 +382,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Cookie Options ---
 
+    #[Test]
     public function testCookieOptionsReturnsCorrectStructure(): void
     {
         $csrf    = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -363,6 +396,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertArrayHasKey('samesite', $options);
     }
 
+    #[Test]
     public function testCookieOptionsSecureFlag(): void
     {
         $csrf = CsrfProtection::doubleSubmit(self::TEST_SECRET);
@@ -371,6 +405,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertFalse($csrf->cookieOptions(false)['secure']);
     }
 
+    #[Test]
     public function testCookieOptionsUsesConfigName(): void
     {
         $config  = new CsrfConfig(cookieName: 'my_csrf_cookie');
@@ -382,6 +417,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Config Accessor Methods ---
 
+    #[Test]
     public function testFieldNameReturnsConfigValue(): void
     {
         $config = new CsrfConfig(fieldName: 'custom_field');
@@ -390,6 +426,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertSame('custom_field', $csrf->fieldName());
     }
 
+    #[Test]
     public function testHeaderNameReturnsConfigValue(): void
     {
         $config = new CsrfConfig(headerName: 'X-Custom-Header');
@@ -398,6 +435,7 @@ final class CsrfProtectionTest extends TestCase
         $this->assertSame('X-Custom-Header', $csrf->headerName());
     }
 
+    #[Test]
     public function testCookieNameReturnsConfigValue(): void
     {
         $config = new CsrfConfig(cookieName: 'custom_cookie');
@@ -408,6 +446,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Token Entropy ---
 
+    #[Test]
     public function testTokenHasMinimumEntropy(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);
@@ -419,6 +458,7 @@ final class CsrfProtectionTest extends TestCase
 
     // --- Timing Attack Prevention ---
 
+    #[Test]
     public function testValidationUsesConstantTimeComparison(): void
     {
         $csrf  = CsrfProtection::synchronizer($this->storage);

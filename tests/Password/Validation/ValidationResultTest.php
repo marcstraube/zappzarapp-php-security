@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zappzarapp\Security\Tests\Password\Validation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Zappzarapp\Security\Password\Strength\StrengthLevel;
 use Zappzarapp\Security\Password\Validation\ValidationResult;
@@ -12,6 +13,7 @@ use Zappzarapp\Security\Password\Validation\ValidationResult;
 #[CoversClass(ValidationResult::class)]
 final class ValidationResultTest extends TestCase
 {
+    #[Test]
     public function testConstructorWithAllParameters(): void
     {
         $result = new ValidationResult(
@@ -29,6 +31,7 @@ final class ValidationResultTest extends TestCase
         $this->assertSame(0, $result->pwnedCount);
     }
 
+    #[Test]
     public function testConstructorWithDefaultParameters(): void
     {
         $result = new ValidationResult(isValid: false);
@@ -40,6 +43,7 @@ final class ValidationResultTest extends TestCase
         $this->assertNull($result->pwnedCount);
     }
 
+    #[Test]
     public function testValidFactoryMethod(): void
     {
         $result = ValidationResult::valid();
@@ -51,6 +55,7 @@ final class ValidationResultTest extends TestCase
         $this->assertNull($result->pwnedCount);
     }
 
+    #[Test]
     public function testValidFactoryMethodWithAllParameters(): void
     {
         $result = ValidationResult::valid(
@@ -66,6 +71,7 @@ final class ValidationResultTest extends TestCase
         $this->assertSame(0, $result->pwnedCount);
     }
 
+    #[Test]
     public function testInvalidFactoryMethod(): void
     {
         $violations = ['Too short', 'Missing uppercase'];
@@ -78,6 +84,7 @@ final class ValidationResultTest extends TestCase
         $this->assertNull($result->pwnedCount);
     }
 
+    #[Test]
     public function testInvalidFactoryMethodWithAllParameters(): void
     {
         $violations = ['Password found in breach'];
@@ -95,6 +102,7 @@ final class ValidationResultTest extends TestCase
         $this->assertSame(500, $result->pwnedCount);
     }
 
+    #[Test]
     public function testPassedReturnsTrueForValidResult(): void
     {
         $result = ValidationResult::valid();
@@ -102,6 +110,7 @@ final class ValidationResultTest extends TestCase
         $this->assertTrue($result->passed());
     }
 
+    #[Test]
     public function testPassedReturnsFalseForInvalidResult(): void
     {
         $result = ValidationResult::invalid(['error']);
@@ -109,6 +118,7 @@ final class ValidationResultTest extends TestCase
         $this->assertFalse($result->passed());
     }
 
+    #[Test]
     public function testFailedReturnsFalseForValidResult(): void
     {
         $result = ValidationResult::valid();
@@ -116,6 +126,7 @@ final class ValidationResultTest extends TestCase
         $this->assertFalse($result->failed());
     }
 
+    #[Test]
     public function testFailedReturnsTrueForInvalidResult(): void
     {
         $result = ValidationResult::invalid(['error']);
@@ -123,6 +134,7 @@ final class ValidationResultTest extends TestCase
         $this->assertTrue($result->failed());
     }
 
+    #[Test]
     public function testIsPwnedReturnsTrueWhenPwnedCountGreaterThanZero(): void
     {
         $result = new ValidationResult(
@@ -134,6 +146,7 @@ final class ValidationResultTest extends TestCase
         $this->assertTrue($result->isPwned());
     }
 
+    #[Test]
     public function testIsPwnedReturnsFalseWhenPwnedCountIsZero(): void
     {
         $result = new ValidationResult(
@@ -145,6 +158,7 @@ final class ValidationResultTest extends TestCase
         $this->assertFalse($result->isPwned());
     }
 
+    #[Test]
     public function testIsPwnedReturnsFalseWhenPwnedCountIsNull(): void
     {
         $result = new ValidationResult(
@@ -156,6 +170,7 @@ final class ValidationResultTest extends TestCase
         $this->assertFalse($result->isPwned());
     }
 
+    #[Test]
     public function testPassedAndFailedAreOpposites(): void
     {
         $valid   = ValidationResult::valid();
@@ -165,6 +180,7 @@ final class ValidationResultTest extends TestCase
         $this->assertSame($invalid->passed(), !$invalid->failed());
     }
 
+    #[Test]
     public function testIsValidPublicProperty(): void
     {
         $valid   = ValidationResult::valid();
@@ -174,6 +190,7 @@ final class ValidationResultTest extends TestCase
         $this->assertFalse($invalid->isValid);
     }
 
+    #[Test]
     public function testViolationsAreAccessible(): void
     {
         $violations = ['Error 1', 'Error 2', 'Error 3'];
@@ -183,6 +200,7 @@ final class ValidationResultTest extends TestCase
         $this->assertCount(3, $result->violations);
     }
 
+    #[Test]
     public function testEmptyViolationsForValidResult(): void
     {
         $result = ValidationResult::valid();
@@ -191,6 +209,7 @@ final class ValidationResultTest extends TestCase
         $this->assertEmpty($result->violations);
     }
 
+    #[Test]
     public function testAllStrengthLevels(): void
     {
         foreach (StrengthLevel::cases() as $level) {
@@ -200,6 +219,7 @@ final class ValidationResultTest extends TestCase
         }
     }
 
+    #[Test]
     public function testEntropyPrecision(): void
     {
         $entropy = 45.123456789;
@@ -208,6 +228,7 @@ final class ValidationResultTest extends TestCase
         $this->assertSame($entropy, $result->entropy);
     }
 
+    #[Test]
     public function testLargePwnedCount(): void
     {
         $largeCount = 10000000;
