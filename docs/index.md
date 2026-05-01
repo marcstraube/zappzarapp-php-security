@@ -15,6 +15,7 @@ vulnerabilities.
 | [Sanitization](sanitization.md)   | HTML, URI, and path sanitization to prevent XSS and injection attacks                      |
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
 | [SRI](sri.md)                     | Subresource Integrity hash generation and verification with SSRF protection                |
+| [Analyzer](analyzer.md)           | Security header analyzer for auditing and CI integration                                   |
 | [Logging](logging.md)             | Security audit logging with correlation IDs                                                |
 | [Glossary](glossary.md)           | Security terms and concepts explained                                                      |
 
