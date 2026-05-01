@@ -147,7 +147,9 @@
                 "Zappzarapp\\Security\\Csrf\\CsrfProtection::*",
                 // Rate-limiting key construction
                 "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
-                "Zappzarapp\\Security\\RateLimiting\\RateLimitResult::*"
+                "Zappzarapp\\Security\\RateLimiting\\RateLimitResult::*",
+                // MySQL-specific SQL in upsert() — untestable without MySQL
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
             ]
         },
         "ConcatOperandRemoval": {
@@ -171,7 +173,9 @@
                 "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
                 "Zappzarapp\\Security\\RateLimiting\\RateLimitResult::*",
                 // Truncation marker "..." cosmetic
-                "Zappzarapp\\Security\\Logging\\SecurityAuditLogger::truncateContext"
+                "Zappzarapp\\Security\\Logging\\SecurityAuditLogger::truncateContext",
+                // MySQL-specific SQL in upsert() — untestable without MySQL
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
             ]
         },
         "UnwrapArraySlice": {
@@ -466,6 +470,8 @@
                 "Zappzarapp\\Security\\Password\\Pwned\\PwnedPasswordChecker::*",
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\RedisStorage::*",
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\MemcachedStorage::*",
+                // Driver check — only testable with SQLite, MySQL branch untestable
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment",
                 // dns_get_record false check - requires real network with specific
                 // failure scenarios. gethostbyname fallback makes this path redundant
                 // for most hosts.
@@ -522,11 +528,21 @@
         // =============================================
         // Match expressions
         // =============================================
+        "CastString": {
+            "ignore": [
+                // PDO getAttribute returns string anyway, cast is defensive
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::__construct",
+                // PDO binds parameters as strings regardless of explicit cast
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment"
+            ]
+        },
         "MatchArmRemoval": {
             "ignore": [
                 "Zappzarapp\\Security\\Sri\\HashAlgorithm::base64Length",
                 // URL attribute detection - defense in depth for various element types
-                "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::isUrlAttribute"
+                "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::isUrlAttribute",
+                // MySQL match arm in upsert() — untestable without MySQL
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
             ]
         },
 

@@ -139,6 +139,32 @@ final class PdoStorageTest extends TestCase
     }
 
     #[Test]
+    public function testGetReturnsNullAtExactExpiry(): void
+    {
+        $this->storage->set('boundary', ['count' => 1], 60);
+
+        // Set expires_at to exactly now — should be treated as expired
+        $stmt = $this->pdo->prepare('UPDATE rate_limits SET "expires_at" = ? WHERE "key" = ?');
+        $stmt->execute([time(), 'ratelimit:boundary']);
+
+        $this->assertNull($this->storage->get('boundary'));
+    }
+
+    #[Test]
+    public function testIncrementResetsKeyAtExactExpiry(): void
+    {
+        $this->storage->increment('counter', 5, 60);
+
+        // Set expires_at to exactly now — should be treated as expired
+        $stmt = $this->pdo->prepare('UPDATE rate_limits SET "expires_at" = ? WHERE "key" = ?');
+        $stmt->execute([time(), 'ratelimit:counter']);
+
+        $result = $this->storage->increment('counter', 1, 60);
+
+        $this->assertSame(1, $result);
+    }
+
+    #[Test]
     public function testIncrementResetsExpiredKey(): void
     {
         $this->storage->increment('counter', 5, 60);
@@ -242,8 +268,9 @@ final class PdoStorageTest extends TestCase
     {
         $this->expectException(StorageException::class);
 
-        // NAN cannot be JSON-encoded
-        $this->storage->set('key', ['value' => NAN], 60);
+        // Resources cannot be JSON-encoded
+        $resource = fopen('php://memory', 'r');
+        $this->storage->set('key', ['value' => $resource], 60);
     }
 
     #[Test]
