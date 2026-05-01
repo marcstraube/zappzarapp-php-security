@@ -244,21 +244,13 @@ final readonly class PdoStorage implements RateLimitStorage
 
     private function commitTransaction(): void
     {
-        if ($this->driver === 'sqlite') {
-            $this->pdo->exec('COMMIT');
-        } else {
-            $this->pdo->commit();
-        }
+        $this->pdo->commit();
     }
 
     private function rollbackTransaction(): void
     {
         try {
-            if ($this->driver === 'sqlite') {
-                $this->pdo->exec('ROLLBACK');
-            } else {
-                $this->pdo->rollBack();
-            }
+            $this->pdo->rollBack();
         } catch (PDOException) {
             // Rollback may fail if transaction was already rolled back
         }
