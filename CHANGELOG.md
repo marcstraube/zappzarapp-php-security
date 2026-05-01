@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.0.1...v1.1.0) (2026-05-01)
+
+
+### Features
+
+* add PSR-15 middleware for security headers, CSP, CSRF, rate limiting ([#38](https://github.com/marcstraube/zappzarapp-php-security/issues/38)) ([a286e73](https://github.com/marcstraube/zappzarapp-php-security/commit/a286e73c387de62729d3edb68b0cdc499efcc193)), closes [#26](https://github.com/marcstraube/zappzarapp-php-security/issues/26)
+* **headers:** add security header analyzer ([#37](https://github.com/marcstraube/zappzarapp-php-security/issues/37)) ([a9b87c3](https://github.com/marcstraube/zappzarapp-php-security/commit/a9b87c3fe1598a9a4936895520ece61e2d58cdad)), closes [#28](https://github.com/marcstraube/zappzarapp-php-security/issues/28)
+* **rate-limiting:** add PDO storage backend ([#36](https://github.com/marcstraube/zappzarapp-php-security/issues/36)) ([ebcf50b](https://github.com/marcstraube/zappzarapp-php-security/commit/ebcf50b43e24927977bc4dc46a8e232ca9a76779))
+
+
+### Bug Fixes
+
+* **ci:** use config file for release-please action ([#40](https://github.com/marcstraube/zappzarapp-php-security/issues/40)) ([0993b94](https://github.com/marcstraube/zappzarapp-php-security/commit/0993b949c39df479159a739e33dd2a1b48143707))
+
+
+### Documentation
+
+* rename documentation/ to docs/ for cross-project consistency ([#25](https://github.com/marcstraube/zappzarapp-php-security/issues/25)) ([f9c57b9](https://github.com/marcstraube/zappzarapp-php-security/commit/f9c57b9469b2f97fc1b228b2f06e2f4340219b6f))
+
 ## [1.0.1](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.0.0...v1.0.1) (2026-04-10)
 
 
