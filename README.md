@@ -4,6 +4,7 @@
 [![PHP Version](https://img.shields.io/packagist/php-v/zappzarapp/security.svg)](https://packagist.org/packages/zappzarapp/security)
 [![License](https://img.shields.io/packagist/l/zappzarapp/security.svg)](https://packagist.org/packages/zappzarapp/security)
 [![CI](https://github.com/marcstraube/zappzarapp-php-security/actions/workflows/ci.yml/badge.svg)](https://github.com/marcstraube/zappzarapp-php-security/actions/workflows/ci.yml)
+[![Socket Badge](https://badge.socket.dev/composer/package/zappzarapp/security)](https://socket.dev/composer/package/zappzarapp/security)
 
 Comprehensive PHP security library providing CSP, Security Headers, CSRF
 protection, Secure Cookies, Password Validation, Input Sanitization, Rate
