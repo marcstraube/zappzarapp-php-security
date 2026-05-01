@@ -43,7 +43,9 @@
     "ext-redis": "For Redis rate limit storage (phpredis extension)",
     "predis/predis": "For Redis rate limit storage (pure PHP client)",
     "ext-memcached": "For Memcached rate limit storage",
-    "ext-pdo": "For PDO rate limit storage (MySQL, PostgreSQL, SQLite)"
+    "ext-pdo": "For PDO rate limit storage (MySQL, PostgreSQL, SQLite)",
+    "psr/http-server-middleware": "For PSR-15 middleware support",
+    "psr/http-server-handler": "For PSR-15 middleware support"
   },
   "require-dev": {
     "ext-fileinfo": "*",
@@ -64,7 +66,9 @@
     "deptrac/deptrac": "^4.5",
     "captainhook/captainhook": "*",
     "captainhook/plugin-composer": "^5.3",
-    "giorgiosironi/eris": "^1.0"
+    "giorgiosironi/eris": "^1.0",
+    "psr/http-server-middleware": "^1.0",
+    "psr/http-server-handler": "^1.0"
   },
   "config": {
     "allow-plugins": {
@@ -87,7 +91,8 @@
       "Zappzarapp\\Security\\Sanitization\\": "src/Sanitization/",
       "Zappzarapp\\Security\\RateLimiting\\": "src/RateLimiting/",
       "Zappzarapp\\Security\\Sri\\": "src/Sri/",
-      "Zappzarapp\\Security\\Logging\\": "src/Logging/"
+      "Zappzarapp\\Security\\Logging\\": "src/Logging/",
+      "Zappzarapp\\Security\\Middleware\\": "src/Middleware/"
     }
   },
   "autoload-dev": {
@@ -100,7 +105,8 @@
       "Zappzarapp\\Security\\Tests\\Sanitization\\": "tests/Sanitization/",
       "Zappzarapp\\Security\\Tests\\RateLimiting\\": "tests/RateLimiting/",
       "Zappzarapp\\Security\\Tests\\Sri\\": "tests/Sri/",
-      "Zappzarapp\\Security\\Tests\\Logging\\": "tests/Logging/"
+      "Zappzarapp\\Security\\Tests\\Logging\\": "tests/Logging/",
+      "Zappzarapp\\Security\\Tests\\Middleware\\": "tests/Middleware/"
     }
   },
   "scripts": {

@@ -290,6 +290,14 @@ deptrac:
           value: src/Logging/
 
     # ==========================================
+    # Middleware Module
+    # ==========================================
+    - name: Middleware
+      collectors:
+        - type: directory
+          value: src/Middleware/
+
+    # ==========================================
     # External Dependencies (PSR interfaces)
     # ==========================================
     - name: External
@@ -428,6 +436,19 @@ deptrac:
 
     # Logging Module Rules (depends on PSR-3 LoggerInterface)
     Logging:
+      - External
+
+    # Middleware Module Rules
+    Middleware:
+      - HeadersBuilder
+      - HeadersMain
+      - CspHeaderBuilder
+      - CspDirective
+      - CspNonce
+      - CsrfMain
+      - CsrfException
+      - RateLimitingMain
+      - RateLimitingException
       - External
 
     # External layer has no internal dependencies
