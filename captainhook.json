@@ -72,7 +72,7 @@
     "enabled": true,
     "actions": [
       {
-        "action": "composer check",
+        "action": "make check",
         "options": [],
         "config": {
           "label": "Run all quality checks (PHPStan, Psalm, PHPMD, Tests, Deptrac)"

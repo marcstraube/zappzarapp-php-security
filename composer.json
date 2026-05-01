@@ -42,7 +42,8 @@
     "psr/http-factory": "For PSR-17 HTTP factory support in PwnedPasswordChecker",
     "ext-redis": "For Redis rate limit storage (phpredis extension)",
     "predis/predis": "For Redis rate limit storage (pure PHP client)",
-    "ext-memcached": "For Memcached rate limit storage"
+    "ext-memcached": "For Memcached rate limit storage",
+    "ext-pdo": "For PDO rate limit storage (MySQL, PostgreSQL, SQLite)"
   },
   "require-dev": {
     "ext-fileinfo": "*",
