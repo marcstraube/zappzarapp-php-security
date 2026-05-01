@@ -16,6 +16,7 @@ vulnerabilities.
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
 | [SRI](sri.md)                     | Subresource Integrity hash generation and verification with SSRF protection                |
 | [Analyzer](analyzer.md)           | Security header analyzer for auditing and CI integration                                   |
+| [Middleware](middleware.md)       | PSR-15 middleware for security headers, CSP, CSRF, and rate limiting                       |
 | [Logging](logging.md)             | Security audit logging with correlation IDs                                                |
 | [Glossary](glossary.md)           | Security terms and concepts explained                                                      |
 

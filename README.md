@@ -11,13 +11,13 @@ Limiting, SRI, and Audit Logging.
 
 ## Highlights
 
-- **All-in-one** — 9 security modules in a single, composable package
+- **All-in-one** — 11 security modules in a single, composable package
 - **Secure by default** — strict CSP, no `unsafe-*`, HTTPS-first
 - **Framework-agnostic** — works with any PHP 8.4+ application
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
 - **Quality-backed** — PHPStan Level 8, Psalm Level 1, 100% Mutation Score,
   Deptrac architecture enforcement
-- **PSR-compatible** — PSR-3 (Logging), PSR-18 (HTTP Client)
+- **PSR-compatible** — PSR-3 (Logging), PSR-15 (Middleware), PSR-18 (HTTP Client)
 
 ## Modules
 
@@ -32,6 +32,7 @@ Limiting, SRI, and Audit Logging.
 | **RateLimiting** | Rate limiting with multiple algorithms            | `DefaultRateLimiter`, `RateLimitConfig`                            |
 | **SRI**          | Subresource Integrity hash generation             | `SriHashGenerator`, `IntegrityAttribute`                           |
 | **Analyzer**     | Security header analysis and auditing             | `SecurityHeaderAnalyzer`, `AnalysisResult`                         |
+| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CsrfMiddleware`, `RateLimitMiddleware` |
 | **Logging**      | Security event audit logging                      | `SecurityAuditLogger`, `SecurityEvent`                             |
 
 ## Requirements
@@ -128,6 +129,7 @@ options, and code examples:
 | [Rate Limiting](docs/rate-limiting.md)    | Token bucket, sliding window        |
 | [SRI](docs/sri.md)                        | Subresource integrity hashes        |
 | [Analyzer](docs/analyzer.md)             | Security header auditing            |
+| [Middleware](docs/middleware.md)          | PSR-15 middleware                   |
 | [Logging](docs/logging.md)               | Security audit logging              |
 | [Glossary](docs/glossary.md)             | Security terminology reference      |
 
