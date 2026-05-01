@@ -31,6 +31,7 @@ Limiting, SRI, and Audit Logging.
 | **Sanitization** | Input sanitization (HTML, SQL, URI, Path)         | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                   |
 | **RateLimiting** | Rate limiting with multiple algorithms            | `DefaultRateLimiter`, `RateLimitConfig`                            |
 | **SRI**          | Subresource Integrity hash generation             | `SriHashGenerator`, `IntegrityAttribute`                           |
+| **Analyzer**     | Security header analysis and auditing             | `SecurityHeaderAnalyzer`, `AnalysisResult`                         |
 | **Logging**      | Security event audit logging                      | `SecurityAuditLogger`, `SecurityEvent`                             |
 
 ## Requirements
@@ -126,6 +127,7 @@ options, and code examples:
 | [Sanitization](docs/sanitization.md)      | HTML, URI, path sanitization        |
 | [Rate Limiting](docs/rate-limiting.md)    | Token bucket, sliding window        |
 | [SRI](docs/sri.md)                        | Subresource integrity hashes        |
+| [Analyzer](docs/analyzer.md)             | Security header auditing            |
 | [Logging](docs/logging.md)               | Security audit logging              |
 | [Glossary](docs/glossary.md)             | Security terminology reference      |
 

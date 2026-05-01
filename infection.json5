@@ -27,7 +27,9 @@
                 // EQUIVALENT on 64-bit PHP: sprintf('%u', $long) returns string,
                 // but PHP type juggling converts it to int for comparison with
                 // integer constants. Both signed and unsigned values fit in 64-bit int.
-                "Zappzarapp\\Security\\Sanitization\\Uri\\PrivateNetworkValidator::isPrivateIpv4"
+                "Zappzarapp\\Security\\Sanitization\\Uri\\PrivateNetworkValidator::isPrivateIpv4",
+                // EQUIVALENT: preg_match captures string, PHP type-juggles to int for < comparison
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::analyzeHsts"
             ]
         },
         "Division": {
@@ -43,7 +45,9 @@
         },
         "Plus": {
             "ignore": [
-                "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*"
+                "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
+                // CSP parser offset — equivalent when directive name doesn't match patterns
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::parseCspDirectives"
             ]
         },
         "OneZeroFloat": {
@@ -57,7 +61,15 @@
                 // Returning only first DNS record vs all records - gethostbyname
                 // usually provides the primary IP, dns_get_record is for additional IPs.
                 // Requires real network with multi-record responses to kill.
-                "Zappzarapp\\Security\\Sanitization\\Uri\\NativeDnsResolver::resolveViaDnsGetRecord"
+                "Zappzarapp\\Security\\Sanitization\\Uri\\NativeDnsResolver::resolveViaDnsGetRecord",
+                // Early returns where findings array always has exactly 1 element
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::*"
+            ]
+        },
+        "UnwrapArrayValues": {
+            "ignore": [
+                // Variadic ...$findings already produces a list, array_values is defensive
+                "Zappzarapp\\Security\\Headers\\Analyzer\\AnalysisResult::*"
             ]
         },
 
@@ -193,7 +205,9 @@
                 // Due to long2ip() using only lower 32 bits, the embedded IPv4
                 // (at positions 24-31) is preserved even when using full hex.
                 // hexdec overflow wraps to the same lower 32 bits.
-                "Zappzarapp\\Security\\Sanitization\\Uri\\PrivateNetworkValidator::isPrivateIpv6"
+                "Zappzarapp\\Security\\Sanitization\\Uri\\PrivateNetworkValidator::isPrivateIpv6",
+                // CSP parser: directive name included in sources doesn't affect pattern matching
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::parseCspDirectives"
             ]
         },
 
@@ -244,7 +258,9 @@
                 // HTTP client defaults - operational configuration
                 "Zappzarapp\\Security\\Sri\\FileGetContentsHttpClient::*",
                 // Rate-limiting algorithms
-                "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*"
+                "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
+                // CSP parser offset — equivalent when directive name doesn't match patterns
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::parseCspDirectives"
             ]
         },
         "LessThan": {
