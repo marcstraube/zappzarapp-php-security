@@ -58,7 +58,7 @@
     "phpdocumentor/phpdocumentor": "^3.6",
     "phpmd/phpmd": "^2.15",
     "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^12.4",
+    "phpunit/phpunit": "^12.4 || ^13.0",
     "rector/rector": "^2.3",
     "roave/security-advisories": "dev-latest",
     "vimeo/psalm": "^6.14",
