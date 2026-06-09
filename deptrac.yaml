@@ -448,6 +448,8 @@ deptrac:
       - CspNonce
       - CsrfMain
       - CsrfException
+      - CookieMain
+      - CookieException
       - RateLimitingMain
       - RateLimitingException
       - External
