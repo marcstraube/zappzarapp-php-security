@@ -66,7 +66,7 @@ sbom: ## Generate Software Bill of Materials
 	composer sbom
 
 security: ## Run security audit
-	composer audit --no-dev
+	composer audit --locked
 
 test: ## Run tests
 	$(PHP) vendor/bin/phpunit
