@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * @noinspection PhpComposerExtensionStubsInspection psr/http-message is optional (suggest)
+ */
+
 declare(strict_types=1);
 
 namespace Zappzarapp\Security\Headers\Analyzer;
+
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Analyzes HTTP response headers for security issues
@@ -36,6 +42,22 @@ final class SecurityHeaderAnalyzer
         ];
 
         return new AnalysisResult(...$findings);
+    }
+
+    /**
+     * Analyze a PSR-7 response for security header issues
+     *
+     * Extracts the response headers and delegates to {@see analyze()}.
+     */
+    public function analyzeResponse(ResponseInterface $response): AnalysisResult
+    {
+        $headers = [];
+
+        foreach ($response->getHeaders() as $name => $values) {
+            $headers[(string) $name] = implode(', ', $values);
+        }
+
+        return $this->analyze($headers);
     }
 
     /**

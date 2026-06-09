@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Zappzarapp\Security\Headers\Analyzer\AnalysisResult;
 use Zappzarapp\Security\Headers\Analyzer\Finding;
 use Zappzarapp\Security\Headers\Analyzer\FindingSeverity;
@@ -425,6 +426,58 @@ final class SecurityHeaderAnalyzerTest extends TestCase
         $this->assertSame(FindingSeverity::INFO, $findings[0]->severity);
     }
 
+    // === PSR-7 Response ===
+
+    #[Test]
+    public function testAnalyzeResponseWithStrictHeadersIsClean(): void
+    {
+        $response = $this->responseWithHeaders([
+            'Strict-Transport-Security'    => ['max-age=63072000; includeSubDomains'],
+            'Content-Security-Policy'      => ["default-src 'self'"],
+            'X-Frame-Options'              => ['DENY'],
+            'X-Content-Type-Options'       => ['nosniff'],
+            'Referrer-Policy'              => ['strict-origin-when-cross-origin'],
+            'Permissions-Policy'           => ['camera=()'],
+            'Cross-Origin-Opener-Policy'   => ['same-origin'],
+            'Cross-Origin-Embedder-Policy' => ['require-corp'],
+            'Cross-Origin-Resource-Policy' => ['same-origin'],
+        ]);
+
+        $result = $this->analyzer->analyzeResponse($response);
+
+        $this->assertTrue($result->isClean());
+        $this->assertSame(0, $result->count());
+    }
+
+    #[Test]
+    public function testAnalyzeResponseWithoutHeadersReportsAllMissing(): void
+    {
+        $response = $this->responseWithHeaders([]);
+
+        $result = $this->analyzer->analyzeResponse($response);
+
+        $this->assertFalse($result->isClean());
+        $this->assertTrue($result->hasHighOrAbove());
+        $this->assertGreaterThanOrEqual(9, $result->count());
+    }
+
+    #[Test]
+    public function testAnalyzeResponseJoinsMultipleHeaderValues(): void
+    {
+        // Multiple values for one header must be joined with ", " (matching
+        // PSR-7 getHeaderLine semantics) before analysis. The invalid
+        // X-Content-Type-Options finding echoes the value, proving the join.
+        $response = $this->responseWithHeaders([
+            'X-Content-Type-Options' => ['foo', 'bar'],
+        ]);
+
+        $result   = $this->analyzer->analyzeResponse($response);
+        $findings = $result->forHeader('X-Content-Type-Options');
+
+        $this->assertCount(1, $findings);
+        $this->assertStringContainsString('"foo, bar"', $findings[0]->message);
+    }
+
     // === AnalysisResult ===
 
     #[Test]
@@ -520,6 +573,19 @@ final class SecurityHeaderAnalyzerTest extends TestCase
         $result = $this->analyzer->analyze($secureDefaults);
 
         return $result->forHeader($header);
+    }
+
+    /**
+     * Build a PSR-7 response stub exposing the given headers
+     *
+     * @param array<string, list<string>> $headers
+     */
+    private function responseWithHeaders(array $headers): ResponseInterface
+    {
+        $response = $this->createStub(ResponseInterface::class);
+        $response->method('getHeaders')->willReturn($headers);
+
+        return $response;
     }
 
     /**

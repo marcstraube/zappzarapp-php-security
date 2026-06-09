@@ -339,7 +339,8 @@ deptrac:
     HeadersPermissionsPolicy:
       - HeadersException
       - HeadersValidation
-    HeadersAnalyzer: ~
+    HeadersAnalyzer:
+      - External
     HeadersBuilder:
       - HeadersMain
       - HeadersEnums

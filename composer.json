@@ -38,6 +38,7 @@
   },
   "suggest": {
     "psr/log": "For security event audit logging (PSR-3)",
+    "psr/http-message": "For PSR-7 response analysis in SecurityHeaderAnalyzer",
     "psr/http-client": "For PSR-18 HTTP client support in PwnedPasswordChecker",
     "psr/http-factory": "For PSR-17 HTTP factory support in PwnedPasswordChecker",
     "ext-redis": "For Redis rate limit storage (phpredis extension)",
