@@ -33,7 +33,7 @@ Limiting, SRI, and Audit Logging.
 | **RateLimiting** | Rate limiting with multiple algorithms            | `DefaultRateLimiter`, `RateLimitConfig`                            |
 | **SRI**          | Subresource Integrity hash generation             | `SriHashGenerator`, `IntegrityAttribute`                           |
 | **Analyzer**     | Security header analysis and auditing             | `SecurityHeaderAnalyzer`, `AnalysisResult`                         |
-| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CsrfMiddleware`, `RateLimitMiddleware` |
+| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware` |
 | **Logging**      | Security event audit logging                      | `SecurityAuditLogger`, `SecurityEvent`                             |
 
 ## Requirements

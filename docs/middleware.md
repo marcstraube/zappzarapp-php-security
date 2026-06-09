@@ -88,6 +88,48 @@ $token = $request->getAttribute('csrf-token');
 echo "<input type=\"hidden\" name=\"_csrf_token\" value=\"{$token}\">";
 ```
 
+## Double Submit CSRF Middleware
+
+Stateless CSRF protection for SPA/API setups that cannot rely on server-side
+session storage. Uses the HMAC-signed Double Submit Cookie pattern: every
+response carries a JavaScript-readable cookie holding the raw token, while the
+matching signed token is exposed via request attribute `csrf-token`. On
+state-changing requests the cookie token is validated against the signed token
+from the header or body.
+
+```php
+use Zappzarapp\Security\Csrf\CsrfProtection;
+use Zappzarapp\Security\Middleware\DoubleSubmitCsrfMiddleware;
+
+$protection = CsrfProtection::doubleSubmit($secret); // secret: min 32 bytes
+$middleware = new DoubleSubmitCsrfMiddleware($protection);
+
+// In Slim:
+$app->add($middleware);
+```
+
+### Token Source Priority
+
+1. Request header (configured via `CsrfConfig::headerName`, default: `X-CSRF-Token`)
+2. Parsed body field (configured via `CsrfConfig::fieldName`, default: `_csrf_token`)
+
+### Using the Signed Token in a SPA
+
+```php
+// In a PSR-15 handler — hand the signed token to JavaScript:
+$signedToken = $request->getAttribute('csrf-token');
+echo "<meta name=\"csrf-token\" content=\"{$signedToken}\">";
+// JS reads the cookie + meta token and sends the signed value in X-CSRF-Token.
+```
+
+### Development Over HTTP
+
+The cookie sets the `Secure` flag by default. Disable it for local HTTP testing:
+
+```php
+$middleware = new DoubleSubmitCsrfMiddleware($protection, secure: false);
+```
+
 ## Rate Limit Middleware
 
 Enforces rate limits and returns 429 responses when exceeded. Rate limit headers
