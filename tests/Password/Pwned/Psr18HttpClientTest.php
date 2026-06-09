@@ -102,7 +102,8 @@ final class Psr18HttpClientTest extends TestCase
             ->willReturn($request);
 
         $requestFactory = $this->createMock(RequestFactoryInterface::class);
-        $requestFactory->method('createRequest')
+        $requestFactory->expects($this->once())
+            ->method('createRequest')
             ->with('GET', 'https://example.com')
             ->willReturn($request);
 
