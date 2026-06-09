@@ -76,7 +76,7 @@ security:
   <<: *php-setup
   stage: test
   script:
-    - composer audit --no-dev
+    - composer audit --locked
 
 phpstan:
   <<: *php-setup
