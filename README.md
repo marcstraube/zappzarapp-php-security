@@ -18,23 +18,24 @@ Limiting, SRI, and Audit Logging.
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
 - **Quality-backed** — PHPStan Level 8, Psalm Level 1, 100% Mutation Score,
   Deptrac architecture enforcement
-- **PSR-compatible** — PSR-3 (Logging), PSR-15 (Middleware), PSR-18 (HTTP Client)
+- **PSR-compatible** — PSR-3 (Logging), PSR-15 (Middleware), PSR-18 (HTTP
+  Client)
 
 ## Modules
 
-| Module           | Description                                       | Key Classes                                                        |
-| ---------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
-| **CSP**          | Content Security Policy header building           | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`                 |
-| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.) | `SecurityHeaders`, `SecurityHeadersBuilder`                        |
-| **CSRF**         | Cross-Site Request Forgery protection             | `CsrfProtection`, `CsrfConfig`                                     |
-| **Cookie**       | Secure cookie handling                            | `SecureCookie`, `CookieBuilder`, `CookieOptions`                   |
-| **Password**     | Password validation and hashing                   | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher` |
-| **Sanitization** | Input sanitization (HTML, SQL, URI, Path)         | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                   |
-| **RateLimiting** | Rate limiting with multiple algorithms            | `DefaultRateLimiter`, `RateLimitConfig`                            |
-| **SRI**          | Subresource Integrity hash generation             | `SriHashGenerator`, `IntegrityAttribute`                           |
-| **Analyzer**     | Security header analysis and auditing             | `SecurityHeaderAnalyzer`, `AnalysisResult`                         |
-| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware` |
-| **Logging**      | Security event audit logging                      | `SecurityAuditLogger`, `SecurityEvent`                             |
+| Module           | Description                                         | Key Classes                                                                                                                           |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **CSP**          | Content Security Policy header building             | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`                                                                                    |
+| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)   | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                           |
+| **CSRF**         | Cross-Site Request Forgery protection               | `CsrfProtection`, `CsrfConfig`                                                                                                        |
+| **Cookie**       | Secure cookie handling                              | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                      |
+| **Password**     | Password validation and hashing                     | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                    |
+| **Sanitization** | Input sanitization (HTML, SQL, URI, Path)           | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                      |
+| **RateLimiting** | Rate limiting with multiple algorithms              | `DefaultRateLimiter`, `RateLimitConfig`                                                                                               |
+| **SRI**          | Subresource Integrity hash generation               | `SriHashGenerator`, `IntegrityAttribute`                                                                                              |
+| **Analyzer**     | Security header analysis and auditing               | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                            |
+| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CspMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
+| **Logging**      | Security event audit logging                        | `SecurityAuditLogger`, `SecurityEvent`                                                                                                |
 
 ## Requirements
 
@@ -119,20 +120,20 @@ See the [documentation](docs/) for detailed examples of all modules.
 Each module has detailed API documentation with class references, configuration
 options, and code examples:
 
-| Module                                    | Description                         |
-| ----------------------------------------- | ----------------------------------- |
-| [CSP](docs/csp.md)                        | Content Security Policy with nonces |
-| [Headers](docs/headers.md)                | HSTS, COOP, COEP, CORP, Permissions |
-| [CSRF](docs/csrf.md)                      | Token patterns and validation       |
-| [Cookie](docs/cookie.md)                  | Secure cookie handling              |
-| [Password](docs/password.md)              | Hashing, policies, breach detection |
-| [Sanitization](docs/sanitization.md)      | HTML, URI, path sanitization        |
-| [Rate Limiting](docs/rate-limiting.md)    | Token bucket, sliding window        |
-| [SRI](docs/sri.md)                        | Subresource integrity hashes        |
-| [Analyzer](docs/analyzer.md)             | Security header auditing            |
-| [Middleware](docs/middleware.md)          | PSR-15 middleware                   |
-| [Logging](docs/logging.md)               | Security audit logging              |
-| [Glossary](docs/glossary.md)             | Security terminology reference      |
+| Module                                 | Description                         |
+| -------------------------------------- | ----------------------------------- |
+| [CSP](docs/csp.md)                     | Content Security Policy with nonces |
+| [Headers](docs/headers.md)             | HSTS, COOP, COEP, CORP, Permissions |
+| [CSRF](docs/csrf.md)                   | Token patterns and validation       |
+| [Cookie](docs/cookie.md)               | Secure cookie handling              |
+| [Password](docs/password.md)           | Hashing, policies, breach detection |
+| [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization        |
+| [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window        |
+| [SRI](docs/sri.md)                     | Subresource integrity hashes        |
+| [Analyzer](docs/analyzer.md)           | Security header auditing            |
+| [Middleware](docs/middleware.md)       | PSR-15 middleware                   |
+| [Logging](docs/logging.md)             | Security audit logging              |
+| [Glossary](docs/glossary.md)           | Security terminology reference      |
 
 ## Versioning
 

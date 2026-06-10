@@ -130,6 +130,14 @@ deptrac:
           value: ^Zappzarapp\\Security\\Csrf\\CsrfProtection$
 
     # ==========================================
+    # CORS Module
+    # ==========================================
+    - name: CorsMain
+      collectors:
+        - type: directory
+          value: src/Cors/
+
+    # ==========================================
     # Cookie Module
     # ==========================================
     - name: CookieException
@@ -378,6 +386,9 @@ deptrac:
       - CsrfToken
       - CsrfPattern
 
+    # CORS Module Rules
+    CorsMain: ~
+
     # Cookie Module Rules
     CookieException: ~
     CookieMain:
@@ -449,6 +460,7 @@ deptrac:
       - CspNonce
       - CsrfMain
       - CsrfException
+      - CorsMain
       - CookieMain
       - CookieException
       - RateLimitingMain
