@@ -60,8 +60,8 @@ $middleware = new CspMiddleware(
 ## CSRF Middleware
 
 Validates CSRF tokens on state-changing requests (POST, PUT, DELETE, PATCH).
-Safe methods (GET, HEAD, OPTIONS) pass through with the token stored in
-request attribute `csrf-token`.
+Safe methods (GET, HEAD, OPTIONS) pass through with the token stored in request
+attribute `csrf-token`.
 
 ```php
 use Zappzarapp\Security\Csrf\CsrfProtection;
@@ -77,8 +77,10 @@ $app->add($middleware);
 
 ### Token Source Priority
 
-1. Request header (configured via `CsrfConfig::headerName`, default: `X-CSRF-Token`)
-2. Parsed body field (configured via `CsrfConfig::fieldName`, default: `_csrf_token`)
+1. Request header (configured via `CsrfConfig::headerName`, default:
+   `X-CSRF-Token`)
+2. Parsed body field (configured via `CsrfConfig::fieldName`, default:
+   `_csrf_token`)
 
 ### Using the Token in Forms
 
@@ -110,8 +112,10 @@ $app->add($middleware);
 
 ### Token Source Priority
 
-1. Request header (configured via `CsrfConfig::headerName`, default: `X-CSRF-Token`)
-2. Parsed body field (configured via `CsrfConfig::fieldName`, default: `_csrf_token`)
+1. Request header (configured via `CsrfConfig::headerName`, default:
+   `X-CSRF-Token`)
+2. Parsed body field (configured via `CsrfConfig::fieldName`, default:
+   `_csrf_token`)
 
 ### Using the Signed Token in a SPA
 
@@ -162,12 +166,73 @@ $middleware = new RateLimitMiddleware(
 );
 ```
 
+## CORS Middleware
+
+Applies Cross-Origin Resource Sharing headers and answers preflight (`OPTIONS`)
+requests with a `204`. Requests without an `Origin` header pass through
+untouched; requests from a disallowed origin receive no CORS headers, leaving
+the browser to block the response. A PSR-17 response factory is required to
+build preflight responses.
+
+```php
+use Zappzarapp\Security\Cors\CorsConfig;
+use Zappzarapp\Security\Middleware\CorsMiddleware;
+
+$config     = CorsConfig::forOrigins(['https://app.example.com']);
+$middleware = new CorsMiddleware($config, $responseFactory); // PSR-17 factory
+
+// In Slim:
+$app->add($middleware);
+```
+
+### Configuration
+
+`CorsConfig` is immutable; every `with*()` method returns a new instance.
+Defaults are restrictive — no origins are allowed until configured.
+
+```php
+$config = new CorsConfig(
+    allowedOrigins: ['https://app.example.com', 'https://*.example.com'],
+    allowedMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Total-Count'],
+    allowCredentials: true,
+    maxAge: 3600,
+);
+```
+
+### Origin Matching
+
+| Form              | Example                 | Matches                                    |
+| ----------------- | ----------------------- | ------------------------------------------ |
+| Exact             | `https://example.com`   | only that exact origin                     |
+| Wildcard          | `*`                     | any origin (credentials must be disabled)  |
+| Subdomain pattern | `https://*.example.com` | any subdomain — the `*` must precede a dot |
+
+### Presets
+
+```php
+CorsConfig::permissive();                          // any origin, no credentials
+CorsConfig::forOrigins(['https://app.example.com']); // restrict to given origins
+```
+
+### Security Notes
+
+- Combining the wildcard origin `*` with `allowCredentials: true` throws an
+  `InvalidArgumentException` — browsers reject that combination.
+- `Vary: Origin` is emitted for specific origins so shared caches never serve
+  one origin's CORS headers to another.
+- CR/LF characters in any configured value are rejected (header injection).
+
 ## Combining Middleware
 
 Apply middleware in the correct order (outermost runs first):
 
 ```php
-// Rate limiting first (cheapest check)
+// CORS first — answers preflight OPTIONS cheaply, before any other check
+$app->add(new CorsMiddleware($corsConfig, $responseFactory));
+
+// Rate limiting next (cheap check)
 $app->add(new RateLimitMiddleware($limiter, $responseFactory));
 
 // Then CSRF (blocks invalid state-changing requests)

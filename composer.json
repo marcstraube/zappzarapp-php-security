@@ -8,6 +8,7 @@
     "csp",
     "content-security-policy",
     "csrf",
+    "cors",
     "xss",
     "headers",
     "hsts",
