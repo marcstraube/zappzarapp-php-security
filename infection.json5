@@ -161,7 +161,8 @@
                 "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
                 "Zappzarapp\\Security\\RateLimiting\\RateLimitResult::*",
                 // MySQL-specific SQL in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
         "ConcatOperandRemoval": {
@@ -187,7 +188,8 @@
                 // Truncation marker "..." cosmetic
                 "Zappzarapp\\Security\\Logging\\SecurityAuditLogger::truncateContext",
                 // MySQL-specific SQL in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
         "UnwrapArraySlice": {
@@ -548,6 +550,7 @@
             "ignore": [
                 // PDO getAttribute returns string anyway, cast is defensive
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::__construct",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::__construct",
                 // PDO binds parameters as strings regardless of explicit cast
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment",
                 // EQUIVALENT: PSR-7 getHeaders() keys are always header-name strings;
@@ -563,7 +566,8 @@
                 // URL attribute detection - defense in depth for various element types
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::isUrlAttribute",
                 // MySQL match arm in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
 

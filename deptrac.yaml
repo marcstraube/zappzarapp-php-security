@@ -357,7 +357,8 @@ deptrac:
 
     # CSRF Module Rules
     CsrfException: ~
-    CsrfStorage: ~
+    CsrfStorage:
+      - CsrfException
     CsrfToken:
       - CsrfException
     CsrfValidation:

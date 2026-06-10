@@ -23,14 +23,16 @@ if (!$csrf->validateToken($_POST['_csrf'])) {
 
 ## Classes
 
-| Class                       | Description                       |
-| --------------------------- | --------------------------------- |
-| `CsrfProtection`            | Main CSRF protection handler      |
-| `SynchronizerTokenPattern`  | Server-side token storage pattern |
-| `DoubleSubmitCookiePattern` | Stateless cookie-based pattern    |
-| `SessionCsrfStorage`        | Store tokens in PHP session       |
-| `ArrayCsrfStorage`          | In-memory storage (for testing)   |
-| `CsrfToken`                 | Token value object                |
+| Class                       | Description                         |
+| --------------------------- | ----------------------------------- |
+| `CsrfProtection`            | Main CSRF protection handler        |
+| `SynchronizerTokenPattern`  | Server-side token storage pattern   |
+| `DoubleSubmitCookiePattern` | Stateless cookie-based pattern      |
+| `SessionCsrfStorage`        | Store tokens in PHP session         |
+| `RedisCsrfStorage`          | Store tokens in Redis (distributed) |
+| `PdoCsrfStorage`            | Store tokens in a SQL database      |
+| `ArrayCsrfStorage`          | In-memory storage (for testing)     |
+| `CsrfToken`                 | Token value object                  |
 
 ## Patterns
 
@@ -103,29 +105,59 @@ use Zappzarapp\Security\Csrf\Storage\SessionCsrfStorage;
 $storage = new SessionCsrfStorage();
 ```
 
+### Redis Storage
+
+Distributed storage backed by Redis. Works with the phpredis extension or the
+Predis client. A non-null TTL maps to a Redis key expiry; a null TTL stores the
+token without expiry.
+
+```php
+use Zappzarapp\Security\Csrf\Storage\RedisCsrfStorage;
+
+$storage = new RedisCsrfStorage($redis);            // default prefix "csrf:"
+$storage = new RedisCsrfStorage($redis, 'myapp:');  // custom key prefix
+```
+
+> **Note:** `clear()` enumerates keys with the Redis `KEYS` command, which scans
+> the whole keyspace. Treat it as a maintenance operation, not a hot-path call.
+
+### PDO Storage
+
+Database-backed storage for MySQL, PostgreSQL, or SQLite. Create the table from
+the bundled schema for your driver:
+
+```php
+use Zappzarapp\Security\Csrf\Storage\PdoCsrfStorage;
+
+$pdo->exec(sprintf(PdoCsrfStorage::SCHEMA['sqlite'], 'csrf_tokens', 'csrf_tokens', 'csrf_tokens'));
+
+$storage = new PdoCsrfStorage($pdo);                       // default table "csrf_tokens", prefix "csrf:"
+$storage = new PdoCsrfStorage($pdo, 'tokens', 'myapp:');   // custom table and prefix
+
+// Periodically purge expired tokens (e.g. via cron):
+$storage->cleanup();
+```
+
+The PDO connection must use `PDO::ERRMODE_EXCEPTION`.
+
 ### Custom Storage
 
-Implement `CsrfStorageInterface` for custom backends (Redis, database, etc.).
+Implement `CsrfStorageInterface` for other backends.
 
 ```php
 use Zappzarapp\Security\Csrf\Storage\CsrfStorageInterface;
 
-class RedisCsrfStorage implements CsrfStorageInterface
+final class MyCustomCsrfStorage implements CsrfStorageInterface
 {
-    public function store(string $tokenId, string $token, int $ttl): void
-    {
-        // Store in Redis
-    }
+    public function store(string $key, string $token, ?int $ttl = null): void { /* ... */ }
 
-    public function retrieve(string $tokenId): ?string
-    {
-        // Retrieve from Redis
-    }
+    public function retrieve(string $key): ?string { /* ... */ }
 
-    public function remove(string $tokenId): void
-    {
-        // Remove from Redis
-    }
+    public function remove(string $key): void { /* ... */ }
+
+    public function has(string $key): bool { /* ... */ }
+
+    public function clear(): void { /* ... */ }
 }
 ```
 
