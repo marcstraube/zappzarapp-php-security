@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.1.0...v1.2.0) (2026-06-10)
+
+
+### Features
+
+* **cors:** add PSR-15 CORS middleware ([#71](https://github.com/marcstraube/zappzarapp-php-security/issues/71)) ([1a44aab](https://github.com/marcstraube/zappzarapp-php-security/commit/1a44aab1e8a57dffee7e96cc126f2f5c752a1560))
+* **csrf:** add Double Submit Cookie CSRF middleware ([#66](https://github.com/marcstraube/zappzarapp-php-security/issues/66)) ([dc9c955](https://github.com/marcstraube/zappzarapp-php-security/commit/dc9c9558eeeac9b80df2dec57df29c320b494e05)), closes [#44](https://github.com/marcstraube/zappzarapp-php-security/issues/44)
+* **csrf:** add Redis and PDO CSRF storage backends ([#68](https://github.com/marcstraube/zappzarapp-php-security/issues/68)) ([e5504aa](https://github.com/marcstraube/zappzarapp-php-security/commit/e5504aa0845394df96be7ccbc54aac2208fa5273)), closes [#46](https://github.com/marcstraube/zappzarapp-php-security/issues/46)
+* **headers:** add PSR-7 response support to SecurityHeaderAnalyzer ([#64](https://github.com/marcstraube/zappzarapp-php-security/issues/64)) ([18d610f](https://github.com/marcstraube/zappzarapp-php-security/commit/18d610f21834c4d53ef83ab94cff536b5b97029d))
+
+
+### Documentation
+
+* **analyzer:** document analyzeResponse() PSR-7 support ([#72](https://github.com/marcstraube/zappzarapp-php-security/issues/72)) ([902b4f2](https://github.com/marcstraube/zappzarapp-php-security/commit/902b4f26873445afd8c4e7cb91ae4e587e11bd61))
+
 ## [1.1.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.0.1...v1.1.0) (2026-05-01)
 
 
