@@ -32,7 +32,7 @@ final class SecurityHeadersMiddlewareTest extends TestCase
 
         $appliedHeaders = [];
 
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
         $response->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $response): ResponseInterface {
                 $appliedHeaders[$name] = $value;
@@ -40,7 +40,7 @@ final class SecurityHeadersMiddlewareTest extends TestCase
                 return $response;
             });
 
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler = $this->createStub(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn($response);
 
         $request = $this->createStub(ServerRequestInterface::class);
@@ -78,7 +78,7 @@ final class SecurityHeadersMiddlewareTest extends TestCase
 
         $appliedHeaders = [];
 
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
         $response->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $response): ResponseInterface {
                 $appliedHeaders[$name] = $value;
