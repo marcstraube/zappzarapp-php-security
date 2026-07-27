@@ -1,0 +1,35 @@
+# Auto-detect text files and normalise line endings
+* text=auto
+
+# Export-ignore (excluded from the composer dist archive so consumers only
+# receive src/, docs/, and the package metadata — not the toolchain).
+# Deliberate deviation from the sibling packages: docs/ ships, because it
+# is consumer-facing user documentation.
+/.claude/        export-ignore
+/.github/        export-ignore
+/.gitlab/        export-ignore
+/.idea/          export-ignore
+/bin/            export-ignore
+/build/          export-ignore
+/tests/          export-ignore
+.gitattributes   export-ignore
+.gitignore       export-ignore
+.gitlab-ci.yml   export-ignore
+.markdownlint-cli2.jsonc export-ignore
+.php-cs-fixer.dist.php export-ignore
+.prettierrc.json export-ignore
+.release-please-manifest.json export-ignore
+CONTRIBUTING.md  export-ignore
+captainhook.json export-ignore
+composer.lock    export-ignore
+deptrac.yaml     export-ignore
+infection.json5  export-ignore
+Makefile         export-ignore
+phpdoc.xml       export-ignore
+phpmd.xml        export-ignore
+phpstan.neon     export-ignore
+phpunit.xml.dist export-ignore
+psalm.xml        export-ignore
+rector.php       export-ignore
+release-please-config.json export-ignore
+renovate.json    export-ignore

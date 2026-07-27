@@ -39,15 +39,16 @@ jobs:
           php-version: '8.4'
           tools: composer:v2
 
+      # The CycloneDX plugin lives in require-dev, so install with dev deps;
+      # the `sbom` script passes --omit=dev so the emitted document still
+      # describes only the runtime dependency graph.
       - name: Install dependencies
         if: ${{ steps.release.outputs.release_created }}
-        run: composer install --no-dev --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress
 
       - name: Generate SBOM
         if: ${{ steps.release.outputs.release_created }}
-        run: |
-          composer require cyclonedx/cyclonedx-php-composer --dev
-          composer sbom
+        run: composer sbom
 
       - name: Upload SBOM to release
         if: ${{ steps.release.outputs.release_created }}

@@ -123,7 +123,7 @@
     "infection": "@php vendor/bin/infection --threads=4",
     "deptrac": "@php vendor/bin/deptrac analyse",
     "security": "composer audit --locked",
-    "sbom": "@composer CycloneDX:make-sbom --output-file=sbom.json",
+    "sbom": "@composer CycloneDX:make-sbom --omit=dev --output-format=JSON --output-file=sbom.json",
     "cs-fix": "@php vendor/bin/php-cs-fixer fix",
     "cs-check": "@php vendor/bin/php-cs-fixer fix --dry-run --diff",
     "docs": "@php vendor/bin/phpdoc",
