@@ -95,6 +95,7 @@
       "Zappzarapp\\Security\\Cookie\\": "src/Cookie/",
       "Zappzarapp\\Security\\Password\\": "src/Password/",
       "Zappzarapp\\Security\\Sanitization\\": "src/Sanitization/",
+      "Zappzarapp\\Security\\Scanner\\": "src/Scanner/",
       "Zappzarapp\\Security\\RateLimiting\\": "src/RateLimiting/",
       "Zappzarapp\\Security\\Sri\\": "src/Sri/",
       "Zappzarapp\\Security\\Secrets\\": "src/Secrets/",
@@ -113,6 +114,7 @@
       "Zappzarapp\\Security\\Tests\\Cookie\\": "tests/Cookie/",
       "Zappzarapp\\Security\\Tests\\Password\\": "tests/Password/",
       "Zappzarapp\\Security\\Tests\\Sanitization\\": "tests/Sanitization/",
+      "Zappzarapp\\Security\\Tests\\Scanner\\": "tests/Scanner/",
       "Zappzarapp\\Security\\Tests\\RateLimiting\\": "tests/RateLimiting/",
       "Zappzarapp\\Security\\Tests\\Sri\\": "tests/Sri/",
       "Zappzarapp\\Security\\Tests\\Secrets\\": "tests/Secrets/",
@@ -149,5 +151,8 @@
       "@check",
       "@infection"
     ]
-  }
+  },
+  "bin": [
+    "bin/security-scan"
+  ]
 }

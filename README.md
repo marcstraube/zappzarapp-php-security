@@ -12,7 +12,7 @@ Limiting, SRI, Secrets Loading, Encryption, Session Security, and Audit Logging.
 
 ## Highlights
 
-- **All-in-one** — 14 security modules in a single, composable package
+- **All-in-one** — 15 security modules in a single, composable package
 - **Secure by default** — strict CSP, no `unsafe-*`, HTTPS-first
 - **Framework-agnostic** — works with any PHP 8.4+ application
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
@@ -37,6 +37,7 @@ Limiting, SRI, Secrets Loading, Encryption, Session Security, and Audit Logging.
 | **Secrets**      | Docker/file-based secret loading                    | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                     |
 | **Session**      | Session hardening and fixation protection           | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                |
 | **Analyzer**     | Security header analysis and auditing               | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                            |
+| **Scanner**      | CLI security header scanner                         | `ScanCommand`, `StreamHeaderFetcher`                                                                                                  |
 | **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CspMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
 | **Logging**      | Security event audit logging                        | `SecurityAuditLogger`, `SecurityEvent`                                                                                                |
 
@@ -137,6 +138,7 @@ options, and code examples:
 | [Secrets](docs/secrets.md)             | Docker/file-based secret loading    |
 | [Session](docs/session.md)             | Session hardening, fingerprinting   |
 | [Analyzer](docs/analyzer.md)           | Security header auditing            |
+| [Scanner](docs/scanner.md)             | CLI header scanner for CI           |
 | [Middleware](docs/middleware.md)       | PSR-15 middleware                   |
 | [Logging](docs/logging.md)             | Security audit logging              |
 | [Glossary](docs/glossary.md)           | Security terminology reference      |
