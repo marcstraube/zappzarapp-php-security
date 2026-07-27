@@ -380,6 +380,9 @@
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\InMemoryStorage::*",
                 // Memory clearing is security defense-in-depth, not functionally testable
                 "Zappzarapp\\Security\\Password\\Security\\ClearsMemory::*",
+                // sodium_memzero call in destructor - equivalent to the explicit null
+                // assignment from the test's perspective, buffer zeroing is not observable
+                "Zappzarapp\\Security\\Secrets\\SecretValue::__destruct",
                 // setAttribute re-assignment - attribute already set by DOMDocument parse
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::*",
                 // CSRF token cleanup - defense in depth

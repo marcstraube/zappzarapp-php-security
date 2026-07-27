@@ -30,6 +30,7 @@ src/
 ├── Sanitization/   # Input Sanitization (HTML, URI, Path, SQL)
 ├── RateLimiting/   # Rate Limiting (Token Bucket, Sliding Window)
 ├── Sri/            # Subresource Integrity
+├── Secrets/        # Docker/file-based Secret Loading
 └── Logging/        # Security Audit Logging
 
 tests/
@@ -48,6 +49,7 @@ tests/
 | Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization    |
 | RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window         |
 | Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                  |
+| Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
 | Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging         |
 
 ## Configuration Files
@@ -112,21 +114,22 @@ tests/
 
 ## Key Entry Points
 
-| Module       | Primary Class            | Purpose                        |
-| ------------ | ------------------------ | ------------------------------ |
-| Csp          | `HeaderBuilder`          | Build CSP headers              |
-| Headers      | `SecurityHeadersBuilder` | Build all security headers     |
-| Csrf         | `CsrfProtection`         | Token generation & validation  |
-| Cookie       | `CookieBuilder`          | Secure cookie construction     |
-| Password     | `DefaultPasswordHasher`  | Argon2id hashing with pepper   |
-| Password     | `PasswordPolicy`         | Policy-based validation        |
-| Password     | `PwnedPasswordChecker`   | HIBP breach detection          |
-| Sanitization | `HtmlSanitizer`          | XSS-safe HTML sanitization     |
-| Sanitization | `UriSanitizer`           | URI validation, SSRF blocking  |
-| Sanitization | `PathValidator`          | Directory traversal prevention |
-| RateLimiting | `DefaultRateLimiter`     | Rate limiting with storage     |
-| Sri          | `SriHashGenerator`       | SRI hash generation            |
-| Logging      | `SecurityAuditLogger`    | Security event logging         |
+| Module       | Primary Class            | Purpose                          |
+| ------------ | ------------------------ | -------------------------------- |
+| Csp          | `HeaderBuilder`          | Build CSP headers                |
+| Headers      | `SecurityHeadersBuilder` | Build all security headers       |
+| Csrf         | `CsrfProtection`         | Token generation & validation    |
+| Cookie       | `CookieBuilder`          | Secure cookie construction       |
+| Password     | `DefaultPasswordHasher`  | Argon2id hashing with pepper     |
+| Password     | `PasswordPolicy`         | Policy-based validation          |
+| Password     | `PwnedPasswordChecker`   | HIBP breach detection            |
+| Sanitization | `HtmlSanitizer`          | XSS-safe HTML sanitization       |
+| Sanitization | `UriSanitizer`           | URI validation, SSRF blocking    |
+| Sanitization | `PathValidator`          | Directory traversal prevention   |
+| RateLimiting | `DefaultRateLimiter`     | Rate limiting with storage       |
+| Sri          | `SriHashGenerator`       | SRI hash generation              |
+| Secrets      | `SecretLoader`           | Docker/file-based secret loading |
+| Logging      | `SecurityAuditLogger`    | Security event logging           |
 
 ## Architecture
 
@@ -195,7 +198,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Scopes
 
 `csp`, `headers`, `csrf`, `cookie`, `password`, `sanitization`, `rate-limiting`,
-`sri`, `logging`
+`sri`, `secrets`, `logging`
 
 ## CI/CD
 
