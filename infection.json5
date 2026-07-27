@@ -383,6 +383,8 @@
                 // sodium_memzero call in destructor - equivalent to the explicit null
                 // assignment from the test's perspective, buffer zeroing is not observable
                 "Zappzarapp\\Security\\Secrets\\SecretValue::__destruct",
+                // Key-copy clearing after sodium AEAD calls - not functionally observable
+                "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
                 // setAttribute re-assignment - attribute already set by DOMDocument parse
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::*",
                 // CSRF token cleanup - defense in depth
@@ -718,7 +720,9 @@
                 // SRI hash generator cleanup
                 "Zappzarapp\\Security\\Sri\\SriHashGenerator::*",
                 // Password hashing cleanup
-                "Zappzarapp\\Security\\Password\\Hashing\\*"
+                "Zappzarapp\\Security\\Password\\Hashing\\*",
+                // Key-copy clearing in finally - sodium AEAD calls don't throw for valid inputs
+                "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*"
             ]
         },
         "PublicVisibility": {

@@ -8,11 +8,11 @@
 
 Comprehensive PHP security library providing CSP, Security Headers, CSRF
 protection, Secure Cookies, Password Validation, Input Sanitization, Rate
-Limiting, SRI, Secrets Loading, and Audit Logging.
+Limiting, SRI, Secrets Loading, Encryption, and Audit Logging.
 
 ## Highlights
 
-- **All-in-one** — 12 security modules in a single, composable package
+- **All-in-one** — 13 security modules in a single, composable package
 - **Secure by default** — strict CSP, no `unsafe-*`, HTTPS-first
 - **Framework-agnostic** — works with any PHP 8.4+ application
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
@@ -29,6 +29,7 @@ Limiting, SRI, Secrets Loading, and Audit Logging.
 | **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)   | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                           |
 | **CSRF**         | Cross-Site Request Forgery protection               | `CsrfProtection`, `CsrfConfig`                                                                                                        |
 | **Cookie**       | Secure cookie handling                              | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                      |
+| **Encryption**   | XChaCha20-Poly1305 authenticated encryption         | `SymmetricEncryptor`, `EnvelopeEncryptor`, `EncryptionKey`                                                                            |
 | **Password**     | Password validation and hashing                     | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                    |
 | **Sanitization** | Input sanitization (HTML, SQL, URI, Path)           | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                      |
 | **RateLimiting** | Rate limiting with multiple algorithms              | `DefaultRateLimiter`, `RateLimitConfig`                                                                                               |
@@ -127,6 +128,7 @@ options, and code examples:
 | [Headers](docs/headers.md)             | HSTS, COOP, COEP, CORP, Permissions |
 | [CSRF](docs/csrf.md)                   | Token patterns and validation       |
 | [Cookie](docs/cookie.md)               | Secure cookie handling              |
+| [Encryption](docs/encryption.md)       | Authenticated encryption, envelopes |
 | [Password](docs/password.md)           | Hashing, policies, breach detection |
 | [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization        |
 | [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window        |

@@ -26,6 +26,7 @@ src/
 ├── Headers/        # Security Headers (HSTS, COOP, COEP, etc.)
 ├── Csrf/           # CSRF Protection
 ├── Cookie/         # Secure Cookie Handling
+├── Encryption/     # Authenticated Encryption (XChaCha20-Poly1305)
 ├── Password/       # Password Hashing & Validation
 ├── Sanitization/   # Input Sanitization (HTML, URI, Path, SQL)
 ├── RateLimiting/   # Rate Limiting (Token Bucket, Sliding Window)
@@ -45,6 +46,7 @@ tests/
 | Headers      | `Zappzarapp\Security\Headers\`      | HSTS, COOP, COEP, Permissions-Policy |
 | Csrf         | `Zappzarapp\Security\Csrf\`         | Token-based CSRF protection          |
 | Cookie       | `Zappzarapp\Security\Cookie\`       | Secure cookie handling               |
+| Encryption   | `Zappzarapp\Security\Encryption\`   | XChaCha20-Poly1305, envelope pattern |
 | Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking       |
 | Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization    |
 | RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window         |
@@ -120,6 +122,7 @@ tests/
 | Headers      | `SecurityHeadersBuilder` | Build all security headers       |
 | Csrf         | `CsrfProtection`         | Token generation & validation    |
 | Cookie       | `CookieBuilder`          | Secure cookie construction       |
+| Encryption   | `SymmetricEncryptor`     | Authenticated encryption         |
 | Password     | `DefaultPasswordHasher`  | Argon2id hashing with pepper     |
 | Password     | `PasswordPolicy`         | Policy-based validation          |
 | Password     | `PwnedPasswordChecker`   | HIBP breach detection            |
@@ -197,8 +200,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### Scopes
 
-`csp`, `headers`, `csrf`, `cookie`, `password`, `sanitization`, `rate-limiting`,
-`sri`, `secrets`, `logging`
+`csp`, `headers`, `csrf`, `cookie`, `encryption`, `password`, `sanitization`,
+`rate-limiting`, `sri`, `secrets`, `logging`
 
 ## CI/CD
 

@@ -11,6 +11,7 @@ vulnerabilities.
 | [Headers](headers.md)             | Security headers (HSTS, COOP, COEP, CORP, Permissions-Policy)                              |
 | [CSRF](csrf.md)                   | Cross-Site Request Forgery protection with synchronizer tokens and double-submit cookies   |
 | [Cookie](cookie.md)               | Secure cookie handling with encryption, SameSite, and HttpOnly support                     |
+| [Encryption](encryption.md)       | XChaCha20-Poly1305 authenticated encryption with envelope pattern support                  |
 | [Password](password.md)           | Secure password hashing with Argon2id/bcrypt, pepper support, and pwned password detection |
 | [Sanitization](sanitization.md)   | HTML, URI, and path sanitization to prevent XSS and injection attacks                      |
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
