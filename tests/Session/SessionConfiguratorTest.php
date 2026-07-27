@@ -115,17 +115,16 @@ final class SessionConfiguratorTest extends TestCase
 
         (new SessionConfigurator())->configure(new SessionConfig());
 
-        $this->assertSame(
-            [
-                'lifetime' => 0,
-                'path'     => '/',
-                'domain'   => '',
-                'secure'   => true,
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ],
-            session_get_cookie_params()
-        );
+        // Individual assertions instead of a full-array comparison:
+        // PHP 8.5 adds a 'partitioned' key to session_get_cookie_params()
+        $params = session_get_cookie_params();
+
+        $this->assertSame(0, $params['lifetime']);
+        $this->assertSame('/', $params['path']);
+        $this->assertSame('', $params['domain']);
+        $this->assertTrue($params['secure']);
+        $this->assertTrue($params['httponly']);
+        $this->assertSame('Lax', $params['samesite']);
     }
 
     #[Test]
