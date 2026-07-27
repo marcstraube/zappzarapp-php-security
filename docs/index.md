@@ -15,6 +15,7 @@ vulnerabilities.
 | [Sanitization](sanitization.md)   | HTML, URI, and path sanitization to prevent XSS and injection attacks                      |
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
 | [SRI](sri.md)                     | Subresource Integrity hash generation and verification with SSRF protection                |
+| [Secrets](secrets.md)             | Docker/file-based secret loading with leak-resistant SecretValue wrapper                   |
 | [Analyzer](analyzer.md)           | Security header analyzer for auditing and CI integration                                   |
 | [Middleware](middleware.md)       | PSR-15 middleware for security headers, CSP, CSRF, CORS, and rate limiting                 |
 | [Logging](logging.md)             | Security audit logging with correlation IDs                                                |

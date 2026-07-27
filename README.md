@@ -8,11 +8,11 @@
 
 Comprehensive PHP security library providing CSP, Security Headers, CSRF
 protection, Secure Cookies, Password Validation, Input Sanitization, Rate
-Limiting, SRI, and Audit Logging.
+Limiting, SRI, Secrets Loading, and Audit Logging.
 
 ## Highlights
 
-- **All-in-one** — 11 security modules in a single, composable package
+- **All-in-one** — 12 security modules in a single, composable package
 - **Secure by default** — strict CSP, no `unsafe-*`, HTTPS-first
 - **Framework-agnostic** — works with any PHP 8.4+ application
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
@@ -33,6 +33,7 @@ Limiting, SRI, and Audit Logging.
 | **Sanitization** | Input sanitization (HTML, SQL, URI, Path)           | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                      |
 | **RateLimiting** | Rate limiting with multiple algorithms              | `DefaultRateLimiter`, `RateLimitConfig`                                                                                               |
 | **SRI**          | Subresource Integrity hash generation               | `SriHashGenerator`, `IntegrityAttribute`                                                                                              |
+| **Secrets**      | Docker/file-based secret loading                    | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                     |
 | **Analyzer**     | Security header analysis and auditing               | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                            |
 | **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CspMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
 | **Logging**      | Security event audit logging                        | `SecurityAuditLogger`, `SecurityEvent`                                                                                                |
@@ -130,6 +131,7 @@ options, and code examples:
 | [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization        |
 | [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window        |
 | [SRI](docs/sri.md)                     | Subresource integrity hashes        |
+| [Secrets](docs/secrets.md)             | Docker/file-based secret loading    |
 | [Analyzer](docs/analyzer.md)           | Security header auditing            |
 | [Middleware](docs/middleware.md)       | PSR-15 middleware                   |
 | [Logging](docs/logging.md)             | Security audit logging              |

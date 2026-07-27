@@ -290,6 +290,29 @@ deptrac:
           value: ^Zappzarapp\\Security\\Sri\\FileGetContentsHttpClient$
 
     # ==========================================
+    # Secrets Module
+    # ==========================================
+    - name: SecretsException
+      collectors:
+        - type: directory
+          value: src/Secrets/Exception/
+
+    - name: SecretsMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\SecretName$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\SecretValue$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\SecretSourceInterface$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\FileSecretSource$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\EnvSecretSource$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Secrets\\SecretLoader$
+
+    # ==========================================
     # Logging Module
     # ==========================================
     - name: Logging
@@ -446,6 +469,12 @@ deptrac:
     SriMain:
       - SriException
       - SanitizationUri  # SSRF protection via PrivateNetworkValidator
+
+    # Secrets Module Rules
+    SecretsException: ~
+    SecretsMain:
+      - SecretsException
+      - PasswordSecurity # ClearsMemory trait for sodium_memzero()
 
     # Logging Module Rules (depends on PSR-3 LoggerInterface)
     Logging:
