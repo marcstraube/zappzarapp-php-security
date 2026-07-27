@@ -38,7 +38,7 @@ final readonly class TextScanFormatter implements ScanReportFormatterInterface
     public function format(string $url, AnalysisResult $result): string
     {
         $lines   = [];
-        $lines[] = sprintf('Security header scan for %s', $url);
+        $lines[] = sprintf('Security header scan for %s', $this->sanitize($url));
         $lines[] = '';
 
         if ($result->isClean()) {
@@ -49,7 +49,7 @@ final readonly class TextScanFormatter implements ScanReportFormatterInterface
 
         foreach ($result->findings() as $finding) {
             $lines[] = $this->formatFinding($finding);
-            $lines[] = sprintf('  fix: %s', $finding->recommendation);
+            $lines[] = sprintf('  fix: %s', $this->sanitize($finding->recommendation));
         }
 
         $lines[] = '';
@@ -66,7 +66,28 @@ final readonly class TextScanFormatter implements ScanReportFormatterInterface
             $label = self::SEVERITY_STYLES[$finding->severity->value] . $label . self::ANSI_RESET;
         }
 
-        return sprintf('%s %s: %s', $label, $finding->header, $finding->message);
+        return sprintf(
+            '%s %s: %s',
+            $label,
+            $this->sanitize($finding->header),
+            $this->sanitize($finding->message)
+        );
+    }
+
+    /**
+     * Strip terminal control bytes from server-controlled text
+     *
+     * Analyzer findings embed raw response header values and CSP directive
+     * names, which a malicious server can lace with ANSI/OSC escape
+     * sequences (ESC, other C0 controls, DEL) to rewrite the operator's
+     * terminal and forge a clean verdict. Only CR/LF are blocked by the
+     * HTTP layer; everything else must be stripped here before it reaches
+     * the terminal. The formatter's own color codes are added afterwards
+     * and are unaffected.
+     */
+    private function sanitize(string $text): string
+    {
+        return preg_replace('/[\x00-\x1F\x7F]/', '', $text) ?? '';
     }
 
     private function formatSummary(AnalysisResult $result): string
