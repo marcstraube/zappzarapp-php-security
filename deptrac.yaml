@@ -130,6 +130,14 @@ deptrac:
           value: ^Zappzarapp\\Security\\Csrf\\CsrfProtection$
 
     # ==========================================
+    # CORS Module
+    # ==========================================
+    - name: CorsMain
+      collectors:
+        - type: directory
+          value: src/Cors/
+
+    # ==========================================
     # Cookie Module
     # ==========================================
     - name: CookieException
@@ -339,7 +347,8 @@ deptrac:
     HeadersPermissionsPolicy:
       - HeadersException
       - HeadersValidation
-    HeadersAnalyzer: ~
+    HeadersAnalyzer:
+      - External
     HeadersBuilder:
       - HeadersMain
       - HeadersEnums
@@ -356,7 +365,8 @@ deptrac:
 
     # CSRF Module Rules
     CsrfException: ~
-    CsrfStorage: ~
+    CsrfStorage:
+      - CsrfException
     CsrfToken:
       - CsrfException
     CsrfValidation:
@@ -375,6 +385,9 @@ deptrac:
       - CsrfStorage
       - CsrfToken
       - CsrfPattern
+
+    # CORS Module Rules
+    CorsMain: ~
 
     # Cookie Module Rules
     CookieException: ~
@@ -447,6 +460,9 @@ deptrac:
       - CspNonce
       - CsrfMain
       - CsrfException
+      - CorsMain
+      - CookieMain
+      - CookieException
       - RateLimitingMain
       - RateLimitingException
       - External

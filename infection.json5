@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/infection/infection/0.29.0/resources/schema.json",
+    "$schema": "https://raw.githubusercontent.com/infection/infection/0.33.2/resources/schema.json",
     "source": {
         "directories": ["src"]
     },
@@ -161,7 +161,8 @@
                 "Zappzarapp\\Security\\RateLimiting\\Algorithm\\*",
                 "Zappzarapp\\Security\\RateLimiting\\RateLimitResult::*",
                 // MySQL-specific SQL in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
         "ConcatOperandRemoval": {
@@ -187,7 +188,8 @@
                 // Truncation marker "..." cosmetic
                 "Zappzarapp\\Security\\Logging\\SecurityAuditLogger::truncateContext",
                 // MySQL-specific SQL in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
         "UnwrapArraySlice": {
@@ -548,8 +550,14 @@
             "ignore": [
                 // PDO getAttribute returns string anyway, cast is defensive
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::__construct",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::__construct",
                 // PDO binds parameters as strings regardless of explicit cast
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment",
+                // EQUIVALENT: PSR-7 getHeaders() keys are always header-name strings;
+                // the cast only satisfies the int|string array-key type. Dropping it
+                // yields an identical array because non-numeric string keys are never
+                // coerced, so no test can distinguish the mutant.
+                "Zappzarapp\\Security\\Headers\\Analyzer\\SecurityHeaderAnalyzer::analyzeResponse"
             ]
         },
         "MatchArmRemoval": {
@@ -558,7 +566,8 @@
                 // URL attribute detection - defense in depth for various element types
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::isUrlAttribute",
                 // MySQL match arm in upsert() — untestable without MySQL
-                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert"
+                "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::upsert",
+                "Zappzarapp\\Security\\Csrf\\Storage\\PdoCsrfStorage::upsert"
             ]
         },
 

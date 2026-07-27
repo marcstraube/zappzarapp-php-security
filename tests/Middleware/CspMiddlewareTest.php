@@ -33,7 +33,7 @@ final class CspMiddlewareTest extends TestCase
 
         $appliedHeaders = [];
 
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
         $response->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $response): ResponseInterface {
                 $appliedHeaders[$name] = $value;
@@ -41,7 +41,7 @@ final class CspMiddlewareTest extends TestCase
                 return $response;
             });
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('withAttribute')->willReturn($request);
 
         $handler = $this->createStub(RequestHandlerInterface::class);
@@ -61,7 +61,7 @@ final class CspMiddlewareTest extends TestCase
 
         $appliedHeaders = [];
 
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
         $response->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $response): ResponseInterface {
                 $appliedHeaders[$name] = $value;
@@ -69,7 +69,7 @@ final class CspMiddlewareTest extends TestCase
                 return $response;
             });
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('withAttribute')->willReturn($request);
 
         $handler = $this->createStub(RequestHandlerInterface::class);
@@ -111,7 +111,7 @@ final class CspMiddlewareTest extends TestCase
 
         $storedProvider = null;
 
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('withAttribute')
             ->willReturnCallback(function (string $name, mixed $value) use (&$storedProvider, $request): ServerRequestInterface {
                 if ($name === CspMiddleware::NONCE_ATTRIBUTE) {

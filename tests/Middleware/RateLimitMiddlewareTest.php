@@ -52,12 +52,12 @@ final class RateLimitMiddlewareTest extends TestCase
     {
         $result = RateLimitResult::denied(10, time() + 60, 60);
 
-        $limiter = $this->createMock(RateLimiter::class);
+        $limiter = $this->createStub(RateLimiter::class);
         $limiter->method('consume')->willReturn($result);
 
         $appliedHeaders = [];
 
-        $deniedResponse = $this->createMock(ResponseInterface::class);
+        $deniedResponse = $this->createStub(ResponseInterface::class);
         $deniedResponse->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $deniedResponse): ResponseInterface {
                 $appliedHeaders[$name] = $value;
@@ -90,7 +90,7 @@ final class RateLimitMiddlewareTest extends TestCase
 
         $appliedHeaders = [];
 
-        $response = $this->createMock(ResponseInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
         $response->method('withHeader')
             ->willReturnCallback(function (string $name, string $value) use (&$appliedHeaders, $response): ResponseInterface {
                 $appliedHeaders[$name] = $value;

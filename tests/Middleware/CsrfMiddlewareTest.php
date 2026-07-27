@@ -9,7 +9,7 @@ namespace Zappzarapp\Security\Tests\Middleware;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -213,8 +213,8 @@ final class CsrfMiddlewareTest extends TestCase
         string $method,
         ?string $headerToken = null,
         ?string $bodyToken = null,
-    ): ServerRequestInterface&MockObject {
-        $request = $this->createMock(ServerRequestInterface::class);
+    ): ServerRequestInterface&Stub {
+        $request = $this->createStub(ServerRequestInterface::class);
         $request->method('getMethod')->willReturn($method);
         $request->method('withAttribute')->willReturn($request);
         $request->method('getHeaderLine')

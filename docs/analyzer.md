@@ -27,24 +27,41 @@ foreach ($result->findings() as $finding) {
 }
 ```
 
+## Analyzing a PSR-7 Response
+
+If you already have a PSR-7 response, pass it to `analyzeResponse()` instead of
+extracting the headers yourself. It reads the response headers and runs the same
+checks as `analyze()`. This requires the `psr/http-message` package.
+
+```php
+use Psr\Http\Message\ResponseInterface;
+
+/** @var ResponseInterface $response */
+$result = $analyzer->analyzeResponse($response);
+
+if ($result->hasHighOrAbove()) {
+    // Handle missing or weak security headers
+}
+```
+
 ## Classes
 
-| Class                      | Description                                    |
-| -------------------------- | ---------------------------------------------- |
-| `SecurityHeaderAnalyzer`   | Analyzes headers and returns findings          |
-| `AnalysisResult`           | Immutable collection of findings               |
-| `Finding`                  | Single issue with header, severity, and advice |
-| `FindingSeverity`          | Enum: CRITICAL, HIGH, MEDIUM, LOW, INFO        |
+| Class                    | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `SecurityHeaderAnalyzer` | Analyzes headers and returns findings          |
+| `AnalysisResult`         | Immutable collection of findings               |
+| `Finding`                | Single issue with header, severity, and advice |
+| `FindingSeverity`        | Enum: CRITICAL, HIGH, MEDIUM, LOW, INFO        |
 
 ## Severity Levels
 
-| Level    | Meaning                                                   |
-| -------- | --------------------------------------------------------- |
-| CRITICAL | Immediate security risk                                   |
-| HIGH     | Missing essential header or dangerous misconfiguration     |
-| MEDIUM   | Suboptimal configuration that weakens security             |
-| LOW      | Missing recommended header with limited impact             |
-| INFO     | Optional header not present, informational only            |
+| Level    | Meaning                                                |
+| -------- | ------------------------------------------------------ |
+| CRITICAL | Immediate security risk                                |
+| HIGH     | Missing essential header or dangerous misconfiguration |
+| MEDIUM   | Suboptimal configuration that weakens security         |
+| LOW      | Missing recommended header with limited impact         |
+| INFO     | Optional header not present, informational only        |
 
 ## Checks
 

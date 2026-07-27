@@ -115,7 +115,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Security audit
-        run: composer audit --no-dev
+        run: composer audit --locked
 
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse
@@ -151,7 +151,7 @@ jobs:
           path: sbom.json
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
