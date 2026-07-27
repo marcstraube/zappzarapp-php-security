@@ -290,6 +290,27 @@ deptrac:
           value: ^Zappzarapp\\Security\\Sri\\FileGetContentsHttpClient$
 
     # ==========================================
+    # Encryption Module
+    # ==========================================
+    - name: EncryptionException
+      collectors:
+        - type: directory
+          value: src/Encryption/Exception/
+
+    - name: EncryptionMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\EncryptionKey$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\Ciphertext$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\SymmetricEncryptor$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\EnvelopeCiphertext$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\EnvelopeEncryptor$
+
+    # ==========================================
     # Secrets Module
     # ==========================================
     - name: SecretsException
@@ -469,6 +490,14 @@ deptrac:
     SriMain:
       - SriException
       - SanitizationUri  # SSRF protection via PrivateNetworkValidator
+
+    # Encryption Module Rules
+    EncryptionException: ~
+    EncryptionMain:
+      - EncryptionException
+      - SecretsMain # EncryptionKey wraps SecretValue, loads keys via Secrets module
+      - SecretsException # SecretValue constructor throws InvalidSecretValueException
+      - PasswordSecurity # ClearsMemory trait for sodium_memzero()
 
     # Secrets Module Rules
     SecretsException: ~
