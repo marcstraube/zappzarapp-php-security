@@ -370,7 +370,9 @@
                 // Blocked scheme handling - tested via expectException
                 "Zappzarapp\\Security\\Sanitization\\Uri\\UriSanitizer::validate",
                 // IDN validation - defense in depth
-                "Zappzarapp\\Security\\Sanitization\\Uri\\UriSanitizer::validateIdnHost"
+                "Zappzarapp\\Security\\Sanitization\\Uri\\UriSanitizer::validateIdnHost",
+                // URL validation - the accept path requires real network calls
+                "Zappzarapp\\Security\\Scanner\\StreamHeaderFetcher::assertScannableUrl"
             ]
         },
         "MethodCallRemoval": {
@@ -475,6 +477,13 @@
                 "Zappzarapp\\Security\\Cookie\\Exception\\InvalidCookieOptionsException::truncate"
             ]
         },
+        "UnwrapArrayMap": {
+            "ignore": [
+                // EQUIVALENT while Finding's public properties match the report schema:
+                // the explicit map keeps the JSON wire format independent of the class
+                "Zappzarapp\\Security\\Scanner\\JsonScanFormatter::format"
+            ]
+        },
         "UnwrapStrRepeat": {
             "ignore": [
                 // Memory clearing uses str_repeat for null bytes - security critical but hard to observe
@@ -495,6 +504,8 @@
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\MemcachedStorage::*",
                 // Driver check — only testable with SQLite, MySQL branch untestable
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\PdoStorage::increment",
+                // URL validation false check - the accept path requires real network calls
+                "Zappzarapp\\Security\\Scanner\\StreamHeaderFetcher::assertScannableUrl",
                 // dns_get_record false check - requires real network with specific
                 // failure scenarios. gethostbyname fallback makes this path redundant
                 // for most hosts.
@@ -646,7 +657,9 @@
                 // Testing requires real network calls, strtolower is defensive
                 "Zappzarapp\\Security\\Sri\\FileGetContentsHttpClient::get",
                 // ResourceFetcher scheme validation - defensive normalization
-                "Zappzarapp\\Security\\Sri\\ResourceFetcher::fetch"
+                "Zappzarapp\\Security\\Sri\\ResourceFetcher::fetch",
+                // Case-insensitive scheme check - accepting HTTPS:// requires real network calls
+                "Zappzarapp\\Security\\Scanner\\StreamHeaderFetcher::assertScannableUrl"
             ]
         },
 

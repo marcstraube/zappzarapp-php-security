@@ -311,6 +311,29 @@ deptrac:
           value: ^Zappzarapp\\Security\\Encryption\\EnvelopeEncryptor$
 
     # ==========================================
+    # Scanner Module
+    # ==========================================
+    - name: ScannerException
+      collectors:
+        - type: directory
+          value: src/Scanner/Exception/
+
+    - name: ScannerMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\HeaderFetcherInterface$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\StreamHeaderFetcher$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\ScanReportFormatterInterface$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\TextScanFormatter$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\JsonScanFormatter$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Scanner\\ScanCommand$
+
+    # ==========================================
     # Secrets Module
     # ==========================================
     - name: SecretsException
@@ -523,6 +546,12 @@ deptrac:
       - SecretsMain # EncryptionKey wraps SecretValue, loads keys via Secrets module
       - SecretsException # SecretValue constructor throws InvalidSecretValueException
       - PasswordSecurity # ClearsMemory trait for sodium_memzero()
+
+    # Scanner Module Rules
+    ScannerException: ~
+    ScannerMain:
+      - ScannerException
+      - HeadersAnalyzer # SecurityHeaderAnalyzer, AnalysisResult, Finding, FindingSeverity
 
     # Secrets Module Rules
     SecretsException: ~

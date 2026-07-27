@@ -30,6 +30,7 @@ src/
 ├── Password/       # Password Hashing & Validation
 ├── Sanitization/   # Input Sanitization (HTML, URI, Path, SQL)
 ├── RateLimiting/   # Rate Limiting (Token Bucket, Sliding Window)
+├── Scanner/        # CLI Security Header Scanner (bin/security-scan)
 ├── Sri/            # Subresource Integrity
 ├── Secrets/        # Docker/file-based Secret Loading
 ├── Session/        # Session Security (Fixation, Fingerprinting, Timeouts)
@@ -51,6 +52,7 @@ tests/
 | Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking       |
 | Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization    |
 | RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window         |
+| Scanner      | `Zappzarapp\Security\Scanner\`      | CLI security header scanner          |
 | Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                  |
 | Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
 | Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting  |
@@ -132,6 +134,7 @@ tests/
 | Sanitization | `UriSanitizer`           | URI validation, SSRF blocking    |
 | Sanitization | `PathValidator`          | Directory traversal prevention   |
 | RateLimiting | `DefaultRateLimiter`     | Rate limiting with storage       |
+| Scanner      | `ScanCommand`            | CLI security header scanning     |
 | Sri          | `SriHashGenerator`       | SRI hash generation              |
 | Secrets      | `SecretLoader`           | Docker/file-based secret loading |
 | Session      | `SessionGuard`           | Session security validation      |
@@ -204,7 +207,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Scopes
 
 `csp`, `headers`, `csrf`, `cookie`, `encryption`, `password`, `sanitization`,
-`rate-limiting`, `sri`, `secrets`, `session`, `logging`
+`rate-limiting`, `scanner`, `sri`, `secrets`, `session`, `logging`
 
 ## CI/CD
 
