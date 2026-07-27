@@ -334,6 +334,29 @@ deptrac:
           value: ^Zappzarapp\\Security\\Secrets\\SecretLoader$
 
     # ==========================================
+    # Session Module
+    # ==========================================
+    - name: SessionException
+      collectors:
+        - type: directory
+          value: src/Session/Exception/
+
+    - name: SessionMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionConfig$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionConfigurator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionContext$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionFingerprint$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionGuard$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Session\\SessionValidationResult$
+
+    # ==========================================
     # Logging Module
     # ==========================================
     - name: Logging
@@ -358,6 +381,8 @@ deptrac:
           value: ^Psr\\Log\\.*
         - type: classLike
           value: ^Psr\\Http\\.*
+        - type: classLike
+          value: ^Psr\\Clock\\.*
 
   ruleset:
     # CSP Module Rules
@@ -504,6 +529,13 @@ deptrac:
     SecretsMain:
       - SecretsException
       - PasswordSecurity # ClearsMemory trait for sodium_memzero()
+
+    # Session Module Rules
+    SessionException: ~
+    SessionMain:
+      - SessionException
+      - CookieMain # SameSitePolicy enum for the session cookie
+      - External # PSR-20 ClockInterface
 
     # Logging Module Rules (depends on PSR-3 LoggerInterface)
     Logging:

@@ -15,6 +15,7 @@ vulnerabilities.
 | [Password](password.md)           | Secure password hashing with Argon2id/bcrypt, pepper support, and pwned password detection |
 | [Sanitization](sanitization.md)   | HTML, URI, and path sanitization to prevent XSS and injection attacks                      |
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
+| [Session](session.md)             | Session hardening: fixation protection, fingerprinting, timeouts                           |
 | [SRI](sri.md)                     | Subresource Integrity hash generation and verification with SSRF protection                |
 | [Secrets](secrets.md)             | Docker/file-based secret loading with leak-resistant SecretValue wrapper                   |
 | [Analyzer](analyzer.md)           | Security header analyzer for auditing and CI integration                                   |

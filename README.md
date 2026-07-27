@@ -8,11 +8,11 @@
 
 Comprehensive PHP security library providing CSP, Security Headers, CSRF
 protection, Secure Cookies, Password Validation, Input Sanitization, Rate
-Limiting, SRI, Secrets Loading, Encryption, and Audit Logging.
+Limiting, SRI, Secrets Loading, Encryption, Session Security, and Audit Logging.
 
 ## Highlights
 
-- **All-in-one** — 13 security modules in a single, composable package
+- **All-in-one** — 14 security modules in a single, composable package
 - **Secure by default** — strict CSP, no `unsafe-*`, HTTPS-first
 - **Framework-agnostic** — works with any PHP 8.4+ application
 - **Immutable & type-safe** — readonly classes, enums, `with*()` API
@@ -35,6 +35,7 @@ Limiting, SRI, Secrets Loading, Encryption, and Audit Logging.
 | **RateLimiting** | Rate limiting with multiple algorithms              | `DefaultRateLimiter`, `RateLimitConfig`                                                                                               |
 | **SRI**          | Subresource Integrity hash generation               | `SriHashGenerator`, `IntegrityAttribute`                                                                                              |
 | **Secrets**      | Docker/file-based secret loading                    | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                     |
+| **Session**      | Session hardening and fixation protection           | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                |
 | **Analyzer**     | Security header analysis and auditing               | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                            |
 | **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CspMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
 | **Logging**      | Security event audit logging                        | `SecurityAuditLogger`, `SecurityEvent`                                                                                                |
@@ -134,6 +135,7 @@ options, and code examples:
 | [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window        |
 | [SRI](docs/sri.md)                     | Subresource integrity hashes        |
 | [Secrets](docs/secrets.md)             | Docker/file-based secret loading    |
+| [Session](docs/session.md)             | Session hardening, fingerprinting   |
 | [Analyzer](docs/analyzer.md)           | Security header auditing            |
 | [Middleware](docs/middleware.md)       | PSR-15 middleware                   |
 | [Logging](docs/logging.md)             | Security audit logging              |

@@ -32,6 +32,7 @@ src/
 ├── RateLimiting/   # Rate Limiting (Token Bucket, Sliding Window)
 ├── Sri/            # Subresource Integrity
 ├── Secrets/        # Docker/file-based Secret Loading
+├── Session/        # Session Security (Fixation, Fingerprinting, Timeouts)
 └── Logging/        # Security Audit Logging
 
 tests/
@@ -52,6 +53,7 @@ tests/
 | RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window         |
 | Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                  |
 | Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
+| Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting  |
 | Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging         |
 
 ## Configuration Files
@@ -132,6 +134,7 @@ tests/
 | RateLimiting | `DefaultRateLimiter`     | Rate limiting with storage       |
 | Sri          | `SriHashGenerator`       | SRI hash generation              |
 | Secrets      | `SecretLoader`           | Docker/file-based secret loading |
+| Session      | `SessionGuard`           | Session security validation      |
 | Logging      | `SecurityAuditLogger`    | Security event logging           |
 
 ## Architecture
@@ -201,7 +204,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Scopes
 
 `csp`, `headers`, `csrf`, `cookie`, `encryption`, `password`, `sanitization`,
-`rate-limiting`, `sri`, `secrets`, `logging`
+`rate-limiting`, `sri`, `secrets`, `session`, `logging`
 
 ## CI/CD
 
