@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.2.0...v1.3.0) (2026-07-27)
+
+
+### Features
+
+* **encryption:** add XChaCha20-Poly1305 encryption module ([#86](https://github.com/marcstraube/zappzarapp-php-security/issues/86)) ([e847e85](https://github.com/marcstraube/zappzarapp-php-security/commit/e847e85af530637083a29d9a3d81ce41a307e4ee)), closes [#47](https://github.com/marcstraube/zappzarapp-php-security/issues/47)
+* **scanner:** add CLI security header scanner ([#88](https://github.com/marcstraube/zappzarapp-php-security/issues/88)) ([9577971](https://github.com/marcstraube/zappzarapp-php-security/commit/9577971c24c05588034c1f32ef0c64940e252004)), closes [#49](https://github.com/marcstraube/zappzarapp-php-security/issues/49)
+* **secrets:** add Docker/file-based secrets module ([#84](https://github.com/marcstraube/zappzarapp-php-security/issues/84)) ([06e47be](https://github.com/marcstraube/zappzarapp-php-security/commit/06e47beb1fba21aff8cd3067c4d368cacaa6adea)), closes [#78](https://github.com/marcstraube/zappzarapp-php-security/issues/78)
+* **session:** add session security module ([#87](https://github.com/marcstraube/zappzarapp-php-security/issues/87)) ([bf17575](https://github.com/marcstraube/zappzarapp-php-security/commit/bf175753e9ca6d13daf6a3fb200511ae8febe38f))
+
+
+### Bug Fixes
+
+* **build:** ship bin/security-scan in the dist archive ([#92](https://github.com/marcstraube/zappzarapp-php-security/issues/92)) ([0df01d2](https://github.com/marcstraube/zappzarapp-php-security/commit/0df01d2348418cb7bc0ff69e87416f7a33781e01)), closes [#91](https://github.com/marcstraube/zappzarapp-php-security/issues/91)
+* **scanner:** strip terminal control bytes from scan output ([#90](https://github.com/marcstraube/zappzarapp-php-security/issues/90)) ([72d5758](https://github.com/marcstraube/zappzarapp-php-security/commit/72d575850e786fbf6f75382a37d755b4126db593)), closes [#89](https://github.com/marcstraube/zappzarapp-php-security/issues/89)
+
 ## [1.2.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.1.0...v1.2.0) (2026-06-10)
 
 
