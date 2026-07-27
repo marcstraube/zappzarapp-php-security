@@ -285,12 +285,8 @@ final readonly class SecurityHeaders
     {
         return new self(
             hsts: new HstsConfig(maxAge: 31536000, includeSubDomains: false, preload: false),
-            coop: null,
-            coep: null,
-            corp: null,
             referrerPolicy: ReferrerPolicyValue::STRICT_ORIGIN_WHEN_CROSS_ORIGIN,
             xFrameOptions: XFrameOptionsValue::SAMEORIGIN,
-            permissionsPolicy: null,
             xContentTypeOptions: true,
             xXssProtection: true
         );
@@ -306,12 +302,8 @@ final readonly class SecurityHeaders
     {
         return new self(
             hsts: HstsConfig::strict(),
-            coop: null,
-            coep: null,
-            corp: null,
             referrerPolicy: ReferrerPolicyValue::NO_REFERRER_WHEN_DOWNGRADE,
             xFrameOptions: XFrameOptionsValue::SAMEORIGIN,
-            permissionsPolicy: null,
             xContentTypeOptions: true,
             xXssProtection: true
         );
@@ -325,13 +317,6 @@ final readonly class SecurityHeaders
     public static function development(): self
     {
         return new self(
-            hsts: null,
-            coop: null,
-            coep: null,
-            corp: null,
-            referrerPolicy: null,
-            xFrameOptions: null,
-            permissionsPolicy: null,
             xContentTypeOptions: true,
             xXssProtection: true
         );
@@ -352,12 +337,7 @@ final readonly class SecurityHeaders
     {
         return new self(
             hsts: HstsConfig::strict(),
-            coop: null,
-            coep: null,
             corp: CorpValue::SAME_ORIGIN,
-            referrerPolicy: null,
-            xFrameOptions: null,
-            permissionsPolicy: null,
             xContentTypeOptions: true,
             xXssProtection: true
         );

@@ -249,12 +249,12 @@ final readonly class HtmlSanitizer implements InputFilter
     private function removeElementKeepContent(DOMElement $element): void
     {
         $parent = $element->parentNode;
-        if ($parent === null) {
+        if (!$parent instanceof DOMNode) {
             return;
         }
 
         // Move children before this element
-        while ($element->firstChild !== null) {
+        while ($element->firstChild instanceof DOMNode) {
             $parent->insertBefore($element->firstChild, $element);
         }
 

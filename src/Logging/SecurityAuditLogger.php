@@ -312,7 +312,7 @@ final readonly class SecurityAuditLogger implements SecurityLoggerInterface
         foreach ($context as $key => $value) {
             /** @noinspection PhpCastIsUnnecessaryInspection Array keys can be int|string */
             $lowerKey       = strtolower((string) $key);
-            $isSensitiveKey = array_any(self::SENSITIVE_KEYS, fn($sensitiveKey): bool => str_contains($lowerKey, (string) $sensitiveKey));
+            $isSensitiveKey = array_any(self::SENSITIVE_KEYS, fn(string $sensitiveKey): bool => str_contains($lowerKey, $sensitiveKey));
 
             if ($isSensitiveKey && $value !== null && $value !== '') {
                 $masked[$key] = self::REDACTED;
