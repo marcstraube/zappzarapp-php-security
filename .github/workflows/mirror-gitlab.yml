@@ -5,6 +5,13 @@ on:
     branches: [master]
   delete:
 
+# Merges fire push and delete events at the same time; two concurrent
+# mirror jobs race for GitLab's ref lock and one fails with
+# "cannot lock ref". Queue runs instead of running them in parallel.
+concurrency:
+  group: mirror-gitlab
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
