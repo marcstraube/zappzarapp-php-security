@@ -88,6 +88,39 @@ final class EnvelopeCiphertextTest extends TestCase
         );
     }
 
+    #[Test]
+    public function testToBinaryConcatenatesWrappedKeyAndPayload(): void
+    {
+        $wrappedKey = new Ciphertext(random_bytes(24), random_bytes(48));
+        $payload    = new Ciphertext(random_bytes(24), random_bytes(32));
+
+        $this->assertSame(
+            $wrappedKey->toBinary() . $payload->toBinary(),
+            (new EnvelopeCiphertext($wrappedKey, $payload))->toBinary()
+        );
+    }
+
+    #[Test]
+    public function testBinaryRoundTrip(): void
+    {
+        $wrappedKey = new Ciphertext(random_bytes(24), random_bytes(48));
+        $payload    = new Ciphertext(random_bytes(24), random_bytes(32));
+
+        $restored = EnvelopeCiphertext::fromBinary($wrappedKey->toBinary() . $payload->toBinary());
+
+        $this->assertSame($wrappedKey->toBinary(), $restored->wrappedKey->toBinary());
+        $this->assertSame($payload->toBinary(), $restored->payload->toBinary());
+    }
+
+    #[Test]
+    public function testFromBinaryRejectsTruncatedInput(): void
+    {
+        $this->expectException(InvalidCiphertextException::class);
+        $this->expectExceptionMessage('Ciphertext payload is truncated (expected at least 112 bytes, got 111 bytes)');
+
+        EnvelopeCiphertext::fromBinary(str_repeat("\x01", 111));
+    }
+
     #[DataProvider('unsupportedFormatProvider')]
     #[Test]
     public function testFromStringRejectsUnsupportedFormat(string $encoded): void

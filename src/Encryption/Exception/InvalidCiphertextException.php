@@ -45,4 +45,14 @@ final class InvalidCiphertextException extends InvalidArgumentException
             $actualBytes
         ));
     }
+
+    /**
+     * Create for a key version outside the supported integer range
+     */
+    public static function invalidKeyVersion(): self
+    {
+        return new self(
+            'Ciphertext key version must be a positive integer with at most 9 digits'
+        );
+    }
 }

@@ -65,24 +65,25 @@ final readonly class EnvelopeCiphertext
             throw InvalidCiphertextException::invalidEncoding();
         }
 
+        return self::fromBinary($binary);
+    }
+
+    /**
+     * Parse the raw binary form (wrappedKey || payload) produced by toBinary()
+     *
+     * @throws InvalidCiphertextException If the binary form is truncated
+     */
+    public static function fromBinary(string $binary): self
+    {
         $minimumBytes = self::WRAPPED_KEY_BYTES + Ciphertext::NONCE_BYTES + Ciphertext::TAG_BYTES;
 
         if (strlen($binary) < $minimumBytes) {
             throw InvalidCiphertextException::truncated($minimumBytes, strlen($binary));
         }
 
-        $wrappedKeyBinary = substr($binary, 0, self::WRAPPED_KEY_BYTES);
-        $payloadBinary    = substr($binary, self::WRAPPED_KEY_BYTES);
-
         return new self(
-            new Ciphertext(
-                substr($wrappedKeyBinary, 0, Ciphertext::NONCE_BYTES),
-                substr($wrappedKeyBinary, Ciphertext::NONCE_BYTES)
-            ),
-            new Ciphertext(
-                substr($payloadBinary, 0, Ciphertext::NONCE_BYTES),
-                substr($payloadBinary, Ciphertext::NONCE_BYTES)
-            )
+            Ciphertext::fromBinary(substr($binary, 0, self::WRAPPED_KEY_BYTES)),
+            Ciphertext::fromBinary(substr($binary, self::WRAPPED_KEY_BYTES))
         );
     }
 
@@ -91,8 +92,14 @@ final readonly class EnvelopeCiphertext
      */
     public function toString(): string
     {
-        return self::FORMAT_PREFIX . base64_encode(
-            $this->wrappedKey->toBinary() . $this->payload->toBinary()
-        );
+        return self::FORMAT_PREFIX . base64_encode($this->toBinary());
+    }
+
+    /**
+     * Get the raw binary form (wrappedKey || payload), without version prefix
+     */
+    public function toBinary(): string
+    {
+        return $this->wrappedKey->toBinary() . $this->payload->toBinary();
     }
 }

@@ -75,6 +75,16 @@ final readonly class Ciphertext
             throw InvalidCiphertextException::invalidEncoding();
         }
 
+        return self::fromBinary($binary);
+    }
+
+    /**
+     * Parse the raw binary form (nonce || payload) produced by toBinary()
+     *
+     * @throws InvalidCiphertextException If the binary form is truncated
+     */
+    public static function fromBinary(string $binary): self
+    {
         if (strlen($binary) < self::NONCE_BYTES + self::TAG_BYTES) {
             throw InvalidCiphertextException::truncated(
                 self::NONCE_BYTES + self::TAG_BYTES,

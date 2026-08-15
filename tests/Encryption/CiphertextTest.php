@@ -161,6 +161,27 @@ final class CiphertextTest extends TestCase
     }
 
     #[Test]
+    public function testBinaryRoundTrip(): void
+    {
+        $nonce   = random_bytes(24);
+        $payload = random_bytes(20);
+
+        $ciphertext = Ciphertext::fromBinary($nonce . $payload);
+
+        $this->assertSame($nonce, $ciphertext->nonce);
+        $this->assertSame($payload, $ciphertext->payload);
+    }
+
+    #[Test]
+    public function testFromBinaryRejectsTruncatedInput(): void
+    {
+        $this->expectException(InvalidCiphertextException::class);
+        $this->expectExceptionMessage('Ciphertext payload is truncated (expected at least 40 bytes, got 39 bytes)');
+
+        Ciphertext::fromBinary(str_repeat("\x01", 39));
+    }
+
+    #[Test]
     public function testConstants(): void
     {
         $this->assertSame('v1.', Ciphertext::FORMAT_PREFIX);

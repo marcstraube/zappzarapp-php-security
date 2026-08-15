@@ -387,6 +387,9 @@
                 "Zappzarapp\\Security\\Secrets\\SecretValue::__destruct",
                 // Key-copy clearing after sodium AEAD calls - not functionally observable
                 "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
+                // Plaintext/data-key copy clearing after re-encryption - not functionally observable
+                "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
+                "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*",
                 // setAttribute re-assignment - attribute already set by DOMDocument parse
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::*",
                 // CSRF token cleanup - defense in depth
@@ -735,7 +738,10 @@
                 // Password hashing cleanup
                 "Zappzarapp\\Security\\Password\\Hashing\\*",
                 // Key-copy clearing in finally - sodium AEAD calls don't throw for valid inputs
-                "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*"
+                "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
+                // Plaintext/data-key copy clearing in finally after re-encryption
+                "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
+                "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*"
             ]
         },
         "PublicVisibility": {

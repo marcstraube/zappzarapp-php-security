@@ -127,6 +127,7 @@ tests/
 | Csrf         | `CsrfProtection`         | Token generation & validation    |
 | Cookie       | `CookieBuilder`          | Secure cookie construction       |
 | Encryption   | `SymmetricEncryptor`     | Authenticated encryption         |
+| Encryption   | `KeyRingEncryptor`       | Key rotation via versioned ring  |
 | Password     | `DefaultPasswordHasher`  | Argon2id hashing with pepper     |
 | Password     | `PasswordPolicy`         | Policy-based validation          |
 | Password     | `PwnedPasswordChecker`   | HIBP breach detection            |
