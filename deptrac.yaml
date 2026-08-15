@@ -309,6 +309,16 @@ deptrac:
           value: ^Zappzarapp\\Security\\Encryption\\EnvelopeCiphertext$
         - type: classLike
           value: ^Zappzarapp\\Security\\Encryption\\EnvelopeEncryptor$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\KeyRing$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\VersionedCiphertext$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\VersionedEnvelopeCiphertext$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\KeyRingEncryptor$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor$
 
     # ==========================================
     # Scanner Module
