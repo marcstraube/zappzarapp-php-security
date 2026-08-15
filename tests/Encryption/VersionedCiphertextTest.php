@@ -1,5 +1,9 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection PHPUnit reports escaped exceptions as test errors; test methods omit @throws by convention */
+
+/** @noinspection PhpParenthesesCanBeOmittedForNewCallInspection PHPMD/PDepend cannot parse new Foo()->method() syntax */
+
 declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Encryption;

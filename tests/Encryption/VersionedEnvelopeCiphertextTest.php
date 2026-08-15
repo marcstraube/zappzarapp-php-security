@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUnhandledExceptionInspection PHPUnit reports escaped exceptions as test errors; test methods omit @throws by convention */
+
 declare(strict_types=1);
 
 namespace Zappzarapp\Security\Tests\Encryption;

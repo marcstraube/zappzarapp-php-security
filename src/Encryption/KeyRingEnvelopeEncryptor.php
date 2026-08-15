@@ -1,5 +1,9 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection Native PHP 8.2 attribute, stubs cause false positive */
+
+/** @noinspection PhpDocRedundantThrowsInspection @throws documents exceptions propagated via KeyRingEncryptor - verified by PHPStan's checked-exception analysis */
+
 declare(strict_types=1);
 
 namespace Zappzarapp\Security\Encryption;

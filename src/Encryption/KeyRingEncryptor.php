@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection Native PHP 8.2 attribute, stubs cause false positive */
+
 declare(strict_types=1);
 
 namespace Zappzarapp\Security\Encryption;

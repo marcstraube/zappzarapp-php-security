@@ -33,7 +33,9 @@
             "#127\\.0\\.0\\.1#",
             "#your-secret-key#",
             "#api\\.github\\.com#",
-            "#UNSIGNED_COMMITS#"
+            "#UNSIGNED_COMMITS#",
+            "#ABCDEFGHIJKLMNOPQRSTUVWXYZ234567#",
+            "#abcdefghjkmnpqrstuvwxyz23456789#"
           ]
         },
         "config": {
