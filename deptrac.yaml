@@ -390,6 +390,39 @@ deptrac:
           value: ^Zappzarapp\\Security\\Session\\SessionValidationResult$
 
     # ==========================================
+    # Totp Module
+    # ==========================================
+    - name: TotpException
+      collectors:
+        - type: directory
+          value: src/Totp/Exception/
+
+    - name: TotpMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\TotpAlgorithm$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\TotpConfig$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\TotpSecret$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\TotpAuthenticator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\TotpVerificationResult$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\ProvisioningUri$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\Encoding\\Base32$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\Hotp\\HotpGenerator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\Recovery\\RecoveryCode$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\Recovery\\RecoveryCodeGenerator$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\Totp\\Recovery\\RecoveryCodeVerifier$
+
+    # ==========================================
     # Logging Module
     # ==========================================
     - name: Logging
@@ -574,6 +607,16 @@ deptrac:
     SessionMain:
       - SessionException
       - CookieMain # SameSitePolicy enum for the session cookie
+      - External # PSR-20 ClockInterface
+
+    # Totp Module Rules
+    TotpException: ~
+    TotpMain:
+      - TotpException
+      - SecretsMain # TotpSecret and RecoveryCode wrap SecretValue
+      - SecretsException # SecretValue constructor throws InvalidSecretValueException
+      - PasswordSecurity # ClearsMemory trait for sodium_memzero()
+      - PasswordHashing # recovery codes hashed via PasswordHasher (Argon2id)
       - External # PSR-20 ClockInterface
 
     # Logging Module Rules (depends on PSR-3 LoggerInterface)

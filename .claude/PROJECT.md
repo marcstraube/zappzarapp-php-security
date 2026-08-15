@@ -34,6 +34,7 @@ src/
 ├── Sri/            # Subresource Integrity
 ├── Secrets/        # Docker/file-based Secret Loading
 ├── Session/        # Session Security (Fixation, Fingerprinting, Timeouts)
+├── Totp/           # TOTP/2FA (RFC 6238, Provisioning, Recovery Codes)
 └── Logging/        # Security Audit Logging
 
 tests/
@@ -56,6 +57,7 @@ tests/
 | Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                  |
 | Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
 | Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting  |
+| Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery     |
 | Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging         |
 
 ## Configuration Files
@@ -139,6 +141,7 @@ tests/
 | Sri          | `SriHashGenerator`       | SRI hash generation              |
 | Secrets      | `SecretLoader`           | Docker/file-based secret loading |
 | Session      | `SessionGuard`           | Session security validation      |
+| Totp         | `TotpAuthenticator`      | TOTP generation & verification   |
 | Logging      | `SecurityAuditLogger`    | Security event logging           |
 
 ## Architecture
@@ -208,7 +211,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Scopes
 
 `csp`, `headers`, `csrf`, `cookie`, `encryption`, `password`, `sanitization`,
-`rate-limiting`, `scanner`, `sri`, `secrets`, `session`, `logging`
+`rate-limiting`, `scanner`, `sri`, `secrets`, `session`, `totp`, `logging`
 
 ## CI/CD
 

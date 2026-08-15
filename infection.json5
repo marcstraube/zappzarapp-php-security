@@ -248,6 +248,15 @@
         "DecrementInteger": {
             "ignore": [
                 "Zappzarapp\\Security\\*\\Exception\\*",
+                // EQUIVALENT: bit-buffer arithmetic - every buffer read is masked
+                // (& 0x1F / & 0xFF / & ((1 << bits) - 1)), so a -1-initialized buffer
+                // decodes/encodes identically; the final encode character's bit 0 is
+                // structurally zero (shift >= 1), so 0x1F -> 30 changes nothing
+                "Zappzarapp\\Security\\Totp\\Encoding\\Base32::*",
+                // EQUIVALENT result set: PHP maps string offset -1 to the last
+                // character, so random_int(-1, ...) only biases the distribution
+                // toward the final alphabet character - not deterministically testable
+                "Zappzarapp\\Security\\Totp\\Recovery\\RecoveryCodeGenerator::generateCode",
                 "Zappzarapp\\Security\\Cookie\\SecureCookie::headerValue",
                 "Zappzarapp\\Security\\Cookie\\CookieValidator::*",
                 "Zappzarapp\\Security\\Sanitization\\Path\\PathValidator::*",
@@ -303,6 +312,9 @@
         "GreaterThanOrEqualTo": {
             "ignore": [
                 "Zappzarapp\\Security\\RateLimiting\\Storage\\InMemoryStorage::*",
+                // EQUIVALENT: with bits == 5 left pending, the final-character append
+                // emits the same character the loop extraction would have (shift 5-5=0)
+                "Zappzarapp\\Security\\Totp\\Encoding\\Base32::encode",
                 // minOccurrences boundary - tested with exact values
                 "Zappzarapp\\Security\\Password\\Pwned\\PwnedPasswordChecker::*",
                 // Rate limit
@@ -390,6 +402,8 @@
                 // Plaintext/data-key copy clearing after re-encryption - not functionally observable
                 "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
                 "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*",
+                // Secret-copy clearing after HMAC computation - not functionally observable
+                "Zappzarapp\\Security\\Totp\\Hotp\\HotpGenerator::*",
                 // setAttribute re-assignment - attribute already set by DOMDocument parse
                 "Zappzarapp\\Security\\Sanitization\\Html\\HtmlSanitizer::*",
                 // CSRF token cleanup - defense in depth
@@ -741,7 +755,9 @@
                 "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
                 // Plaintext/data-key copy clearing in finally after re-encryption
                 "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
-                "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*"
+                "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*",
+                // Secret-copy clearing in finally - hash_hmac doesn't throw for valid inputs
+                "Zappzarapp\\Security\\Totp\\Hotp\\HotpGenerator::*"
             ]
         },
         "PublicVisibility": {
