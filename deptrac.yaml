@@ -423,6 +423,21 @@ deptrac:
           value: ^Zappzarapp\\Security\\Totp\\Recovery\\RecoveryCodeVerifier$
 
     # ==========================================
+    # SignedUrl Module
+    # ==========================================
+    - name: SignedUrlException
+      collectors:
+        - type: directory
+          value: src/SignedUrl/Exception/
+
+    - name: SignedUrlMain
+      collectors:
+        - type: classLike
+          value: ^Zappzarapp\\Security\\SignedUrl\\SigningKey$
+        - type: classLike
+          value: ^Zappzarapp\\Security\\SignedUrl\\UrlSigner$
+
+    # ==========================================
     # Logging Module
     # ==========================================
     - name: Logging
@@ -617,6 +632,15 @@ deptrac:
       - SecretsException # SecretValue constructor throws InvalidSecretValueException
       - PasswordSecurity # ClearsMemory trait for sodium_memzero()
       - PasswordHashing # recovery codes hashed via PasswordHasher (Argon2id)
+      - External # PSR-20 ClockInterface
+
+    # SignedUrl Module Rules
+    SignedUrlException: ~
+    SignedUrlMain:
+      - SignedUrlException
+      - SecretsMain # SigningKey wraps SecretValue, loads keys via Secrets module
+      - SecretsException # SecretValue constructor throws InvalidSecretValueException
+      - PasswordSecurity # ClearsMemory trait for sodium_memzero()
       - External # PSR-20 ClockInterface
 
     # Logging Module Rules (depends on PSR-3 LoggerInterface)

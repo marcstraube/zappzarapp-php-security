@@ -17,6 +17,7 @@ vulnerabilities.
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
 | [Session](session.md)             | Session hardening: fixation protection, fingerprinting, timeouts                           |
 | [TOTP](totp.md)                   | Time-based one-time passwords (RFC 6238) with provisioning URIs and recovery codes         |
+| [Signed URLs](signed-url.md)      | HMAC-signed URLs with mandatory expiry and optional context binding                        |
 | [SRI](sri.md)                     | Subresource Integrity hash generation and verification with SSRF protection                |
 | [Secrets](secrets.md)             | Docker/file-based secret loading with leak-resistant SecretValue wrapper                   |
 | [Analyzer](analyzer.md)           | Security header analyzer for auditing and CI integration                                   |
