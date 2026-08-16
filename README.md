@@ -24,25 +24,25 @@ authentication, Signed URLs, and Security Event Logging.
 
 ## Modules
 
-| Module           | Description                                                     | Key Classes                                                                                                                                               |
-| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **CSP**          | Content Security Policy header building and violation reporting | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`, `CspReportParser`                                                                                     |
-| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)               | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                                               |
-| **CSRF**         | Cross-Site Request Forgery protection                           | `CsrfProtection`, `CsrfConfig`                                                                                                                            |
-| **Cookie**       | Secure cookie handling                                          | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                                          |
-| **Encryption**   | XChaCha20-Poly1305 authenticated encryption                     | `SymmetricEncryptor`, `EnvelopeEncryptor`, `EncryptionKey`, `KeyRingEncryptor`                                                                            |
-| **Password**     | Password validation and hashing                                 | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                                        |
-| **Sanitization** | Input sanitization (HTML, SQL, URI, Path)                       | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                                          |
-| **RateLimiting** | Rate limiting with multiple algorithms                          | `DefaultRateLimiter`, `RateLimitConfig`                                                                                                                   |
-| **SRI**          | Subresource Integrity hash generation                           | `SriHashGenerator`, `IntegrityAttribute`                                                                                                                  |
-| **Secrets**      | Docker/file-based secret loading                                | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                                         |
-| **Session**      | Session hardening and fixation protection                       | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                                    |
-| **SignedUrl**    | HMAC-signed URLs with mandatory expiry                          | `UrlSigner`, `SigningKey`                                                                                                                                 |
-| **TOTP**         | Time-based one-time passwords (RFC 6238)                        | `TotpAuthenticator`, `TotpSecret`, `ProvisioningUri`, `RecoveryCodeGenerator`                                                                             |
-| **Analyzer**     | Security header analysis and auditing                           | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                                                |
-| **Scanner**      | CLI security header scanner                                     | `ScanCommand`, `StreamHeaderFetcher`                                                                                                                      |
-| **Middleware**   | PSR-15 middleware for drop-in framework integration             | `SecurityHeadersMiddleware`, `CspMiddleware`, `CspReportHandler`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
-| **Logging**      | Security event logging                                          | `SecurityAuditLogger`, `SecurityEvent`                                                                                                                    |
+| Module           | Description                                                          | Key Classes                                                                                                                                               |
+| ---------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CSP**          | Content Security Policy header building and violation reporting      | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`, `CspReportParser`                                                                                     |
+| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)                    | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                                               |
+| **CSRF**         | Cross-Site Request Forgery protection                                | `CsrfProtection`, `CsrfConfig`                                                                                                                            |
+| **Cookie**       | Secure cookie handling                                               | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                                          |
+| **Encryption**   | XChaCha20-Poly1305 authenticated encryption                          | `SymmetricEncryptor`, `EnvelopeEncryptor`, `EncryptionKey`, `KeyRingEncryptor`                                                                            |
+| **Password**     | Password validation and hashing                                      | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                                        |
+| **Sanitization** | Input sanitization (HTML, SQL, URI, Path) and file upload validation | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`, `UploadValidator`                                                                                       |
+| **RateLimiting** | Rate limiting with multiple algorithms                               | `DefaultRateLimiter`, `RateLimitConfig`                                                                                                                   |
+| **SRI**          | Subresource Integrity hash generation                                | `SriHashGenerator`, `IntegrityAttribute`                                                                                                                  |
+| **Secrets**      | Docker/file-based secret loading                                     | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                                         |
+| **Session**      | Session hardening and fixation protection                            | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                                    |
+| **SignedUrl**    | HMAC-signed URLs with mandatory expiry                               | `UrlSigner`, `SigningKey`                                                                                                                                 |
+| **TOTP**         | Time-based one-time passwords (RFC 6238)                             | `TotpAuthenticator`, `TotpSecret`, `ProvisioningUri`, `RecoveryCodeGenerator`                                                                             |
+| **Analyzer**     | Security header analysis and auditing                                | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                                                |
+| **Scanner**      | CLI security header scanner                                          | `ScanCommand`, `StreamHeaderFetcher`                                                                                                                      |
+| **Middleware**   | PSR-15 middleware for drop-in framework integration                  | `SecurityHeadersMiddleware`, `CspMiddleware`, `CspReportHandler`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
+| **Logging**      | Security event logging                                               | `SecurityAuditLogger`, `SecurityEvent`                                                                                                                    |
 
 ## Requirements
 
@@ -107,6 +107,7 @@ if (!$csrf->validateToken($_POST['_token'])) {
 
 ```php
 use Zappzarapp\Security\Sanitization\Html\HtmlSanitizer;
+use Zappzarapp\Security\Sanitization\Path\PathValidationConfig;
 use Zappzarapp\Security\Sanitization\Path\PathValidator;
 
 // Sanitize HTML (removes dangerous tags/attributes)
@@ -114,8 +115,8 @@ $sanitizer = new HtmlSanitizer();
 $safe = $sanitizer->sanitize($userInput);
 
 // Validate file paths (prevent directory traversal)
-$validator = new PathValidator('/var/www/uploads');
-if (!$validator->isValid($userPath)) {
+$validator = new PathValidator(new PathValidationConfig(basePath: '/var/www/uploads'));
+if (!$validator->isSafe($userPath)) {
     throw new Exception('Invalid path');
 }
 ```
@@ -135,7 +136,7 @@ options, and code examples:
 | [Cookie](docs/cookie.md)               | Secure cookie handling                                      |
 | [Encryption](docs/encryption.md)       | Authenticated encryption, envelopes                         |
 | [Password](docs/password.md)           | Hashing, policies, breach detection                         |
-| [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization                                |
+| [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization and file upload validation     |
 | [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window                                |
 | [SRI](docs/sri.md)                     | Subresource integrity hashes                                |
 | [Secrets](docs/secrets.md)             | Docker/file-based secret loading                            |
