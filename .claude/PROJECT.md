@@ -22,7 +22,7 @@ Zappzarapp\Security\
 
 ```text
 src/
-├── Csp/            # Content Security Policy
+├── Csp/            # Content Security Policy (+ violation report parsing)
 ├── Headers/        # Security Headers (HSTS, COOP, COEP, etc.)
 ├── Csrf/           # CSRF Protection
 ├── Cookie/         # Secure Cookie Handling
@@ -44,23 +44,23 @@ tests/
 
 ## Modules
 
-| Module       | Namespace                           | Description                          |
-| ------------ | ----------------------------------- | ------------------------------------ |
-| Csp          | `Zappzarapp\Security\Csp\`          | CSP header building with nonces      |
-| Headers      | `Zappzarapp\Security\Headers\`      | HSTS, COOP, COEP, Permissions-Policy |
-| Csrf         | `Zappzarapp\Security\Csrf\`         | Token-based CSRF protection          |
-| Cookie       | `Zappzarapp\Security\Cookie\`       | Secure cookie handling               |
-| Encryption   | `Zappzarapp\Security\Encryption\`   | XChaCha20-Poly1305, envelope pattern |
-| Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking       |
-| Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization    |
-| RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window         |
-| Scanner      | `Zappzarapp\Security\Scanner\`      | CLI security header scanner          |
-| Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                  |
-| Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
-| Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting  |
-| Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery     |
-| SignedUrl    | `Zappzarapp\Security\SignedUrl\`    | HMAC-signed URLs with expiry         |
-| Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging         |
+| Module       | Namespace                           | Description                           |
+| ------------ | ----------------------------------- | ------------------------------------- |
+| Csp          | `Zappzarapp\Security\Csp\`          | CSP headers, violation report parsing |
+| Headers      | `Zappzarapp\Security\Headers\`      | HSTS, COOP, COEP, Permissions-Policy  |
+| Csrf         | `Zappzarapp\Security\Csrf\`         | Token-based CSRF protection           |
+| Cookie       | `Zappzarapp\Security\Cookie\`       | Secure cookie handling                |
+| Encryption   | `Zappzarapp\Security\Encryption\`   | XChaCha20-Poly1305, envelope pattern  |
+| Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking        |
+| Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization     |
+| RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window          |
+| Scanner      | `Zappzarapp\Security\Scanner\`      | CLI security header scanner           |
+| Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                   |
+| Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading      |
+| Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting   |
+| Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery      |
+| SignedUrl    | `Zappzarapp\Security\SignedUrl\`    | HMAC-signed URLs with expiry          |
+| Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging          |
 
 ## Configuration Files
 
@@ -127,6 +127,7 @@ tests/
 | Module       | Primary Class            | Purpose                          |
 | ------------ | ------------------------ | -------------------------------- |
 | Csp          | `HeaderBuilder`          | Build CSP headers                |
+| Csp          | `CspReportParser`        | Parse CSP violation reports      |
 | Headers      | `SecurityHeadersBuilder` | Build all security headers       |
 | Csrf         | `CsrfProtection`         | Token generation & validation    |
 | Cookie       | `CookieBuilder`          | Secure cookie construction       |
@@ -146,6 +147,7 @@ tests/
 | Totp         | `TotpAuthenticator`      | TOTP generation & verification   |
 | SignedUrl    | `UrlSigner`              | URL signing and verification     |
 | Logging      | `SecurityAuditLogger`    | Security event logging           |
+| Middleware   | `CspReportHandler`       | PSR-15 CSP report endpoint       |
 
 ## Architecture
 

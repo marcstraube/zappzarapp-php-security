@@ -392,4 +392,39 @@ final class SecurityEventTest extends TestCase
         $this->assertSame('connection_timeout', $event->context['reason']);
         $this->assertSame(3, $event->context['attempt']);
     }
+
+    #[Test]
+    public function testCspViolationFactory(): void
+    {
+        $event = SecurityEvent::cspViolation([
+            'document_uri'        => 'https://example.com/signup',
+            'effective_directive' => 'script-src',
+        ]);
+
+        $this->assertSame(SecurityEventType::CSP_VIOLATION_REPORTED, $event->type);
+        $this->assertSame('https://example.com/signup', $event->context['document_uri']);
+        $this->assertSame('script-src', $event->context['effective_directive']);
+    }
+
+    #[Test]
+    public function testCspViolationFactoryDefaultsToEmptyContext(): void
+    {
+        $event = SecurityEvent::cspViolation();
+
+        $this->assertSame(SecurityEventType::CSP_VIOLATION_REPORTED, $event->type);
+        $this->assertSame([], $event->context);
+    }
+
+    #[Test]
+    public function testCspReportRejectedFactory(): void
+    {
+        $event = SecurityEvent::cspReportRejected(
+            'CSP report body is not valid JSON',
+            ['remote_addr' => '203.0.113.7']
+        );
+
+        $this->assertSame(SecurityEventType::CSP_REPORT_REJECTED, $event->type);
+        $this->assertSame('CSP report body is not valid JSON', $event->context['reason']);
+        $this->assertSame('203.0.113.7', $event->context['remote_addr']);
+    }
 }

@@ -57,6 +57,8 @@ final class SecurityEventTypeTest extends TestCase
         yield 'password_policy_violation' => [SecurityEventType::PASSWORD_POLICY_VIOLATION];
         yield 'password_weak' => [SecurityEventType::PASSWORD_WEAK];
         yield 'sri_fetch_failure' => [SecurityEventType::SRI_FETCH_FAILURE];
+        yield 'csp_violation_reported' => [SecurityEventType::CSP_VIOLATION_REPORTED];
+        yield 'csp_report_rejected' => [SecurityEventType::CSP_REPORT_REJECTED];
     }
 
     #[DataProvider('alertEventsProvider')]

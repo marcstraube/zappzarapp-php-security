@@ -166,6 +166,95 @@ $middleware = new RateLimitMiddleware(
 );
 ```
 
+## CSP Report Handler
+
+A PSR-15 **request handler** (not a middleware) that receives CSP violation
+reports. Route the path you configured as `report-uri`, or the endpoint behind a
+`report-to` group, to it.
+
+```php
+use Zappzarapp\Security\Logging\SecurityAuditLogger;
+use Zappzarapp\Security\Middleware\CspReportHandler;
+use Zappzarapp\Security\RateLimiting\DefaultRateLimiter;
+use Zappzarapp\Security\RateLimiting\RateLimitConfig;
+
+$handler = CspReportHandler::create(
+    new SecurityAuditLogger($psrLogger),
+    $responseFactory,
+    new DefaultRateLimiter(new RateLimitConfig(limit: 60, window: 60)),
+);
+
+// In Slim:
+$app->post('/csp-report', $handler);
+```
+
+Each parsed violation is logged as a `security.csp.violation_reported` event;
+each rejected payload as `security.csp.report_rejected` with a fixed reason that
+never contains any part of the payload.
+
+### Accepted payloads
+
+| Content-Type               | Format                                     |
+| -------------------------- | ------------------------------------------ |
+| `application/csp-report`   | Legacy `report-uri` payload, single report |
+| `application/reports+json` | Reporting API batch, up to 32 reports      |
+
+Parameters such as `; charset=utf-8` are ignored, matching is case-insensitive.
+Anything else is rejected. Reporting API batches may mix report types on a
+shared endpoint — entries that are not `csp-violation` are skipped rather than
+rejected.
+
+### Always 204
+
+Every request is answered with `204 No Content` — valid reports, malformed ones,
+oversized ones, rate limited ones and non-POST requests alike. Distinguishing
+responses would turn an unauthenticated endpoint into an oracle that tells a
+sender whether its payload parsed, how large a body is accepted, or whether it
+is being throttled. Browsers ignore the response anyway.
+
+### Limits
+
+| Limit              | Default | Configured via                |
+| ------------------ | ------- | ----------------------------- |
+| Request body       | 16 KiB  | `new CspReportParser($bytes)` |
+| Reports per batch  | 32      | fixed                         |
+| JSON nesting depth | 8       | fixed                         |
+| URI-valued fields  | 2048    | truncated, not rejected       |
+| `original-policy`  | 4096    | truncated, not rejected       |
+| `script-sample`    | 200     | truncated, not rejected       |
+
+The body is read in bounded chunks, so an endless request body costs a fixed
+amount of memory rather than the whole stream. Control characters are stripped
+from every field before it reaches the log, which is what keeps a
+`script-sample` containing newlines from forging log entries.
+
+### Flood protection
+
+Rate limiting is part of the constructor contract: `create()` requires a
+limiter. Giving it up takes an explicitly named alternative, and is only safe
+behind something else that bounds the request rate:
+
+```php
+// Only when a gateway, proxy or RateLimitMiddleware already limits the rate
+$handler = CspReportHandler::withoutRateLimiting($logger, $responseFactory);
+```
+
+The limiter is consulted before the body is parsed, so a flood costs neither
+parsing nor log volume. Clients are identified by `REMOTE_ADDR` by default; pass
+an `identifierExtractor` to use your framework's trusted-proxy-aware client IP
+instead:
+
+```php
+$handler = CspReportHandler::create(
+    logger: $logger,
+    responseFactory: $responseFactory,
+    rateLimiter: $limiter,
+    identifierExtractor: fn ($request) => RateLimitIdentifier::fromIp(
+        $request->getAttribute('client-ip'),
+    ),
+);
+```
+
 ## CORS Middleware
 
 Applies Cross-Origin Resource Sharing headers and answers preflight (`OPTIONS`)

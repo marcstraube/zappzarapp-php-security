@@ -43,6 +43,11 @@ deptrac:
         - type: classLike
           value: ^Zappzarapp\\Security\\Csp\\HeaderBuilder$
 
+    - name: CspReport
+      collectors:
+        - type: directory
+          value: src/Csp/Report/
+
     # ==========================================
     # Headers Module
     # ==========================================
@@ -486,6 +491,8 @@ deptrac:
       - CspDirective
       - CspNonce
       - CspValueObject
+    CspReport:
+      - CspException
 
     # Headers Module Rules
     HeadersException: ~
@@ -654,6 +661,8 @@ deptrac:
       - CspHeaderBuilder
       - CspDirective
       - CspNonce
+      - CspReport
+      - CspException
       - CsrfMain
       - CsrfException
       - CorsMain
@@ -661,6 +670,7 @@ deptrac:
       - CookieException
       - RateLimitingMain
       - RateLimitingException
+      - Logging
       - External
 
     # External layer has no internal dependencies
