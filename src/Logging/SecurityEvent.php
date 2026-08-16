@@ -429,4 +429,36 @@ final readonly class SecurityEvent implements Stringable
             ...$context,
         ]);
     }
+
+    /**
+     * Create a reported CSP violation event
+     *
+     * The context is expected to be a sanitized violation report - see
+     * `CspViolationReport::toLogContext()`, which strips control characters
+     * and caps every field.
+     *
+     * @param array<string, mixed> $context The reported violation
+     *
+     * @throws RandomException If correlation ID generation fails
+     */
+    public static function cspViolation(array $context = []): self
+    {
+        return new self(SecurityEventType::CSP_VIOLATION_REPORTED, $context);
+    }
+
+    /**
+     * Create a rejected CSP report event
+     *
+     * @param string $reason Why the report was rejected - must not contain any part of the payload
+     * @param array<string, mixed> $context Additional context
+     *
+     * @throws RandomException If correlation ID generation fails
+     */
+    public static function cspReportRejected(string $reason, array $context = []): self
+    {
+        return new self(SecurityEventType::CSP_REPORT_REJECTED, [
+            'reason' => $reason,
+            ...$context,
+        ]);
+    }
 }

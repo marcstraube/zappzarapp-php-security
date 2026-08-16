@@ -39,6 +39,10 @@ enum SecurityEventType: string
     case SRI_HASH_MISMATCH = 'security.sri.hash_mismatch';
     case SRI_FETCH_FAILURE = 'security.sri.fetch_failure';
 
+    // CSP Reporting
+    case CSP_VIOLATION_REPORTED = 'security.csp.violation_reported';
+    case CSP_REPORT_REJECTED    = 'security.csp.report_rejected';
+
     /**
      * Get the severity level for this event type
      *
@@ -50,7 +54,9 @@ enum SecurityEventType: string
             self::RATE_LIMIT_WARNING,
             self::PASSWORD_POLICY_VIOLATION,
             self::PASSWORD_WEAK,
-            self::SRI_FETCH_FAILURE => 'warning',
+            self::SRI_FETCH_FAILURE,
+            self::CSP_VIOLATION_REPORTED,
+            self::CSP_REPORT_REJECTED => 'warning',
 
             self::CSRF_VALIDATION_FAILURE,
             self::CSRF_TOKEN_MISSING,
@@ -90,6 +96,8 @@ enum SecurityEventType: string
             self::COOKIE_VALIDATION_FAILURE => 'Cookie validation failed',
             self::SRI_HASH_MISMATCH         => 'Subresource integrity hash mismatch',
             self::SRI_FETCH_FAILURE         => 'Failed to fetch resource for SRI verification',
+            self::CSP_VIOLATION_REPORTED    => 'Content Security Policy violation was reported',
+            self::CSP_REPORT_REJECTED       => 'Content Security Policy report was rejected',
         };
     }
 }

@@ -29,16 +29,18 @@ $logger->securityEvent($event);
 
 ## Event Types
 
-| Type                      | Severity | Description                    |
-| ------------------------- | -------- | ------------------------------ |
-| `AUTHENTICATION_FAILURE`  | Alert    | Failed login attempt           |
-| `AUTHENTICATION_SUCCESS`  | Info     | Successful login               |
-| `CSRF_VALIDATION_FAILURE` | Alert    | CSRF token mismatch            |
-| `RATE_LIMIT_WARNING`      | Warning  | Approaching rate limit         |
-| `RATE_LIMIT_EXCEEDED`     | Alert    | Rate limit exceeded            |
-| `PATH_TRAVERSAL_ATTEMPT`  | Critical | Path traversal attack detected |
-| `XSS_ATTEMPT_BLOCKED`     | Warning  | XSS payload blocked            |
-| `UNAUTHORIZED_ACCESS`     | Alert    | Access to restricted resource  |
+| Type                      | Severity | Description                           |
+| ------------------------- | -------- | ------------------------------------- |
+| `AUTHENTICATION_FAILURE`  | Alert    | Failed login attempt                  |
+| `AUTHENTICATION_SUCCESS`  | Info     | Successful login                      |
+| `CSRF_VALIDATION_FAILURE` | Alert    | CSRF token mismatch                   |
+| `RATE_LIMIT_WARNING`      | Warning  | Approaching rate limit                |
+| `RATE_LIMIT_EXCEEDED`     | Alert    | Rate limit exceeded                   |
+| `PATH_TRAVERSAL_ATTEMPT`  | Critical | Path traversal attack detected        |
+| `XSS_ATTEMPT_BLOCKED`     | Warning  | XSS payload blocked                   |
+| `UNAUTHORIZED_ACCESS`     | Alert    | Access to restricted resource         |
+| `CSP_VIOLATION_REPORTED`  | Warning  | Browser reported a CSP violation      |
+| `CSP_REPORT_REJECTED`     | Warning  | CSP report was malformed or oversized |
 
 ## Correlation IDs
 

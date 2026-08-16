@@ -24,25 +24,25 @@ authentication, Signed URLs, and Security Event Logging.
 
 ## Modules
 
-| Module           | Description                                         | Key Classes                                                                                                                           |
-| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **CSP**          | Content Security Policy header building             | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`                                                                                    |
-| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)   | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                           |
-| **CSRF**         | Cross-Site Request Forgery protection               | `CsrfProtection`, `CsrfConfig`                                                                                                        |
-| **Cookie**       | Secure cookie handling                              | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                      |
-| **Encryption**   | XChaCha20-Poly1305 authenticated encryption         | `SymmetricEncryptor`, `EnvelopeEncryptor`, `EncryptionKey`, `KeyRingEncryptor`                                                        |
-| **Password**     | Password validation and hashing                     | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                    |
-| **Sanitization** | Input sanitization (HTML, SQL, URI, Path)           | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                      |
-| **RateLimiting** | Rate limiting with multiple algorithms              | `DefaultRateLimiter`, `RateLimitConfig`                                                                                               |
-| **SRI**          | Subresource Integrity hash generation               | `SriHashGenerator`, `IntegrityAttribute`                                                                                              |
-| **Secrets**      | Docker/file-based secret loading                    | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                     |
-| **Session**      | Session hardening and fixation protection           | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                |
-| **SignedUrl**    | HMAC-signed URLs with mandatory expiry              | `UrlSigner`, `SigningKey`                                                                                                             |
-| **TOTP**         | Time-based one-time passwords (RFC 6238)            | `TotpAuthenticator`, `TotpSecret`, `ProvisioningUri`, `RecoveryCodeGenerator`                                                         |
-| **Analyzer**     | Security header analysis and auditing               | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                            |
-| **Scanner**      | CLI security header scanner                         | `ScanCommand`, `StreamHeaderFetcher`                                                                                                  |
-| **Middleware**   | PSR-15 middleware for drop-in framework integration | `SecurityHeadersMiddleware`, `CspMiddleware`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
-| **Logging**      | Security event logging                              | `SecurityAuditLogger`, `SecurityEvent`                                                                                                |
+| Module           | Description                                                     | Key Classes                                                                                                                                               |
+| ---------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CSP**          | Content Security Policy header building and violation reporting | `CspDirectives`, `HeaderBuilder`, `NonceGenerator`, `CspReportParser`                                                                                     |
+| **Headers**      | Security headers (HSTS, Permissions-Policy, etc.)               | `SecurityHeaders`, `SecurityHeadersBuilder`                                                                                                               |
+| **CSRF**         | Cross-Site Request Forgery protection                           | `CsrfProtection`, `CsrfConfig`                                                                                                                            |
+| **Cookie**       | Secure cookie handling                                          | `SecureCookie`, `CookieBuilder`, `CookieOptions`                                                                                                          |
+| **Encryption**   | XChaCha20-Poly1305 authenticated encryption                     | `SymmetricEncryptor`, `EnvelopeEncryptor`, `EncryptionKey`, `KeyRingEncryptor`                                                                            |
+| **Password**     | Password validation and hashing                                 | `PasswordPolicy`, `PwnedPasswordChecker`, `PepperedPasswordHasher`                                                                                        |
+| **Sanitization** | Input sanitization (HTML, SQL, URI, Path)                       | `HtmlSanitizer`, `UriSanitizer`, `PathValidator`                                                                                                          |
+| **RateLimiting** | Rate limiting with multiple algorithms                          | `DefaultRateLimiter`, `RateLimitConfig`                                                                                                                   |
+| **SRI**          | Subresource Integrity hash generation                           | `SriHashGenerator`, `IntegrityAttribute`                                                                                                                  |
+| **Secrets**      | Docker/file-based secret loading                                | `SecretLoader`, `SecretValue`, `FileSecretSource`                                                                                                         |
+| **Session**      | Session hardening and fixation protection                       | `SessionGuard`, `SessionConfig`, `SessionConfigurator`                                                                                                    |
+| **SignedUrl**    | HMAC-signed URLs with mandatory expiry                          | `UrlSigner`, `SigningKey`                                                                                                                                 |
+| **TOTP**         | Time-based one-time passwords (RFC 6238)                        | `TotpAuthenticator`, `TotpSecret`, `ProvisioningUri`, `RecoveryCodeGenerator`                                                                             |
+| **Analyzer**     | Security header analysis and auditing                           | `SecurityHeaderAnalyzer`, `AnalysisResult`                                                                                                                |
+| **Scanner**      | CLI security header scanner                                     | `ScanCommand`, `StreamHeaderFetcher`                                                                                                                      |
+| **Middleware**   | PSR-15 middleware for drop-in framework integration             | `SecurityHeadersMiddleware`, `CspMiddleware`, `CspReportHandler`, `CsrfMiddleware`, `DoubleSubmitCsrfMiddleware`, `RateLimitMiddleware`, `CorsMiddleware` |
+| **Logging**      | Security event logging                                          | `SecurityAuditLogger`, `SecurityEvent`                                                                                                                    |
 
 ## Requirements
 
@@ -127,26 +127,26 @@ See the [documentation](docs/) for detailed examples of all modules.
 Each module has detailed API documentation with class references, configuration
 options, and code examples:
 
-| Module                                 | Description                         |
-| -------------------------------------- | ----------------------------------- |
-| [CSP](docs/csp.md)                     | Content Security Policy with nonces |
-| [Headers](docs/headers.md)             | HSTS, COOP, COEP, CORP, Permissions |
-| [CSRF](docs/csrf.md)                   | Token patterns and validation       |
-| [Cookie](docs/cookie.md)               | Secure cookie handling              |
-| [Encryption](docs/encryption.md)       | Authenticated encryption, envelopes |
-| [Password](docs/password.md)           | Hashing, policies, breach detection |
-| [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization        |
-| [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window        |
-| [SRI](docs/sri.md)                     | Subresource integrity hashes        |
-| [Secrets](docs/secrets.md)             | Docker/file-based secret loading    |
-| [Session](docs/session.md)             | Session hardening, fingerprinting   |
-| [Signed URLs](docs/signed-url.md)      | HMAC-signed URLs with expiry        |
-| [TOTP](docs/totp.md)                   | One-time passwords, recovery codes  |
-| [Analyzer](docs/analyzer.md)           | Security header auditing            |
-| [Scanner](docs/scanner.md)             | CLI header scanner for CI           |
-| [Middleware](docs/middleware.md)       | PSR-15 middleware                   |
-| [Logging](docs/logging.md)             | Security event logging              |
-| [Glossary](docs/glossary.md)           | Security terminology reference      |
+| Module                                 | Description                                                 |
+| -------------------------------------- | ----------------------------------------------------------- |
+| [CSP](docs/csp.md)                     | Content Security Policy with nonces and violation reporting |
+| [Headers](docs/headers.md)             | HSTS, COOP, COEP, CORP, Permissions                         |
+| [CSRF](docs/csrf.md)                   | Token patterns and validation                               |
+| [Cookie](docs/cookie.md)               | Secure cookie handling                                      |
+| [Encryption](docs/encryption.md)       | Authenticated encryption, envelopes                         |
+| [Password](docs/password.md)           | Hashing, policies, breach detection                         |
+| [Sanitization](docs/sanitization.md)   | HTML, URI, path sanitization                                |
+| [Rate Limiting](docs/rate-limiting.md) | Token bucket, sliding window                                |
+| [SRI](docs/sri.md)                     | Subresource integrity hashes                                |
+| [Secrets](docs/secrets.md)             | Docker/file-based secret loading                            |
+| [Session](docs/session.md)             | Session hardening, fingerprinting                           |
+| [Signed URLs](docs/signed-url.md)      | HMAC-signed URLs with expiry                                |
+| [TOTP](docs/totp.md)                   | One-time passwords, recovery codes                          |
+| [Analyzer](docs/analyzer.md)           | Security header auditing                                    |
+| [Scanner](docs/scanner.md)             | CLI header scanner for CI                                   |
+| [Middleware](docs/middleware.md)       | PSR-15 middleware                                           |
+| [Logging](docs/logging.md)             | Security event logging                                      |
+| [Glossary](docs/glossary.md)           | Security terminology reference                              |
 
 ## Versioning
 

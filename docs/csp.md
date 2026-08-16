@@ -32,6 +32,10 @@ echo "<script nonce=\"{$nonce}\">console.log('Safe!');</script>";
 | `ResourceDirectives`   | Resource fetch directive configuration       |
 | `NavigationDirectives` | Navigation directive configuration           |
 | `ReportingConfig`      | CSP reporting configuration                  |
+| `CspReportParser`      | Strict parser for violation report payloads  |
+| `CspViolationReport`   | A parsed violation report                    |
+| `ViolationSource`      | Source location a violation came from        |
+| `ReportDisposition`    | Enum: was the policy enforced or report-only |
 
 ## Security Policies
 
@@ -206,6 +210,79 @@ $csp = (new CspDirectives())
     ->withReportUri('/csp-report')
     ->withReportTo('csp-endpoint');
 ```
+
+### Receiving Violation Reports
+
+`ReportingConfig` only tells the browser where to send reports. To receive them,
+route the configured path to `CspReportHandler`, a PSR-15 request handler that
+parses both wire formats, logs each violation as a security event and answers
+`204 No Content`:
+
+```php
+use Zappzarapp\Security\Logging\SecurityAuditLogger;
+use Zappzarapp\Security\Middleware\CspReportHandler;
+use Zappzarapp\Security\RateLimiting\DefaultRateLimiter;
+use Zappzarapp\Security\RateLimiting\RateLimitConfig;
+
+$handler = CspReportHandler::create(
+    new SecurityAuditLogger($psrLogger),
+    $responseFactory,
+    new DefaultRateLimiter(new RateLimitConfig(limit: 60, window: 60)),
+);
+
+// In Slim:
+$app->post('/csp-report', $handler);
+```
+
+See [Middleware](middleware.md#csp-report-handler) for the endpoint's behaviour,
+limits and configuration.
+
+#### Parsing reports yourself
+
+`CspReportParser` is independent of PSR-7 and can be used directly if you want
+to store reports instead of logging them:
+
+```php
+use Zappzarapp\Security\Csp\Exception\CspReportException;
+use Zappzarapp\Security\Csp\Report\CspReportParser;
+
+$parser = new CspReportParser();
+
+try {
+    $reports = $parser->parse($rawBody, $contentTypeHeader);
+} catch (CspReportException) {
+    // Malformed, oversized or of an unsupported content type
+    return;
+}
+
+foreach ($reports as $report) {
+    $repository->store($report->effectiveDirective, $report->blockedUri);
+}
+```
+
+Both formats are normalized into the same value object, so `document-uri` and
+`documentURL` (and every other kebab-case/camelCase pair) end up in the same
+property:
+
+| Property             | Legacy key            | Reporting API key    |
+| -------------------- | --------------------- | -------------------- |
+| `documentUri`        | `document-uri`        | `documentURL`        |
+| `violatedDirective`  | `violated-directive`  | `violatedDirective`  |
+| `effectiveDirective` | `effective-directive` | `effectiveDirective` |
+| `blockedUri`         | `blocked-uri`         | `blockedURL`         |
+| `originalPolicy`     | `original-policy`     | `originalPolicy`     |
+| `referrer`           | `referrer`            | `referrer`           |
+| `disposition`        | `disposition`         | `disposition`        |
+| `statusCode`         | `status-code`         | `statusCode`         |
+| `scriptSample`       | `script-sample`       | `sample`             |
+| `source->file`       | `source-file`         | `sourceFile`         |
+| `source->line`       | `line-number`         | `lineNumber`         |
+| `source->column`     | `column-number`       | `columnNumber`       |
+| `userAgent`          | —                     | `user_agent`         |
+
+`documentUri` and one of the two directive fields are required; the missing
+directive is derived from the one that is present. Everything else defaults to
+empty or `null` when the browser does not report it.
 
 ## Default Directives
 
