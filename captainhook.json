@@ -35,7 +35,9 @@
             "#api\\.github\\.com#",
             "#UNSIGNED_COMMITS#",
             "#ABCDEFGHIJKLMNOPQRSTUVWXYZ234567#",
-            "#abcdefghjkmnpqrstuvwxyz23456789#"
+            "#abcdefghjkmnpqrstuvwxyz23456789#",
+            "#pI9Rh-EBAA17byiXc3fl0gDzlhSfI2puUWUpMS3LB_Q#",
+            "#BHvgBBQ1FPkzVQjwozX7Zowx_gAU7rECICTBW2S-_TY#"
           ]
         },
         "config": {

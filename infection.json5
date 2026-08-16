@@ -399,6 +399,8 @@
                 "Zappzarapp\\Security\\Secrets\\SecretValue::__destruct",
                 // Key-copy clearing after sodium AEAD calls - not functionally observable
                 "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
+                // Key-copy clearing after hash_hmac() - not functionally observable
+                "Zappzarapp\\Security\\SignedUrl\\UrlSigner::signature",
                 // Plaintext/data-key copy clearing after re-encryption - not functionally observable
                 "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
                 "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*",
@@ -753,6 +755,8 @@
                 "Zappzarapp\\Security\\Password\\Hashing\\*",
                 // Key-copy clearing in finally - sodium AEAD calls don't throw for valid inputs
                 "Zappzarapp\\Security\\Encryption\\SymmetricEncryptor::*",
+                // Key-copy clearing in finally - hash_hmac() doesn't throw for valid algorithms
+                "Zappzarapp\\Security\\SignedUrl\\UrlSigner::signature",
                 // Plaintext/data-key copy clearing in finally after re-encryption
                 "Zappzarapp\\Security\\Encryption\\KeyRingEncryptor::*",
                 "Zappzarapp\\Security\\Encryption\\KeyRingEnvelopeEncryptor::*",

@@ -35,6 +35,7 @@ src/
 ├── Secrets/        # Docker/file-based Secret Loading
 ├── Session/        # Session Security (Fixation, Fingerprinting, Timeouts)
 ├── Totp/           # TOTP/2FA (RFC 6238, Provisioning, Recovery Codes)
+├── SignedUrl/      # HMAC-signed URLs with Expiry
 └── Logging/        # Security Audit Logging
 
 tests/
@@ -58,6 +59,7 @@ tests/
 | Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading     |
 | Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting  |
 | Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery     |
+| SignedUrl    | `Zappzarapp\Security\SignedUrl\`    | HMAC-signed URLs with expiry         |
 | Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging         |
 
 ## Configuration Files
@@ -142,6 +144,7 @@ tests/
 | Secrets      | `SecretLoader`           | Docker/file-based secret loading |
 | Session      | `SessionGuard`           | Session security validation      |
 | Totp         | `TotpAuthenticator`      | TOTP generation & verification   |
+| SignedUrl    | `UrlSigner`              | URL signing and verification     |
 | Logging      | `SecurityAuditLogger`    | Security event logging           |
 
 ## Architecture
@@ -211,7 +214,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ### Scopes
 
 `csp`, `headers`, `csrf`, `cookie`, `encryption`, `password`, `sanitization`,
-`rate-limiting`, `scanner`, `sri`, `secrets`, `session`, `totp`, `logging`
+`rate-limiting`, `scanner`, `sri`, `secrets`, `session`, `signed-url`, `totp`,
+`logging`
 
 ## CI/CD
 

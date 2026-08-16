@@ -48,7 +48,7 @@
     "ext-pdo": "For PDO rate limit and CSRF token storage (MySQL, PostgreSQL, SQLite)",
     "psr/http-server-middleware": "For PSR-15 middleware support",
     "psr/http-server-handler": "For PSR-15 middleware support",
-    "psr/clock": "For deterministic time injection in SessionGuard (PSR-20)"
+    "psr/clock": "For deterministic time injection in SessionGuard and UrlSigner (PSR-20)"
   },
   "require-dev": {
     "ext-fileinfo": "*",
@@ -100,6 +100,7 @@
       "Zappzarapp\\Security\\Sri\\": "src/Sri/",
       "Zappzarapp\\Security\\Secrets\\": "src/Secrets/",
       "Zappzarapp\\Security\\Session\\": "src/Session/",
+      "Zappzarapp\\Security\\SignedUrl\\": "src/SignedUrl/",
       "Zappzarapp\\Security\\Logging\\": "src/Logging/",
       "Zappzarapp\\Security\\Middleware\\": "src/Middleware/",
       "Zappzarapp\\Security\\Totp\\": "src/Totp/"
@@ -120,6 +121,7 @@
       "Zappzarapp\\Security\\Tests\\Sri\\": "tests/Sri/",
       "Zappzarapp\\Security\\Tests\\Secrets\\": "tests/Secrets/",
       "Zappzarapp\\Security\\Tests\\Session\\": "tests/Session/",
+      "Zappzarapp\\Security\\Tests\\SignedUrl\\": "tests/SignedUrl/",
       "Zappzarapp\\Security\\Tests\\Logging\\": "tests/Logging/",
       "Zappzarapp\\Security\\Tests\\Middleware\\": "tests/Middleware/",
       "Zappzarapp\\Security\\Tests\\Totp\\": "tests/Totp/"
