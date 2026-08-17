@@ -34,12 +34,13 @@
   "require": {
     "php": "^8.4",
     "ext-dom": "*",
+    "ext-fileinfo": "*",
     "ext-libxml": "*",
     "ext-sodium": "*"
   },
   "suggest": {
     "psr/log": "For security event audit logging (PSR-3)",
-    "psr/http-message": "For PSR-7 response analysis in SecurityHeaderAnalyzer",
+    "psr/http-message": "For PSR-7 response analysis in SecurityHeaderAnalyzer and PSR-7 upload validation in UploadValidator",
     "psr/http-client": "For PSR-18 HTTP client support in PwnedPasswordChecker",
     "psr/http-factory": "For PSR-17 HTTP factory support in PwnedPasswordChecker",
     "ext-redis": "For Redis rate limit and CSRF token storage (phpredis extension)",
@@ -51,7 +52,6 @@
     "psr/clock": "For deterministic time injection in SessionGuard and UrlSigner (PSR-20)"
   },
   "require-dev": {
-    "ext-fileinfo": "*",
     "psr/log": "^1.1 || ^3.0",
     "psr/http-client": "^1.0",
     "psr/http-factory": "^1.1",

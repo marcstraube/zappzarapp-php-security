@@ -13,7 +13,7 @@ vulnerabilities.
 | [Cookie](cookie.md)               | Secure cookie handling with encryption, SameSite, and HttpOnly support                     |
 | [Encryption](encryption.md)       | XChaCha20-Poly1305 authenticated encryption with envelope pattern support                  |
 | [Password](password.md)           | Secure password hashing with Argon2id/bcrypt, pepper support, and pwned password detection |
-| [Sanitization](sanitization.md)   | HTML, URI, and path sanitization to prevent XSS and injection attacks                      |
+| [Sanitization](sanitization.md)   | HTML, URI, path, and file upload sanitization to prevent XSS and injection attacks         |
 | [Rate Limiting](rate-limiting.md) | Token bucket and sliding window rate limiting with storage backends                        |
 | [Session](session.md)             | Session hardening: fixation protection, fingerprinting, timeouts                           |
 | [TOTP](totp.md)                   | Time-based one-time passwords (RFC 6238) with provisioning URIs and recovery codes         |

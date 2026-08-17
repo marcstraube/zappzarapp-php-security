@@ -28,7 +28,7 @@ src/
 ├── Cookie/         # Secure Cookie Handling
 ├── Encryption/     # Authenticated Encryption (XChaCha20-Poly1305)
 ├── Password/       # Password Hashing & Validation
-├── Sanitization/   # Input Sanitization (HTML, URI, Path, SQL)
+├── Sanitization/   # Input Sanitization (HTML, URI, Path, SQL, Upload)
 ├── RateLimiting/   # Rate Limiting (Token Bucket, Sliding Window)
 ├── Scanner/        # CLI Security Header Scanner (bin/security-scan)
 ├── Sri/            # Subresource Integrity
@@ -44,23 +44,23 @@ tests/
 
 ## Modules
 
-| Module       | Namespace                           | Description                           |
-| ------------ | ----------------------------------- | ------------------------------------- |
-| Csp          | `Zappzarapp\Security\Csp\`          | CSP headers, violation report parsing |
-| Headers      | `Zappzarapp\Security\Headers\`      | HSTS, COOP, COEP, Permissions-Policy  |
-| Csrf         | `Zappzarapp\Security\Csrf\`         | Token-based CSRF protection           |
-| Cookie       | `Zappzarapp\Security\Cookie\`       | Secure cookie handling                |
-| Encryption   | `Zappzarapp\Security\Encryption\`   | XChaCha20-Poly1305, envelope pattern  |
-| Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking        |
-| Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL sanitization     |
-| RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window          |
-| Scanner      | `Zappzarapp\Security\Scanner\`      | CLI security header scanner           |
-| Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                   |
-| Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading      |
-| Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting   |
-| Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery      |
-| SignedUrl    | `Zappzarapp\Security\SignedUrl\`    | HMAC-signed URLs with expiry          |
-| Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging          |
+| Module       | Namespace                           | Description                             |
+| ------------ | ----------------------------------- | --------------------------------------- |
+| Csp          | `Zappzarapp\Security\Csp\`          | CSP headers, violation report parsing   |
+| Headers      | `Zappzarapp\Security\Headers\`      | HSTS, COOP, COEP, Permissions-Policy    |
+| Csrf         | `Zappzarapp\Security\Csrf\`         | Token-based CSRF protection             |
+| Cookie       | `Zappzarapp\Security\Cookie\`       | Secure cookie handling                  |
+| Encryption   | `Zappzarapp\Security\Encryption\`   | XChaCha20-Poly1305, envelope pattern    |
+| Password     | `Zappzarapp\Security\Password\`     | Hashing, policy, HIBP checking          |
+| Sanitization | `Zappzarapp\Security\Sanitization\` | HTML, URI, Path, SQL, upload validation |
+| RateLimiting | `Zappzarapp\Security\RateLimiting\` | Token Bucket, Sliding Window            |
+| Scanner      | `Zappzarapp\Security\Scanner\`      | CLI security header scanner             |
+| Sri          | `Zappzarapp\Security\Sri\`          | SRI hash generation                     |
+| Secrets      | `Zappzarapp\Security\Secrets\`      | Docker/file-based secret loading        |
+| Session      | `Zappzarapp\Security\Session\`      | Fixation protection, fingerprinting     |
+| Totp         | `Zappzarapp\Security\Totp\`         | TOTP/2FA, provisioning, recovery        |
+| SignedUrl    | `Zappzarapp\Security\SignedUrl\`    | HMAC-signed URLs with expiry            |
+| Logging      | `Zappzarapp\Security\Logging\`      | Security event audit logging            |
 
 ## Configuration Files
 
@@ -139,6 +139,7 @@ tests/
 | Sanitization | `HtmlSanitizer`          | XSS-safe HTML sanitization       |
 | Sanitization | `UriSanitizer`           | URI validation, SSRF blocking    |
 | Sanitization | `PathValidator`          | Directory traversal prevention   |
+| Sanitization | `UploadValidator`        | File upload validation           |
 | RateLimiting | `DefaultRateLimiter`     | Rate limiting with storage       |
 | Scanner      | `ScanCommand`            | CLI security header scanning     |
 | Sri          | `SriHashGenerator`       | SRI hash generation              |

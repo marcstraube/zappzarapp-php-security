@@ -231,6 +231,11 @@ deptrac:
         - type: directory
           value: src/Sanitization/Sql/
 
+    - name: SanitizationUpload
+      collectors:
+        - type: directory
+          value: src/Sanitization/Upload/
+
     - name: SanitizationMain
       collectors:
         - type: classLike
@@ -583,6 +588,10 @@ deptrac:
       - SanitizationMain
       - SanitizationUri
     SanitizationSql: ~
+    SanitizationUpload:
+      - SanitizationException
+      - Logging
+      - External # PSR-7 UploadedFileInterface and StreamInterface
     SanitizationMain: ~
 
     # RateLimiting Module Rules
