@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.3.0...v1.4.0) (2026-08-17)
+
+
+### Features
+
+* **csp:** add violation report endpoint ([#111](https://github.com/marcstraube/zappzarapp-php-security/issues/111)) ([e5018c1](https://github.com/marcstraube/zappzarapp-php-security/commit/e5018c12dc7c3920729d5cdb52a32734e774a144)), closes [#99](https://github.com/marcstraube/zappzarapp-php-security/issues/99)
+* **encryption:** add key rotation via versioned key ring ([#105](https://github.com/marcstraube/zappzarapp-php-security/issues/105)) ([92ee79d](https://github.com/marcstraube/zappzarapp-php-security/commit/92ee79da2e3765571524985d1c89b2facff79c84)), closes [#98](https://github.com/marcstraube/zappzarapp-php-security/issues/98)
+* **sanitization:** add file upload validation ([#112](https://github.com/marcstraube/zappzarapp-php-security/issues/112)) ([2df4c93](https://github.com/marcstraube/zappzarapp-php-security/commit/2df4c934a54c523a9642379e50ae6cb79c8c3412)), closes [#100](https://github.com/marcstraube/zappzarapp-php-security/issues/100)
+* **signed-url:** add signed URLs with expiry ([#109](https://github.com/marcstraube/zappzarapp-php-security/issues/109)) ([ffd06d0](https://github.com/marcstraube/zappzarapp-php-security/commit/ffd06d03cb8d7a0ea4085250367e494091616991)), closes [#97](https://github.com/marcstraube/zappzarapp-php-security/issues/97)
+* **totp:** add TOTP/2FA module (RFC 6238) ([#107](https://github.com/marcstraube/zappzarapp-php-security/issues/107)) ([da7e0d0](https://github.com/marcstraube/zappzarapp-php-security/commit/da7e0d06811652d1f0091af83f87accf8c4c8a9e)), closes [#96](https://github.com/marcstraube/zappzarapp-php-security/issues/96)
+
 ## [1.3.0](https://github.com/marcstraube/zappzarapp-php-security/compare/v1.2.0...v1.3.0) (2026-07-27)
 
 
